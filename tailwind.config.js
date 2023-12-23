@@ -3,7 +3,18 @@ export default {
   prefix: 'tw_',
   content: [],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: '#833deb',
+        secondary: '#ee3664',
+        accent: '#82B1FF',
+        dark: '#362b2f',
+        positive: '#21BA45',
+        negative: '#C10015',
+        info: '#31CCEC',
+        warning: '#F2C037',
+      },
+    },
   },
   plugins: [],
 };

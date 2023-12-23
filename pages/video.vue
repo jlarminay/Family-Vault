@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  title: 'Home',
+  title: 'Video',
 });
 </script>
 
@@ -8,8 +8,8 @@ definePageMeta({
   <div>
     <SingleNavMenu />
 
-    <div class="tw_px-6 tw_py-4">
-      <h1 class="h1">Home</h1>
+    <div>
+      <h1>VIDEO</h1>
     </div>
   </div>
 </template>

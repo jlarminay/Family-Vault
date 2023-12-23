@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .h1 {
+    @apply tw_text-3xl tw_font-medium;
+  }
+  .h2 {
+    @apply tw_text-2xl tw_font-medium;
+  }
+  .h3 {
+    @apply tw_text-xl tw_font-medium;
+  }
+  .h4 {
+    @apply tw_text-lg tw_font-medium;
+  }
+}

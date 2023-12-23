@@ -1,11 +1,13 @@
 import { PrismaClient } from '@prisma/client';
 
 import user from './user.js';
+import video from './video.js';
 
 const prisma = new PrismaClient();
 
 async function main() {
   await user(prisma);
+  await video(prisma);
 }
 
 main()

@@ -10,7 +10,7 @@ function main() {
     shell.exec('npx prisma generate');
     shell.exec('npm run db:seed');
     shell.exec(
-      'npx concurrently -n "NUXT,STUDIO" -c "auto"  "nuxt dev" "npx prisma studio --browser none"',
+      'npx concurrently -n "NUXT,STUDIO" -c "auto"  "npm run dev" "npx prisma studio --browser none"',
     );
     return;
   }
