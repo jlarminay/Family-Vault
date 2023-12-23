@@ -5,6 +5,10 @@ definePageMeta({
 
 const videoStore = useVideoStore();
 const allVideos = await videoStore.getAll();
+
+const cleanedAllVideos = computed(() => {
+  return allVideos;
+});
 </script>
 
 <template>
@@ -13,7 +17,9 @@ const allVideos = await videoStore.getAll();
 
     <div class="tw_px-6 tw_py-4 tw_max-w-[1000px] tw_mx-auto tw_border">
       <h1 class="h1">Dashboard</h1>
-      <pre>{{ allVideos }}</pre>
+      <div class="tw_flex tw_gap-4 tw_justify-between tw_mt-6">
+        <DashboardItem v-for="(video, i) in cleanedAllVideos" :key="i" :video="video" />
+      </div>
     </div>
   </div>
 </template>

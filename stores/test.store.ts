@@ -20,8 +20,8 @@ export const useTestStore = defineStore('test', {
     },
     async getHello() {
       const { $trpc } = useNuxtApp();
-      const results = await $trpc.test.hello.useQuery({ text: 'everyone again!!' });
-      return results.data;
+      const results = await $trpc.test.hello.query({ text: 'everyone again!!' });
+      return results;
     },
   },
 });

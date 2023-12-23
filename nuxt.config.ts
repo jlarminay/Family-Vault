@@ -2,7 +2,7 @@ import { fileURLToPath } from 'url';
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt', 'nuxt-quasar-ui'],
+  modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt', 'nuxt-quasar-ui', 'dayjs-nuxt'],
   css: ['@/assets/css/tailwind.css'],
   build: {
     transpile: ['trpc-nuxt'],

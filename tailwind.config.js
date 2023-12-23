@@ -14,6 +14,10 @@ export default {
         info: '#31CCEC',
         warning: '#F2C037',
       },
+      fontFamily: {
+        montserrat: ['Montserrat', 'sans-serif'],
+        'maven-pro': ['Maven Pro', 'sans-serif'],
+      },
     },
   },
   plugins: [],

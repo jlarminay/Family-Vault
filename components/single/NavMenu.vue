@@ -3,10 +3,12 @@ const search = ref('');
 </script>
 
 <template>
-  <nav class="tw_py-2 tw_px-6 tw_border-b tw_flex tw_justify-between tw_items-center">
+  <nav
+    class="tw_py-2 tw_px-6 tw_border-b tw_flex tw_justify-between tw_items-center tw_sticky tw_top-0 tw_bg-white tw_z-10"
+  >
     <div>
       <NuxtLink
-        to="/home"
+        to="/dashboard"
         class="tw_px-4 tw_py-2 tw_rounded-md tw_bg-primary tw_text-white tw_text-lg hover:tw_opacity-80 tw_transition-opacity tw_duration-300"
       >
         <q-icon name="sym_o_movie" />
@@ -37,7 +39,7 @@ const search = ref('');
       </q-btn>
 
       <q-btn round flat class="!tw_p-0" color="white">
-        <q-avatar size="46px">
+        <q-avatar size="40px">
           <img src="https://cdn.quasar.dev/img/avatar.png" />
         </q-avatar>
         <q-menu>
@@ -49,13 +51,10 @@ const search = ref('');
               <q-item-section>Profile</q-item-section>
             </q-item>
             <q-separator />
-            <q-item clickable v-close-popup to="/home">
-              <q-item-section>Home</q-item-section>
-            </q-item>
             <q-item clickable v-close-popup to="/dashboard">
               <q-item-section>Dashboard</q-item-section>
             </q-item>
-            <q-item clickable v-close-popup to="/video">
+            <q-item clickable v-close-popup to="/video/0">
               <q-item-section>Video</q-item-section>
             </q-item>
             <q-separator />
