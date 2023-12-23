@@ -8,6 +8,7 @@ const commentStore = useCommentStore();
 
 const videoId = ref(parseInt(route.params.id?.[0]));
 const video = ref(await videoStore.getSingle(videoId.value));
+const randomVideos = ref(await videoStore.getRandom(4));
 const comments = ref(await commentStore.getForVideo(videoId.value));
 const liked = ref(false);
 const showMore = ref(false);
@@ -22,13 +23,12 @@ async function commentPosted() {
   <div v-if="!!video">
     <SingleNavMenu />
 
-    <div class="tw_px-6 tw_py-4 tw_max-w-[1000px] tw_mx-auto tw_border">
+    <div class="tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto">
       <div class="tw_flex tw_gap-4">
         <div class="tw_grow">
-          <img
-            :src="video.thumbnail || 'https://placehold.co/640x360'"
-            class="tw_w-full tw_aspect-video tw_object-cover"
-          />
+          <video controls :poster="video.thumbnail" class="tw_w-full tw_aspect-video">
+            <source :src="video.url" type="video/mp4" />
+          </video>
           <div class="tw_p-2">
             <div class="tw_flex tw_justify-between tw_items-center">
               <h2 class="h2 tw_font-bold">{{ video.title }}</h2>
@@ -71,10 +71,18 @@ async function commentPosted() {
             </div>
           </div>
         </div>
-        <div class="tw_min-w-[250px] tw_border">SIDEBAR</div>
+        <div class="tw_min-w-[250px] tw_w-[250px] tw_px-2">
+          <h3 class="h3">Related Videos</h3>
+
+          <RelatedVideoDisplay v-for="(video, i) in randomVideos" :key="i" :video="video" />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
-<style scoped lang="postcss"></style>
+<style scoped lang="postcss">
+video[poster] {
+  object-fit: cover;
+}
+</style>

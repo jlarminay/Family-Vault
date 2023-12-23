@@ -12,10 +12,12 @@ export default async (prisma: PrismaClient) => {
       duration: 100,
     },
     {
-      title: 'Awesome demo video',
-      description: 'Description #2',
-      url: 'https://www.youtube.com/watch?v=2',
-      duration: 200,
+      title: 'The Whole Wide World',
+      description:
+        'Experience the enchantment of spinning in our latest video demo! From graceful dancers to vibrant swirls of color, witness the captivating beauty of continuous motion. Let the simple yet stunning artistry of spinning mesmerize you in this visual spectacle.',
+      url: 'http://localhost:9444/ui/videos/demo.mp4',
+      thumbnail: 'http://localhost:9444/ui/videos/demo.png',
+      duration: 30,
     },
     {
       title: 'This is a really good video with a very long title',

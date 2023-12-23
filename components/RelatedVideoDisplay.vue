@@ -9,19 +9,19 @@ const props = defineProps({
 
 <template>
   <NuxtLink
-    class="tw_w-[300px] tw_border tw_rounded-md tw_overflow-hidden hover:tw_scale-[1.02] tw_transition tw_duration-300"
+    class="tw_flex tw_items-center tw_mt-4 tw_border tw_rounded-md tw_overflow-hidden hover:tw_scale-[1.02] tw_transition tw_duration-300"
     :to="`/video/${video.id}`"
   >
-    <div class="tw_relative">
-      <img :src="video.thumbnail" class="tw_w-full tw_aspect-video tw_object-cover" />
+    <div class="tw_min-w-[100px] tw_w-[100px] tw_relative">
+      <img :src="video.thumbnail" class="tw_h-[75px] tw_object-cover" />
       <span
         class="tw_absolute tw_bottom-0 tw_right-0 tw_px-2 tw_p-0.5 tw_bg-black tw_bg-opacity-60 tw_text-white tw_rounded-tl-md"
       >
         {{ formatDuration(video.duration) }}
       </span>
     </div>
-    <div class="tw_p-2">
-      <p class="tw_text-xl tw_truncate tw_font-bold">{{ video.title }}</p>
+    <div class="tw_px-2">
+      <p class="tw_font-bold tw_line-clamp-2">{{ video.title }}</p>
       <p class="tw_text-gray-500 tw_text-sm">
         {{ $dayjs(video.createdAt).format('MMM D, YYYY') }}
       </p>

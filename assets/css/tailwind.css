@@ -9,7 +9,7 @@
     @apply tw_text-dark tw_text-base tw_font-maven-pro tw_font-normal;
   }
   p {
-    @apply tw_text-base tw_font-maven-pro tw_font-normal;
+    @apply tw_text-base tw_font-maven-pro tw_font-normal tw_leading-tight;
   }
 }
 

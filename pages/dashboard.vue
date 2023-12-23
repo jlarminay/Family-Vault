@@ -15,7 +15,7 @@ const cleanedAllVideos = computed(() => {
   <div>
     <SingleNavMenu />
 
-    <div class="tw_px-6 tw_py-4 tw_max-w-[1000px] tw_mx-auto tw_border">
+    <div class="tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto tw_border">
       <h1 class="h1">Dashboard</h1>
       <div class="tw_flex tw_gap-4 tw_justify-between tw_mt-6">
         <DashboardItem v-for="(video, i) in cleanedAllVideos" :key="i" :video="video" />
