@@ -1,8 +1,6 @@
-import { fileURLToPath } from 'url';
-
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt', 'nuxt-quasar-ui', 'dayjs-nuxt'],
+  modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt', 'nuxt-quasar-ui', 'dayjs-nuxt', 'fluent-ffmpeg'],
   css: ['@/assets/css/tailwind.css'],
   build: {
     transpile: ['trpc-nuxt'],
