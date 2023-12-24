@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   title: 'Welcome',
+  middleware: 'unauthorized-only',
 });
 </script>
 

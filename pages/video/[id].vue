@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   title: 'Video',
+  middleware: 'authorized-only',
 });
 const route = useRoute();
 const videoStore = useVideoStore();

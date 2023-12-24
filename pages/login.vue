@@ -2,6 +2,7 @@
 const { signIn, signOut, status, data } = useAuth();
 definePageMeta({
   title: 'Login',
+  middleware: 'unauthorized-only',
 });
 </script>
 

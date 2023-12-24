@@ -2,6 +2,7 @@
 const { status, data } = useAuth();
 definePageMeta({
   title: 'Dashboard',
+  middleware: 'authorized-only',
 });
 
 const videoStore = useVideoStore();
