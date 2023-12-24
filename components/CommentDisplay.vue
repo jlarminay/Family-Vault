@@ -43,7 +43,7 @@ const props = defineProps({
         </div>
       </div>
 
-      <p class="tw_mt-1">
+      <p class="tw_mt-1 tw_whitespace-pre">
         {{ comment.text }}
       </p>
     </div>

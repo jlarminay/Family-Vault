@@ -44,7 +44,7 @@ export default defineNuxtConfig({
 
   quasar: {
     extras: {
-      fontIcons: ['material-icons-outlined'],
+      fontIcons: ['material-icons-outlined', 'fontawesome-v6'],
     },
     iconSet: 'material-symbols-outlined',
     config: {
@@ -52,7 +52,7 @@ export default defineNuxtConfig({
         primary: '#833deb',
         secondary: '#ee3664',
         accent: '#82B1FF',
-        dark: '#362b2f',
+        dark: '#2c2c2c',
         positive: '#21BA45',
         negative: '#C10015',
         info: '#31CCEC',

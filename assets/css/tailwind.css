@@ -9,7 +9,10 @@
     @apply tw_text-dark tw_text-base tw_font-maven-pro tw_font-normal;
   }
   p {
-    @apply tw_text-base tw_font-maven-pro tw_font-normal tw_leading-tight;
+    @apply tw_text-dark tw_text-base tw_font-maven-pro tw_font-normal tw_leading-tight;
+  }
+  .link {
+    @apply tw_underline hover:tw_opacity-80 tw_transition-opacity tw_duration-300;
   }
 }
 
@@ -26,4 +29,8 @@
   .h4 {
     @apply tw_text-lg tw_font-medium tw_font-montserrat;
   }
+}
+
+.q-tooltip {
+  @apply tw_bg-dark tw_text-white tw_text-sm tw_font-maven-pro tw_font-normal tw_p-2 tw_rounded-md;
 }

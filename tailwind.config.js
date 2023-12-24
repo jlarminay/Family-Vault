@@ -8,7 +8,7 @@ export default {
         primary: '#833deb',
         secondary: '#ee3664',
         accent: '#82B1FF',
-        dark: '#362b2f',
+        dark: '#2c2c2c',
         positive: '#21BA45',
         negative: '#C10015',
         info: '#31CCEC',

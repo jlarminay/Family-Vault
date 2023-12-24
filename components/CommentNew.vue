@@ -15,7 +15,8 @@ const loading = ref(false);
 
 async function postComment() {
   loading.value = true;
-  await commentStore.create(props.videoId, data.value?.id, newComment.value);
+  const cleanedComment = newComment.value.replace(/\n+/g, '\n');
+  await commentStore.create(props.videoId, data.value?.id, cleanedComment);
   newComment.value = '';
   loading.value = false;
   emit('commentPosted');
@@ -28,7 +29,15 @@ async function postComment() {
       <img :src="data?.avatar" class="tw_w-full tw_h-full tw_object-cover" />
     </div>
     <div class="tw_flex-1">
-      <q-input v-model="newComment" outlined dense autogrow placeholder="Add a comment..." />
+      <q-input
+        v-model="newComment"
+        outlined
+        dense
+        autogrow
+        counter
+        maxlength="256"
+        placeholder="Add a comment..."
+      />
       <div class="tw_flex tw_justify-end">
         <q-btn
           v-if="newComment !== ''"
