@@ -7,9 +7,9 @@ import comment from './comment.js';
 const prisma = new PrismaClient();
 
 async function main() {
-  await user(prisma);
-  await video(prisma, s3);
-  // await comment(prisma);
+  await user();
+  await video();
+  await comment();
 }
 
 main()

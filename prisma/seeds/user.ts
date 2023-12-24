@@ -1,26 +1,31 @@
-import { type PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
-export default async (prisma: PrismaClient) => {
+const prisma = new PrismaClient();
+
+export default async () => {
   // define seeds
   const newData = [
     {
-      email: 'josh@email.com',
+      email: 'j.larminay@gmail.com',
       name: 'Josh Larminay',
-      avatar: 'https://i.pravatar.cc/150?img=58',
+      provider: 'github',
     },
     {
       email: 'johndoe@email.com',
       name: 'John Doe',
+      provider: 'discord',
       avatar: 'https://i.pravatar.cc/150?img=12',
     },
     {
       email: 'alicejones@email.com',
       name: 'Alice Jones',
+      provider: 'github',
       avatar: 'https://i.pravatar.cc/150?img=45',
     },
     {
       email: 'bannana@email.com',
       name: 'Big Tom',
+      provider: 'discord',
       avatar: 'https://i.pravatar.cc/150?img=31',
     },
   ];

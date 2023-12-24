@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { signOut, data } = useAuth();
 const search = ref('');
 </script>
 
@@ -33,14 +34,9 @@ const search = ref('');
     </div>
 
     <div class="tw_flex tw_items-center tw_gap-4">
-      <q-btn rounded no-caps unelevated outline to="/login">
-        <q-icon name="sym_o_face" class="tw_mr-1" />
-        Sign In
-      </q-btn>
-
       <q-btn round flat class="!tw_p-0" color="white">
-        <q-avatar size="40px">
-          <img src="https://cdn.quasar.dev/img/avatar.png" />
+        <q-avatar size="40px" class="tw_border">
+          <img :src="data?.avatar" />
         </q-avatar>
         <q-menu>
           <q-list>
@@ -65,7 +61,7 @@ const search = ref('');
               <q-item-section>Legal</q-item-section>
             </q-item>
             <q-separator />
-            <q-item clickable v-close-popup class="tw_text-red-600">
+            <q-item clickable v-close-popup class="tw_text-red-600" @click="signOut()">
               <q-item-section avatar>
                 <q-icon name="sym_o_logout" />
               </q-item-section>

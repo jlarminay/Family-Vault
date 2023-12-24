@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 
-export default async (prisma: PrismaClient) => {
+const prisma = new PrismaClient();
+
+export default async () => {
   // define seeds
   const newData = [
     {

@@ -5,7 +5,9 @@ import { PrismaClient } from '@prisma/client';
 // import Demo2 from './videos/demo2.mp4';
 // import Demo3 from './videos/demo3.mp4';
 
-export default async (prisma: PrismaClient, s3: any) => {
+const prisma = new PrismaClient();
+
+export default async () => {
   // define seeds
   const newData = [
     {

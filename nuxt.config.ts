@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     'nuxt-quasar-ui',
     'dayjs-nuxt',
     'fluent-ffmpeg',
-    '@hebilicious/authjs-nuxt',
+    '@sidebase/nuxt-auth',
   ],
   css: ['@/assets/css/tailwind.css'],
   build: {
@@ -17,38 +17,30 @@ export default defineNuxtConfig({
   alias: {
     cookie: resolve(__dirname, 'node_modules/cookie'),
   },
+
+  // environment variables
   runtimeConfig: {
-    authJs: {
-      secret: process.env.NEXTAUTH_SECRET, // You can generate one with `openssl rand -base64 32`
+    auth: {
+      secret: process.env.NEXTAUTH_SECRET,
     },
     github: {
+      // call back url = http://localhost:3000/api/auth/callback/github
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
     },
     discord: {
+      // call back url = http://localhost:3000/api/auth/callback/discord
       clientId: process.env.DISCORD_CLIENT_ID,
       clientSecret: process.env.DISCORD_CLIENT_SECRET,
     },
-    public: {
-      authJs: {
-        baseUrl: process.env.NUXT_NEXTAUTH_URL, // The URL of your deployed app (used for origin Check in production)
-        verifyClientOnEveryRequest: true, // whether to hit the /auth/session endpoint on every client request
-      },
-    },
+    public: {},
   },
 
-  // auth: {
-  //   strategies: {
-  //     github: {
-  //       clientId: process.env.GITHUB_CLIENT_ID,
-  //       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  //     },
-  //     discord: {
-  //       clientId: process.env.DISCORD_CLIENT_ID,
-  //       clientSecret: process.env.DISCORD_CLIENT_SECRET,
-  //     },
-  //   },
-  // },
+  auth: {
+    provider: {
+      type: 'authjs',
+    },
+  },
 
   quasar: {
     extras: {

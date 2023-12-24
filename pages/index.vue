@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  title: 'Home',
+  title: 'Welcome',
 });
 </script>
 
@@ -16,6 +16,16 @@ definePageMeta({
         Exciting news <br />
         coming soon
       </h1>
+      <q-btn
+        label="Login"
+        outline
+        rounded
+        no-caps
+        size="16px"
+        color="white"
+        class="tw_mt-4 tw_px-10"
+        to="/login"
+      />
     </div>
   </div>
 </template>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { status, data } = useAuth();
 definePageMeta({
   title: 'Dashboard',
 });
@@ -14,6 +15,9 @@ const cleanedAllVideos = computed(() => {
 <template>
   <div>
     <SingleNavMenu />
+
+    <pre>{{ status }}</pre>
+    <pre>{{ data }}</pre>
 
     <div class="tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto tw_border">
       <h1 class="h1">Dashboard</h1>
