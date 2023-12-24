@@ -1,6 +1,5 @@
 <script setup lang="ts">
 definePageMeta({
-  title: 'Video',
   middleware: 'authorized-only',
 });
 const route = useRoute();
@@ -21,6 +20,10 @@ async function commentPosted() {
 </script>
 
 <template>
+  <Head>
+    <title>{{ video.title || 'Video' }} | Larminay Vault</title>
+  </Head>
+
   <div v-if="!!video">
     <SingleNavMenu />
 
@@ -34,10 +37,10 @@ async function commentPosted() {
             <div class="tw_flex tw_justify-between tw_items-center">
               <h2 class="h2 tw_font-bold">{{ video.title }}</h2>
               <q-icon
-                name="sym_o_favorite"
-                size="30px"
+                :name="liked ? 'o_favorite' : 'o_favorite_border'"
+                size="32px"
                 class="tw_cursor-pointer hover:tw_opacity-70 tw_transition-opacity tw_duration-300"
-                :class="{ 'tw_text-red-500': liked }"
+                :class="{ 'tw_text-red-500 tada': liked }"
                 @click="liked = !liked"
               />
             </div>
@@ -85,5 +88,36 @@ async function commentPosted() {
 <style scoped lang="postcss">
 video[poster] {
   object-fit: cover;
+}
+
+.tada {
+  animation: tada 1s linear;
+}
+@keyframes tada {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+
+  10%,
+  20% {
+    transform: scale3d(0.8, 0.8, 0.8) rotate3d(0, 0, 1, -10deg);
+  }
+
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: scale3d(1.2, 1.2, 1.2) rotate3d(0, 0, 1, 10deg);
+  }
+
+  40%,
+  60%,
+  80% {
+    transform: scale3d(1.2, 1.2, 1.2) rotate3d(0, 0, 1, -10deg);
+  }
+
+  to {
+    transform: scale3d(1, 1, 1);
+  }
 }
 </style>

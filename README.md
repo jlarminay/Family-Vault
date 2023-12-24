@@ -23,6 +23,6 @@ This will start the following services:
 - 🗹 UI library
 - 🗹 Prisma
 - 🗹 TRPC
-- ☐ Auth
+- 🗹 Auth
 - ☐ S3 storage
 - ☐ PWA

@@ -1,19 +1,14 @@
 <script setup lang="ts">
-const { status, data } = useAuth();
 definePageMeta({
-  title: 'Dashboard',
   middleware: 'authorized-only',
-});
-
-const videoStore = useVideoStore();
-const allVideos = await videoStore.getAll();
-
-const cleanedAllVideos = computed(() => {
-  return allVideos;
 });
 </script>
 
 <template>
+  <Head>
+    <title>Legal | Larminay Vault</title>
+  </Head>
+
   <div>
     <SingleNavMenu />
 

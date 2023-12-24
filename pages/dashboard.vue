@@ -1,19 +1,30 @@
 <script setup lang="ts">
+const route = useRoute();
 const { status, data } = useAuth();
 definePageMeta({
-  title: 'Dashboard',
   middleware: 'authorized-only',
 });
 
 const videoStore = useVideoStore();
 const allVideos = await videoStore.getAll();
 
+console.log(route.query?.search);
+
 const cleanedAllVideos = computed(() => {
+  if (route.query?.search) {
+    return allVideos.filter((video: any) => {
+      return video.title.toLowerCase().includes(route.query?.search?.toString().toLowerCase());
+    });
+  }
   return allVideos;
 });
 </script>
 
 <template>
+  <Head>
+    <title>Dashboard | Larminay Vault</title>
+  </Head>
+
   <div>
     <SingleNavMenu />
 

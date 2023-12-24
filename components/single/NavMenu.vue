@@ -1,6 +1,10 @@
 <script setup lang="ts">
 const { signOut, data } = useAuth();
 const search = ref('');
+
+function handleSearch() {
+  navigateTo(`/dashboard?search=${search.value}`);
+}
 </script>
 
 <template>
@@ -32,6 +36,7 @@ const search = ref('');
         placeholder="Search.."
         class="tw_min-w-[400px] tw_pr-0"
         color="primary"
+        @keyup.enter="handleSearch()"
       >
         <template v-slot:append>
           <q-btn round dense flat icon="sym_o_search" />
@@ -43,9 +48,9 @@ const search = ref('');
       <q-btn round flat class="!tw_p-0" icon="sym_o_cloud_upload" color="dark" disabled>
         <q-tooltip>Upload (Coming Soon)</q-tooltip>
       </q-btn>
-      <q-btn round flat class="!tw_p-0" icon="sym_o_notifications" color="dark" disabled>
+      <!-- <q-btn round flat class="!tw_p-0" icon="sym_o_notifications" color="dark" disabled>
         <q-tooltip>Notifications (Coming Soon)</q-tooltip>
-      </q-btn>
+      </q-btn> -->
       <q-btn round flat class="!tw_p-0" color="white">
         <q-avatar size="40px" class="tw_border">
           <img :src="data?.avatar" />

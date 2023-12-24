@@ -1,12 +1,15 @@
 <script setup lang="ts">
 const { signIn, signOut, status, data } = useAuth();
 definePageMeta({
-  title: 'Login',
   middleware: 'unauthorized-only',
 });
 </script>
 
 <template>
+  <Head>
+    <title>Login | Larminay Vault</title>
+  </Head>
+
   <div
     class="tw_flex tw_justify-center tw_items-center tw_h-[100svh] tw_bg-gradient-to-tr tw_from-primary tw_to-secondary"
   >
