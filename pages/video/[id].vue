@@ -48,7 +48,7 @@ async function commentPosted() {
             <p class="tw_text-gray-500">{{ $dayjs(video.createdAt).format('MMMM D, YYYY') }}</p>
 
             <div class="tw_mt-4">
-              <div :class="{ 'tw_line-clamp-3': !showMore }">
+              <div :class="{ 'tw_line-clamp-2': !showMore }">
                 <p>{{ video.description }}</p>
               </div>
               <div class="tw_text-center tw_mt-2">

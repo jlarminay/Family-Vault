@@ -16,7 +16,22 @@ model User {
   name     String
   provider String
   avatar   String?
-  comments Comment[]
+  person   Person? // can be attached to a person
+  comments Comment[] // can have many comments
+  videos   Video[] // can upload many videos
+}
+
+model Person {
+  id        Int       @id @default(autoincrement())
+  name      String
+  birthday  DateTime?
+  gender    String?
+  deathday  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  userId    Int?      @unique
+  user      User?     @relation(fields: [userId], references: [id])
+  videos    Video[] // can be in many videos
 }
 
 model Video {
@@ -28,9 +43,12 @@ model Video {
   duration    Int
   resolution  String
   size        Int
+  ownerId     Int
+  owner       User      @relation(fields: [ownerId], references: [id])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  comments    Comment[]
+  comments    Comment[] // can have many comments
+  people      Person[] // can contain many people
 }
 
 model Comment {

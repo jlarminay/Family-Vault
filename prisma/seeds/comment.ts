@@ -26,7 +26,12 @@ export default async () => {
     {
       text: 'This is a comment',
       videoId: 2,
-      userId: 1,
+      userId: 3,
+    },
+    {
+      text: 'This is a comment',
+      videoId: 2,
+      userId: 2,
     },
     {
       text: 'This is a comment',
@@ -36,7 +41,7 @@ export default async () => {
     {
       text: 'This is a comment',
       videoId: 3,
-      userId: 1,
+      userId: 3,
     },
     {
       text: 'This is a comment',
