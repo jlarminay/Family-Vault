@@ -2,6 +2,7 @@
 definePageMeta({
   middleware: 'authorized-only',
 });
+const env = useRuntimeConfig().public;
 const route = useRoute();
 const videoStore = useVideoStore();
 const commentStore = useCommentStore();

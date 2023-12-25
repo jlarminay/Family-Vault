@@ -34,13 +34,12 @@ async function postComment() {
         outlined
         dense
         autogrow
-        counter
         maxlength="256"
         placeholder="Add a comment..."
       />
-      <div class="tw_flex tw_justify-end">
+      <div v-if="newComment !== ''" class="tw_flex tw_justify-end tw_items-center tw_gap-2 tw_mt-2">
+        <span class="tw_text-xs tw_opacity-70">{{ newComment.length }} / 256 limit</span>
         <q-btn
-          v-if="newComment !== ''"
           no-caps
           unelevated
           rounded
@@ -48,7 +47,6 @@ async function postComment() {
           size="14px"
           color="primary"
           label="Comment"
-          class="tw_mt-2"
           @click="postComment()"
         />
       </div>

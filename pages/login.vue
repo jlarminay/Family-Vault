@@ -48,15 +48,6 @@ definePageMeta({
       </div>
     </div>
   </div>
-  <div class="tw_p-4">
-    <q-btn label="Back" to="/" />
-    <h1 class="tw_text-2xl tw_mb-2">This is the login page</h1>
-    <p>You are not logged in.</p>
-    <pre>{{ status }}</pre>
-    <pre>{{ data }}</pre>
-    <div></div>
-    <q-btn rounded no-caps unelevated outline @click="signOut()">Sign Out</q-btn>
-  </div>
 </template>
 
 <style scoped lang="postcss"></style>

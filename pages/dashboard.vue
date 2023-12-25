@@ -8,8 +8,6 @@ definePageMeta({
 const videoStore = useVideoStore();
 const allVideos = await videoStore.getAll();
 
-console.log(route.query?.search);
-
 const cleanedAllVideos = computed(() => {
   if (route.query?.search) {
     return allVideos.filter((video: any) => {

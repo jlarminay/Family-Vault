@@ -6,6 +6,9 @@ function main() {
   // ----------------------------------------
   // for local development
   if (args.includes('--dev')) {
+    // fix manual overrides
+    shell.cp('-f', './overrides/fluent-ffmpeg.js', './node_modules/fluent-ffmpeg/index.js');
+
     shell.exec('npm run docker');
     shell.exec('npx prisma generate');
     shell.exec('npm run db:seed');

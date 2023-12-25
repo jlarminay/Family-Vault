@@ -40,7 +40,10 @@ export default defineNuxtConfig({
       accessKey: process.env.S3_ACCESS_KEY,
       secretKey: process.env.S3_SECRET_KEY,
     },
-    public: {},
+    public: {
+      s3Endpoint: process.env.S3_ENDPOINT,
+      s3Bucket: process.env.S3_BUCKET,
+    },
   },
 
   auth: {
