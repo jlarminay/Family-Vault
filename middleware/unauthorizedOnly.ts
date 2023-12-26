@@ -5,7 +5,6 @@ export default defineNuxtRouteMiddleware((to, from) => {
   if (!!data.value) {
     // authorized
     // redirect to dashboard
-    console.log('redirecting to dashboard');
     return navigateTo('/dashboard');
   }
 });

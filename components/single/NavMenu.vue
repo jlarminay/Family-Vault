@@ -55,27 +55,45 @@ function handleSearch() {
         <q-avatar size="40px" class="tw_border">
           <img :src="data?.avatar" />
         </q-avatar>
-        <q-menu class="tw_min-w-[140px]" :offset="[0, 4]">
+        <q-menu class="tw_min-w-[160px]" :offset="[0, 4]">
           <q-list>
-            <!-- <q-item clickable v-close-popup to="/profile">
+            <q-item
+              v-if="data?.person?.id"
+              clickable
+              v-close-popup
+              :to="`/people/${data?.person?.id}`"
+            >
               <q-item-section avatar>
-                <q-icon name="sym_o_face" />
+                <q-icon name="sym_o_groups" />
               </q-item-section>
-              <q-item-section>Profile</q-item-section>
+              <q-item-section>My Profile</q-item-section>
             </q-item>
-            <q-separator /> -->
+            <q-item clickable v-close-popup to="/liked">
+              <q-item-section avatar>
+                <q-icon name="sym_o_favorite" />
+              </q-item-section>
+              <q-item-section>Liked Videos</q-item-section>
+            </q-item>
+            <q-separator />
+            <q-item clickable v-close-popup to="/people">
+              <q-item-section avatar>
+                <q-icon name="sym_o_groups" />
+              </q-item-section>
+              <q-item-section>All People</q-item-section>
+            </q-item>
+            <q-separator />
             <q-item clickable v-close-popup to="/legal">
               <q-item-section avatar>
                 <q-icon name="sym_o_policy" />
               </q-item-section>
               <q-item-section>Legal</q-item-section>
             </q-item>
-            <q-item clickable v-close-popup href="https://github.com/jlarminay/Larminay-Vault">
+            <!-- <q-item clickable v-close-popup href="https://github.com/jlarminay/Larminay-Vault">
               <q-item-section avatar>
                 <q-icon name="fa-brands fa-github" />
               </q-item-section>
               <q-item-section>GitHub</q-item-section>
-            </q-item>
+            </q-item> -->
             <q-separator />
             <q-item clickable v-close-popup class="tw_text-red-600" @click="signOut()">
               <q-item-section avatar>

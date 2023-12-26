@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const route = useRoute();
-const { status, data } = useAuth();
 definePageMeta({
   middleware: 'authorized-only',
 });

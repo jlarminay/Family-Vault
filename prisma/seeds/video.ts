@@ -3,7 +3,6 @@ import S3 from '../../server/utils/s3.js';
 import VideoProcessor from '../../server/utils/videoProcessor.js';
 import { resolve } from 'path';
 import { createReadStream } from 'fs';
-// import ffmpeg from 'fluent-ffmpeg';
 
 const prisma = new PrismaClient();
 const s3 = new S3();
@@ -16,6 +15,7 @@ export default async () => {
       description: 'Description #1',
       video: './videos/demo1.mp4',
       ownerId: 1,
+      persons: [{ id: 1 }, { id: 2 }, { id: 3 }],
     },
     {
       title: 'The Whole Wide World',
@@ -23,6 +23,7 @@ export default async () => {
         'Experience the enchantment of spinning in our latest video demo! From graceful dancers to vibrant swirls of color, witness the captivating beauty of continuous motion. Let the simple yet stunning artistry of spinning mesmerize you in this visual spectacle.',
       video: './videos/demo2.mp4',
       ownerId: 1,
+      persons: [{ id: 2 }, { id: 5 }],
     },
     {
       title: 'This is a really good video with a very long title',
@@ -48,21 +49,24 @@ export default async () => {
 
     // upload video and thumbnail
     const videoStream = createReadStream(resolve('./prisma/seeds/' + video));
-    await s3.upload({ key: videoName, body: videoStream });
+    await s3.upload({ key: `videos/${videoName}`, body: videoStream });
     const imageData = createReadStream(resolve('./.tmp/' + imageName));
-    await s3.upload({ key: imageName, body: imageData });
+    await s3.upload({ key: `videos/${imageName}`, body: imageData });
 
     // insert to db
     await prisma.video.create({
       data: {
         title: newData[i].title,
         description: newData[i].description,
-        url: videoName,
-        thumbnail: imageName,
+        url: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/videos/${videoName}`,
+        thumbnail: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/videos/${imageName}`,
         duration: duration,
         resolution: resolution,
         size: size,
         ownerId: newData[i].ownerId,
+        persons: {
+          connect: newData[i].persons ? newData[i].persons : undefined,
+        },
       },
     });
   }

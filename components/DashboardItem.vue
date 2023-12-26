@@ -8,7 +8,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="min-[1200px]:tw_w-1/5 min-[1000px]:tw_w-1/4 min-[800px]:tw_w-1/3 tw_w-1/2 tw_p-4">
+  <div class="min-[1200px]:tw_w-1/5 min-[1000px]:tw_w-1/4 min-[800px]:tw_w-1/3 tw_w-1/2 tw_pr-4">
     <NuxtLink
       class="tw_inline-block tw_w-full tw_border tw_rounded-md tw_overflow-hidden hover:tw_scale-[1.02] tw_transition tw_duration-300"
       :to="`/video/${video.id}`"

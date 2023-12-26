@@ -19,7 +19,7 @@ export default class S3 {
 
     try {
       const command = new PutObjectCommand({
-        Bucket: process.env.S3_BUCKET || '',
+        Bucket: process.env.S3_BUCKET,
         Key: key,
         Body: body,
       });

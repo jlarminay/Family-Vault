@@ -9,6 +9,7 @@ export default async () => {
       email: 'j.larminay@gmail.com',
       name: 'Josh Larminay',
       provider: 'github',
+      avatar: 'https://avatars.githubusercontent.com/u/10368000?v=4',
     },
     {
       email: 'johndoe@email.com',

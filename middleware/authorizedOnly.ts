@@ -5,7 +5,6 @@ export default defineNuxtRouteMiddleware((to, from) => {
   if (!data.value) {
     // not authorized
     // redirect to login
-    console.log('redirecting to login');
     return navigateTo('/login');
   }
 });

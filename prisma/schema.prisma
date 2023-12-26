@@ -11,27 +11,29 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  email    String    @unique
-  name     String
-  provider String
-  avatar   String?
-  person   Person? // can be attached to a person
-  comments Comment[] // can have many comments
-  videos   Video[] // can upload many videos
+  id             Int       @id @default(autoincrement())
+  email          String    @unique
+  name           String
+  provider       String
+  avatar         String?
+  comments       Comment[] // can have many comments
+  uploadedVideos Video[] // can upload many videos
+  likes          Like[] // can have many likes
+  person         Person? // can optioanlly be attached to 1 person
 }
 
 model Person {
   id        Int       @id @default(autoincrement())
   name      String
-  birthday  DateTime?
   gender    String?
+  image     String?
+  birthday  DateTime?
   deathday  DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  videos    Video[] // can be in many videos
   userId    Int?      @unique
   user      User?     @relation(fields: [userId], references: [id])
-  videos    Video[] // can be in many videos
 }
 
 model Video {
@@ -48,7 +50,21 @@ model Video {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   comments    Comment[] // can have many comments
-  people      Person[] // can contain many people
+  persons     Person[] // can contain many people
+  likes       Like[] // can have multiple likes
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  videoId   Int
+  video     Video    @relation(fields: [videoId], references: [id])
+
+  // user can only like video once
+  @@unique([userId, videoId])
 }
 
 model Comment {

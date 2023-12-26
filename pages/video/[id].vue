@@ -2,21 +2,26 @@
 definePageMeta({
   middleware: 'authorized-only',
 });
-const env = useRuntimeConfig().public;
 const route = useRoute();
 const videoStore = useVideoStore();
+const likeStore = useLikeStore();
 const commentStore = useCommentStore();
 
 const videoId = ref(parseInt(route.params.id?.[0]));
 const video = ref(await videoStore.getSingle(videoId.value));
-const randomVideos = ref(await videoStore.getRandom(4));
+const randomVideos = ref(await videoStore.getRandom(6, videoId.value));
 const comments = ref(await commentStore.getForVideo(videoId.value));
-const liked = ref(false);
+const likeCount = ref(await likeStore.getVideoCount(videoId.value));
+const currentlyLiked = ref(await likeStore.isVideoLiked(videoId.value));
+
 const showMore = ref(false);
 
 async function commentPosted() {
-  console.log('comment posted');
   comments.value = await commentStore.getForVideo(videoId.value);
+}
+async function updateLike() {
+  currentlyLiked.value = await likeStore.update(videoId.value, !currentlyLiked.value);
+  likeCount.value = await likeStore.getVideoCount(videoId.value);
 }
 </script>
 
@@ -37,20 +42,59 @@ async function commentPosted() {
           <div class="tw_p-2">
             <div class="tw_flex tw_justify-between tw_items-center">
               <h2 class="h2 tw_font-bold">{{ video.title }}</h2>
-              <q-icon
-                :name="liked ? 'o_favorite' : 'o_favorite_border'"
-                size="32px"
-                class="tw_cursor-pointer hover:tw_opacity-70 tw_transition-opacity tw_duration-300"
-                :class="{ 'tw_text-red-500 tada': liked }"
-                @click="liked = !liked"
-              />
+              <div class="tw_flex tw_items-center tw_gap-1">
+                <span class="tw_text-xl">{{ likeCount }}</span>
+                <q-icon
+                  :name="currentlyLiked ? 'o_favorite' : 'o_favorite_border'"
+                  size="32px"
+                  class="tw_cursor-pointer hover:tw_opacity-70 tw_transition-opacity tw_duration-300"
+                  :class="{ 'tw_text-red-500 tada': currentlyLiked }"
+                  @click="updateLike()"
+                />
+              </div>
             </div>
             <p class="tw_text-gray-500">{{ $dayjs(video.createdAt).format('MMMM D, YYYY') }}</p>
 
             <div class="tw_mt-4">
-              <div :class="{ 'tw_line-clamp-2': !showMore }">
+              <div :class="{ 'tw_line-clamp-3': !showMore }">
+                <!-- Description -->
                 <p>{{ video.description }}</p>
+
+                <!-- More information -->
+                <div v-if="showMore" class="tw_mt-6">
+                  <div class="tw_flex tw_gap-1">
+                    <span class="tw_font-bold">Includes: </span>
+                    <NuxtLink
+                      v-for="(person, i) in video.persons"
+                      :key="i"
+                      class="tw_m-0 tw_rounded-full tw_px-2 tw_bg-secondary tw_text-white tw_text-sm tw_font-bold tw_leading-[24px] tw_cursor-pointer hover:tw_opacity-70 tw_transition-opacity tw_duration-300"
+                      :href="`/people/${video.id}`"
+                    >
+                      {{ person.name }}
+                    </NuxtLink>
+                    <span v-if="video.persons.length === 0" class="tw_opacity-70 tw_italic">
+                      None
+                    </span>
+                  </div>
+                  <div>
+                    <span class="tw_font-bold">Video Resolution: </span>
+                    <span>{{ video.resolution }}</span>
+                  </div>
+                  <div>
+                    <span class="tw_font-bold">Video Size: </span>
+                    <span>{{ video.size }}</span>
+                  </div>
+                  <div>
+                    <span class="tw_font-bold">Uploaded By: </span>
+                    <span>{{ video.owner.name }}</span>
+                  </div>
+                  <div>
+                    <span class="tw_font-bold">Uploaded Date: </span>
+                    <span>{{ $dayjs(video.createdAt).format('MMMM D, YYYY') }}</span>
+                  </div>
+                </div>
               </div>
+
               <div class="tw_text-center tw_mt-2">
                 <q-btn
                   no-caps
