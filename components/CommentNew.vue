@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { signOut, data } = useAuth();
+const { data } = useAuth();
 const commentStore = useCommentStore();
 
 const emit = defineEmits(['commentPosted']);

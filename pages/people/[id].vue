@@ -5,7 +5,7 @@ definePageMeta({
 const route = useRoute();
 const personStore = usePersonStore();
 
-const personId = ref(parseInt(route.params.id?.[0]));
+const personId = ref(parseInt(route.params.id as string));
 const person = ref(await personStore.getSingle(personId.value));
 </script>
 

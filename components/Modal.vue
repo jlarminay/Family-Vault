@@ -6,7 +6,7 @@ defineExpose({
 </script>
 
 <template>
-  <q-dialog ref="modal">
+  <q-dialog ref="modal" @hide="$emit('hide')">
     <q-card class="tw_w-full">
       <q-card-section class="tw_border-b tw_flex tw_justify-between tw_items-center">
         <div class="text-h6"><slot name="title" /></div>

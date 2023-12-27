@@ -12,7 +12,7 @@
     @apply tw_text-dark tw_text-base tw_font-maven-pro tw_font-normal tw_leading-tight;
   }
   .link {
-    @apply tw_text-blue-500 tw_underline hover:tw_opacity-80 tw_transition-opacity tw_duration-300;
+    @apply tw_text-blue-500 tw_underline hover:tw_opacity-80 tw_transition-opacity tw_duration-300 tw_cursor-pointer;
   }
 }
 
@@ -28,6 +28,19 @@
   }
   .h4 {
     @apply tw_text-lg tw_font-medium tw_font-montserrat;
+  }
+}
+
+.q-form {
+  .q-input,
+  .q-select {
+    @apply tw_mb-2;
+  }
+
+  .q-field__native[required] ~ .q-field__label:after,
+  label[required]:after {
+    content: ' *';
+    color: red;
   }
 }
 
@@ -53,6 +66,16 @@
       }
       &.c-toast--info {
         @apply tw_bg-blue-50 tw_border-blue-400;
+      }
+    }
+  }
+}
+
+.q-dialog {
+  .q-card {
+    .q-card__actions {
+      .q-btn {
+        @apply tw_px-6;
       }
     }
   }

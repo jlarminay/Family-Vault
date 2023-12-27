@@ -30,8 +30,6 @@ export default function (opts: { duration?: number; type?: string; message: stri
       icon = '';
       break;
   }
-
-  console.log('working');
   toaster.show(
     `
     <div class="${itemClass}">

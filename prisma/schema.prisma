@@ -28,8 +28,8 @@ model Person {
   name      String
   gender    String?
   image     String?
-  birthday  DateTime?
-  deathday  DateTime?
+  birthday  DateTime? @db.Date
+  deathday  DateTime? @db.Date
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   videos    Video[] // can be in many videos

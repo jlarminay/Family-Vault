@@ -52,6 +52,7 @@ async function confirmDelete() {
           ]"
           :rows="allReports"
           :wrap-cells="true"
+          :rows-per-page-options="[25, 50, 100, 0]"
         >
           <template #body-cell-user="props">
             <q-td :props="props" class="tw_truncate tw_max-w-[200px]">
