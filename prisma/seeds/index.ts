@@ -5,6 +5,7 @@ import person from './person.js';
 import video from './video.js';
 import like from './like.js';
 import comment from './comment.js';
+import report from './report.js';
 
 const prisma = new PrismaClient();
 
@@ -14,6 +15,7 @@ async function main() {
   await video();
   await like();
   await comment();
+  await report();
 }
 
 main()

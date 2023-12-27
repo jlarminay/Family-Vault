@@ -40,7 +40,11 @@ export default defineNuxtConfig({
       accessKey: process.env.S3_ACCESS_KEY,
       secretKey: process.env.S3_SECRET_KEY,
     },
+    webhook: {
+      discordUrl: process.env.WEBHOOK_DISCORD_URL,
+    },
     public: {
+      baseUrl: process.env.BASE_URL,
       s3Endpoint: process.env.S3_ENDPOINT,
       s3Bucket: process.env.S3_BUCKET,
     },

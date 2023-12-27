@@ -15,6 +15,8 @@ const likeCount = ref(await likeStore.getVideoCount(videoId.value));
 const currentlyLiked = ref(await likeStore.isVideoLiked(videoId.value));
 
 const showMore = ref(false);
+const reportModal = ref(false);
+const reportReason = ref('');
 
 async function commentPosted() {
   comments.value = await commentStore.getForVideo(videoId.value);
@@ -43,14 +45,37 @@ async function updateLike() {
             <div class="tw_flex tw_justify-between tw_items-center">
               <h2 class="h2 tw_font-bold">{{ video.title }}</h2>
               <div class="tw_flex tw_items-center tw_gap-1">
-                <span class="tw_text-xl">{{ likeCount }}</span>
-                <q-icon
-                  :name="currentlyLiked ? 'o_favorite' : 'o_favorite_border'"
-                  size="32px"
-                  class="tw_cursor-pointer hover:tw_opacity-70 tw_transition-opacity tw_duration-300"
-                  :class="{ 'tw_text-red-500 tada': currentlyLiked }"
+                <q-btn
+                  rounded
+                  outline
+                  :class="{ 'tw_text-red-500': currentlyLiked }"
                   @click="updateLike()"
-                />
+                >
+                  <q-icon
+                    :name="currentlyLiked ? 'o_favorite' : 'o_favorite_border'"
+                    :class="{ tada: currentlyLiked }"
+                  />
+                  <span class="tw_text-lg tw_ml-2">{{ likeCount }}</span>
+                </q-btn>
+
+                <q-btn
+                  round
+                  outline
+                  size="12px"
+                  icon="sym_o_more_horiz"
+                  class="tw_cursor-pointer hover:tw_opacity-70 tw_transition-opacity tw_duration-300 tw_ml-2"
+                >
+                  <q-menu :offset="[0, 4]" anchor="bottom right" self="top right">
+                    <q-list>
+                      <q-item clickable v-close-popup>
+                        <q-item-section>Edit</q-item-section>
+                      </q-item>
+                      <q-item clickable v-close-popup @click="reportModal = true">
+                        <q-item-section>Report</q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-menu>
+                </q-btn>
               </div>
             </div>
             <p class="tw_text-gray-500">{{ $dayjs(video.createdAt).format('MMMM D, YYYY') }}</p>
@@ -128,6 +153,8 @@ async function updateLike() {
       </div>
     </div>
   </div>
+
+  <ReportModal :videoId="videoId" v-model="reportModal" />
 </template>
 
 <style scoped lang="postcss">

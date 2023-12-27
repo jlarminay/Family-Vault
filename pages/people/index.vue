@@ -5,6 +5,15 @@ definePageMeta({
 
 const personStore = usePersonStore();
 const allPersons = ref(await personStore.getAll());
+const search = ref('');
+
+const cleanedPersons = computed(() => {
+  if (search.value === '') return allPersons.value;
+
+  return allPersons.value.filter((person: any) => {
+    return person.name.toLowerCase().includes(search.value.toLowerCase());
+  });
+});
 </script>
 
 <template>
@@ -15,11 +24,27 @@ const allPersons = ref(await personStore.getAll());
   <div>
     <SingleNavMenu />
 
-    <div class="tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto tw_border">
-      <h1 class="h1">People</h1>
-      <div class="tw_mt-6 tw_flex tw_flex-wrap tw_max-w-[800px] tw_mx-auto">
+    <div class="tw_px-6 tw_py-4 tw_max-w-[800px] tw_mx-auto">
+      <div class="tw_flex tw_justify-between tw_items-start">
+        <h1 class="h1">People</h1>
+        <div class="tw_flex tw_items-center tw_justify-end tw_gap-2 tw_flex-1">
+          <q-btn color="primary" unelevated to="/people/new" disable>
+            <q-icon name="sym_o_add" class="tw_mr-1" />
+            New
+          </q-btn>
+          <q-input
+            outlined
+            dense
+            v-model="search"
+            placeholder="Search..."
+            class="tw_w-full tw_max-w-[200px] tw_my-0"
+          />
+        </div>
+      </div>
+
+      <div class="tw_mt-6 tw_flex tw_flex-wrap">
         <NuxtLink
-          v-for="(person, i) in allPersons"
+          v-for="(person, i) in cleanedPersons"
           :key="i"
           class="tw_mb-4 tw_pr-2 tw_w-1/2"
           :to="`/people/${person.id}`"

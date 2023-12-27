@@ -65,6 +65,7 @@ export default async () => {
         birthday: currentData.birthday,
         gender: currentData.gender,
         image: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/persons/${imageName}`,
+        userId: currentData.userId || null,
       },
     });
   }

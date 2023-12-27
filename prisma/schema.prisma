@@ -20,6 +20,7 @@ model User {
   uploadedVideos Video[] // can upload many videos
   likes          Like[] // can have many likes
   person         Person? // can optioanlly be attached to 1 person
+  Report         Report[] // can report many videos
 }
 
 model Person {
@@ -52,6 +53,7 @@ model Video {
   comments    Comment[] // can have many comments
   persons     Person[] // can contain many people
   likes       Like[] // can have multiple likes
+  Report      Report[] // can be reported multiple times
 }
 
 model Like {
@@ -72,6 +74,16 @@ model Comment {
   text      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  videoId   Int
+  video     Video    @relation(fields: [videoId], references: [id])
+}
+
+model Report {
+  id        Int      @id @default(autoincrement())
+  report    String
+  createdAt DateTime @default(now())
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
   videoId   Int

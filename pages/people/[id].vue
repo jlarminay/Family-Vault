@@ -18,7 +18,7 @@ const person = ref(await personStore.getSingle(personId.value));
     <SingleNavMenu />
 
     <div class="tw_px-6 tw_py-4 tw_max-w-[800px] tw_mx-auto">
-      <div class="tw_flex tw_flex-wrap tw_max-w-[800px] tw_mx-auto">
+      <div class="tw_flex tw_flex-wrap">
         <div class="tw_flex tw_items-center tw_gap-4">
           <div
             class="tw_border-8 tw_rounded-full tw_overflow-hidden tw_w-[200px] tw_h-[200px]"
@@ -31,7 +31,18 @@ const person = ref(await personStore.getSingle(personId.value));
             <img :src="person.image" class="tw_object-cover" />
           </div>
           <div>
-            <h1 class="h1">{{ person.name }}</h1>
+            <div class="tw_flex tw_items-center tw_gap-2">
+              <h1 class="h1">{{ person.name }}</h1>
+              <q-btn
+                color="primary"
+                round
+                flat
+                size="12px"
+                disable
+                icon="sym_o_edit"
+                :to="`/people/${person.id}/edit`"
+              />
+            </div>
             <p class="tw_text-lg">Birthday: {{ $dayjs(person.birthday).format('MMMM D, YYYY') }}</p>
             <p class="tw_text-lg">Gender: {{ person.gender }}</p>
           </div>

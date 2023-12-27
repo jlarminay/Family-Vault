@@ -2,6 +2,28 @@
 const { signOut, data } = useAuth();
 const search = ref('');
 
+const menuItems = ref([
+  {
+    label: 'My Profile',
+    if: data.value?.person?.id,
+    icon: 'sym_o_groups',
+    to: `/people/${data.value?.person?.id}`,
+  },
+  { label: 'Liked Videos', icon: 'sym_o_favorite', to: '/liked' },
+  { type: 'separator' },
+  { label: 'All People', icon: 'sym_o_groups', to: '/people' },
+  { type: 'separator' },
+  { label: 'Legal', icon: 'sym_o_policy', to: '/legal' },
+  { label: 'Reports', icon: 'sym_o_flag', to: '/reports' },
+  { type: 'separator' },
+  {
+    label: 'Logout',
+    icon: 'sym_o_logout',
+    class: 'tw_text-red-600',
+    to: '/logout',
+  },
+]);
+
 function handleSearch() {
   navigateTo(`/dashboard?search=${search.value}`);
 }
@@ -20,7 +42,7 @@ function handleSearch() {
         class="tw_group tw_text-black tw_font-montserrat tw_font-bold"
       >
         <img
-          src="/svgIcon/logo.svg"
+          src="/logo/logo.svg"
           class="tw_w-7 tw_mr-2 group-hover:tw_rotate-[720deg] tw_transition-transform tw_duration-1000 tw_ease-in-out"
         />
         Larminay Vault
@@ -33,7 +55,7 @@ function handleSearch() {
         rounded
         dense
         v-model="search"
-        placeholder="Search.."
+        placeholder="Search..."
         class="tw_min-w-[400px] tw_pr-0"
         color="primary"
         @keyup.enter="handleSearch()"
@@ -55,52 +77,27 @@ function handleSearch() {
         <q-avatar size="40px" class="tw_border">
           <img :src="data?.avatar" />
         </q-avatar>
+
+        <!-- Dropdown Menu -->
         <q-menu class="tw_min-w-[160px]" :offset="[0, 4]">
           <q-list>
-            <q-item
-              v-if="data?.person?.id"
-              clickable
-              v-close-popup
-              :to="`/people/${data?.person?.id}`"
-            >
-              <q-item-section avatar>
-                <q-icon name="sym_o_groups" />
-              </q-item-section>
-              <q-item-section>My Profile</q-item-section>
-            </q-item>
-            <q-item clickable v-close-popup to="/liked">
-              <q-item-section avatar>
-                <q-icon name="sym_o_favorite" />
-              </q-item-section>
-              <q-item-section>Liked Videos</q-item-section>
-            </q-item>
-            <q-separator />
-            <q-item clickable v-close-popup to="/people">
-              <q-item-section avatar>
-                <q-icon name="sym_o_groups" />
-              </q-item-section>
-              <q-item-section>All People</q-item-section>
-            </q-item>
-            <q-separator />
-            <q-item clickable v-close-popup to="/legal">
-              <q-item-section avatar>
-                <q-icon name="sym_o_policy" />
-              </q-item-section>
-              <q-item-section>Legal</q-item-section>
-            </q-item>
-            <!-- <q-item clickable v-close-popup href="https://github.com/jlarminay/Larminay-Vault">
-              <q-item-section avatar>
-                <q-icon name="fa-brands fa-github" />
-              </q-item-section>
-              <q-item-section>GitHub</q-item-section>
-            </q-item> -->
-            <q-separator />
-            <q-item clickable v-close-popup class="tw_text-red-600" @click="signOut()">
-              <q-item-section avatar>
-                <q-icon name="sym_o_logout" />
-              </q-item-section>
-              <q-item-section>Logout</q-item-section>
-            </q-item>
+            <span v-for="(item, i) in menuItems" :key="i">
+              <span v-if="item.if || true">
+                <q-separator v-if="item.type === 'separator'" />
+                <q-item
+                  v-else
+                  clickable
+                  v-close-popup
+                  :class="item.class || ''"
+                  :to="item.to || ''"
+                >
+                  <q-item-section avatar>
+                    <q-icon :name="item.icon" />
+                  </q-item-section>
+                  <q-item-section>{{ item.label }}</q-item-section>
+                </q-item>
+              </span>
+            </span>
           </q-list>
         </q-menu>
       </q-btn>

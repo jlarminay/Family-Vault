@@ -12,7 +12,7 @@
     @apply tw_text-dark tw_text-base tw_font-maven-pro tw_font-normal tw_leading-tight;
   }
   .link {
-    @apply tw_underline hover:tw_opacity-80 tw_transition-opacity tw_duration-300;
+    @apply tw_text-blue-500 tw_underline hover:tw_opacity-80 tw_transition-opacity tw_duration-300;
   }
 }
 
@@ -33,4 +33,27 @@
 
 .q-tooltip {
   @apply tw_bg-dark tw_text-white tw_text-sm tw_font-maven-pro tw_font-normal tw_p-2 tw_rounded-md;
+}
+
+.c-toast-container {
+  @apply tw_z-[9999];
+
+  .c-toast {
+    @apply tw_z-[9999] tw_pointer-events-auto;
+
+    [class^='c-toast--'] {
+      @apply tw_border-2 tw_bg-white tw_rounded-lg tw_px-6 tw_py-4 tw_mb-2 tw_flex tw_items-start tw_gap-2 tw_relative tw_z-[9999] tw_max-w-[400px];
+      @apply tw_cursor-pointer;
+
+      &.c-toast--success {
+        @apply tw_bg-green-50 tw_border-green-400;
+      }
+      &.c-toast--error {
+        @apply tw_bg-red-50 tw_border-red-400;
+      }
+      &.c-toast--info {
+        @apply tw_bg-blue-50 tw_border-blue-400;
+      }
+    }
+  }
 }

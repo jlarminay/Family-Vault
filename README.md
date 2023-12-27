@@ -24,5 +24,14 @@ This will start the following services:
 - 🗹 Prisma
 - 🗹 TRPC
 - 🗹 Auth
-- ☐ S3 storage
+- 🗹 S3 storage
+- 🗹 Reporting videos
+- ☐ Manage Persons
+- ☐ Edit videos
+- ☐ Allow/Block List
+- ☐ Roles
+- ☐ Family Tree
+- ☐ Upload video
+- ☐ Infrastructure
+- ☐ Deployment
 - ☐ PWA
