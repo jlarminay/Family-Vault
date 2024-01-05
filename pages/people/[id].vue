@@ -28,7 +28,7 @@ const person = ref(await personStore.getSingle(personId.value));
               'tw_border-purple-400': person.gender === 'Other',
             }"
           >
-            <img :src="person.image" class="tw_object-cover" />
+            <img :src="person.image.path" class="tw_object-cover" />
           </div>
           <div>
             <div class="tw_flex tw_items-center tw_gap-2">

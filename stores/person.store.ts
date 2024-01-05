@@ -12,7 +12,7 @@ export const usePersonStore = defineStore('person', {
       results = results.map((person: any) => {
         return {
           ...person,
-          image: person.image || 'https://placehold.co/600x600',
+          image: person.image || { path: 'https://placehold.co/600x600' },
         };
       });
       return results;
@@ -20,11 +20,11 @@ export const usePersonStore = defineStore('person', {
     async getSingle(id: number) {
       const { $trpc } = useNuxtApp();
       let results = await $trpc.person.getSingle.query({ id });
-      results = {
+      return {
         ...results,
-        image: results.image || 'https://placehold.co/600x600',
+        // @ts-ignore
+        image: results.image || { path: 'https://placehold.co/600x600' },
       };
-      return results;
     },
 
     async createOrUpdate(newPerson: any, newImage: any = null) {
@@ -58,8 +58,8 @@ export const usePersonStore = defineStore('person', {
     },
     async uploadImage(personId: number, data: string, name: string) {
       const { $trpc } = useNuxtApp();
-      const results = await $trpc.person.uploadImage.mutate({ personId, data, name });
-      return results;
+      // const results = await $trpc.person.uploadImage.mutate({ personId, data, name });
+      return true;
     },
   },
 });

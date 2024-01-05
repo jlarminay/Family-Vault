@@ -64,7 +64,7 @@ async function refreshData() {
               'tw_border-purple-400': person.gender === 'Other',
             }"
           >
-            <img :src="person.image" class="tw_object-cover" />
+            <img :src="person.image.path" class="tw_object-cover" />
           </div>
           <div class="tw_flex-1">
             <p class="tw_text-xl">{{ person.name }}</p>

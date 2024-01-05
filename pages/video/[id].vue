@@ -36,8 +36,8 @@ async function updateLike() {
   <div class="tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto">
     <div class="tw_flex tw_gap-4">
       <div class="tw_grow">
-        <video controls :poster="video.thumbnail" class="tw_w-full tw_aspect-video">
-          <source :src="video.url" type="video/mp4" />
+        <video controls :poster="video.thumbnail.path" class="tw_w-full tw_aspect-video">
+          <source :src="video.video.path" type="video/mp4" />
         </video>
         <div class="tw_p-2">
           <div class="tw_flex tw_justify-between tw_items-center">
@@ -91,7 +91,7 @@ async function updateLike() {
                     v-for="(person, i) in video.persons"
                     :key="i"
                     class="tw_m-0 tw_rounded-full tw_px-2 tw_bg-secondary tw_text-white tw_text-sm tw_font-bold tw_leading-[24px] tw_cursor-pointer hover:tw_opacity-70 tw_transition-opacity tw_duration-300"
-                    :href="`/people/${video.id}`"
+                    :href="`/people/${person.id}`"
                   >
                     {{ person.name }}
                   </NuxtLink>
@@ -101,11 +101,11 @@ async function updateLike() {
                 </div>
                 <div>
                   <span class="tw_font-bold">Video Resolution: </span>
-                  <span>{{ video.resolution }}</span>
+                  <span>{{ video.video.metadata.resolution }}</span>
                 </div>
                 <div>
                   <span class="tw_font-bold">Video Size: </span>
-                  <span>{{ video.size }}</span>
+                  <span>{{ video.video.size }}</span>
                 </div>
                 <div>
                   <span class="tw_font-bold">Uploaded By: </span>

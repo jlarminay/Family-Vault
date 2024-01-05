@@ -14,7 +14,7 @@ export const useVideoStore = defineStore('video', {
         return {
           ...video,
           // clean thumbnail url
-          thumbnail: video.thumbnail || 'https://placehold.co/640x360',
+          thumbnail: video.thumbnail || { path: 'https://placehold.co/640x360' },
         };
       });
 
@@ -57,13 +57,11 @@ export const useVideoStore = defineStore('video', {
       const { $trpc } = useNuxtApp();
 
       let results = await $trpc.video.getSingle.query({ id });
-      results = {
+      return {
         ...results,
         // clean thumbnail url
-        thumbnail: results.thumbnail || 'https://placehold.co/640x360',
+        thumbnail: results.thumbnail || { path: 'https://placehold.co/640x360' },
       };
-
-      return results;
     },
   },
 });

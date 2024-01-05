@@ -20,19 +20,25 @@ model User {
   comments       Comment[] // can have many comments
   uploadedVideos Video[] // can upload many videos
   likes          Like[] // can have many likes
-  Report         Report[] // can report many videos
+  report         Report[] // can report many videos
+  person         Person?
 }
 
 model Person {
   id        Int       @id @default(autoincrement())
   name      String
   gender    String?
-  image     String?
   birthday  DateTime? @db.Date
   deathday  DateTime? @db.Date
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  videos    Video[] // can be in many videos
+
+  imageId Int?
+  userId  Int? @unique
+
+  videos Video[] // can be in many videos
+  image  File?   @relation(fields: [imageId], references: [id])
+  user   User?   @relation(fields: [userId], references: [id])
 }
 
 model Video {
@@ -98,6 +104,7 @@ model File {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  video     Video[] @relation(name: "VideoVideo")
-  thumbnail Video[] @relation(name: "VideoThumbnail")
+  video     Video[]  @relation(name: "VideoVideo")
+  thumbnail Video[]  @relation(name: "VideoThumbnail")
+  person    Person[]
 }

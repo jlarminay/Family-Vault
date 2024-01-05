@@ -3,13 +3,13 @@ import { z } from 'zod';
 
 export const videoRouter = router({
   getAll: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.video.findMany();
+    return await ctx.prisma.video.findMany({ include: { video: true, thumbnail: true } });
   }),
   getRandom: publicProcedure
     .input(z.object({ limit: z.number() }))
     .query(async ({ ctx, input }) => {
       const { limit } = input;
-      const videos = await ctx.prisma.video.findMany();
+      const videos = await ctx.prisma.video.findMany({ include: { video: true, thumbnail: true } });
       return videos.sort(() => Math.random() - Math.random()).slice(0, limit);
     }),
   getSingle: publicProcedure.input(z.object({ id: z.number() })).query(async ({ ctx, input }) => {
@@ -18,6 +18,8 @@ export const videoRouter = router({
       where: { id },
       include: {
         persons: true,
+        video: true,
+        thumbnail: true,
         owner: {
           select: {
             name: true,
@@ -34,7 +36,7 @@ export const videoRouter = router({
       const { userId } = input;
       const likes = await ctx.prisma.like.findMany({
         where: { userId },
-        include: { video: true },
+        include: { video: { include: { video: true, thumbnail: true } } },
         orderBy: { createdAt: 'desc' },
       });
       return likes.map((like) => {

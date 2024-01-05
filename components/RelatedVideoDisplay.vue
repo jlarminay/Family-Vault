@@ -13,11 +13,11 @@ defineProps({
     :to="`/video/${video.id}`"
   >
     <div class="tw_min-w-[100px] tw_w-[100px] tw_relative">
-      <img :src="video.thumbnail" class="tw_h-[75px] tw_object-cover" />
+      <img :src="video.thumbnail.path" class="tw_h-[75px] tw_object-cover" />
       <span
         class="tw_absolute tw_bottom-0 tw_right-0 tw_px-2 tw_p-0.5 tw_bg-black tw_bg-opacity-60 tw_text-white tw_rounded-tl-md"
       >
-        {{ formatDuration(video.duration) }}
+        {{ formatDuration(video.video.metadata.duration) }}
       </span>
     </div>
     <div class="tw_px-2">
