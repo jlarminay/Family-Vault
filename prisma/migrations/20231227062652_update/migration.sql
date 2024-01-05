@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "Person" ALTER COLUMN "birthday" SET DATA TYPE DATE,
-ALTER COLUMN "deathday" SET DATA TYPE DATE;

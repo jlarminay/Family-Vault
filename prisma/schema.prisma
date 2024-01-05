@@ -11,15 +11,15 @@ datasource db {
 }
 
 model User {
-  id             Int       @id @default(autoincrement())
-  email          String    @unique
-  name           String
-  provider       String
-  avatar         String?
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  name     String
+  provider String
+  avatar   String?
+
   comments       Comment[] // can have many comments
   uploadedVideos Video[] // can upload many videos
   likes          Like[] // can have many likes
-  person         Person? // can optioanlly be attached to 1 person
   Report         Report[] // can report many videos
 }
 
@@ -33,27 +33,25 @@ model Person {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   videos    Video[] // can be in many videos
-  userId    Int?      @unique
-  user      User?     @relation(fields: [userId], references: [id])
 }
 
 model Video {
-  id          Int       @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   title       String
   description String?
-  url         String
-  thumbnail   String?
-  duration    Int
-  resolution  String
-  size        Int
   ownerId     Int
-  owner       User      @relation(fields: [ownerId], references: [id])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  comments    Comment[] // can have many comments
-  persons     Person[] // can contain many people
-  likes       Like[] // can have multiple likes
-  Report      Report[] // can be reported multiple times
+  videoId     Int
+  thumbnailId Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  owner     User      @relation(fields: [ownerId], references: [id])
+  video     File      @relation(name: "VideoVideo", fields: [videoId], references: [id])
+  thumbnail File      @relation(name: "VideoThumbnail", fields: [thumbnailId], references: [id])
+  comments  Comment[] // can have many comments
+  persons   Person[] // can contain many people
+  likes     Like[] // can have multiple likes
+  Report    Report[] // can be reported multiple times
 }
 
 model Like {
@@ -88,4 +86,18 @@ model Report {
   user      User     @relation(fields: [userId], references: [id])
   videoId   Int
   video     Video    @relation(fields: [videoId], references: [id])
+}
+
+model File {
+  id        Int      @id @default(autoincrement())
+  name      String
+  path      String   @unique
+  type      String
+  size      Int
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  video     Video[] @relation(name: "VideoVideo")
+  thumbnail Video[] @relation(name: "VideoThumbnail")
 }
