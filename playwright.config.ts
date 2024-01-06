@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// require('dotenv').config({ path: '.env' });
+
 export default defineConfig({
   testDir: './testing/tests',
   testMatch: '*.spec.ts',
