@@ -5,8 +5,6 @@ export default {
     const env = useRuntimeConfig() as any;
     const { video, user, report } = opts;
 
-    const url = new URL(env.webhook.discordUrl);
-
     let content = '';
     content += `Received report on "[${video.title}](${env.public.baseUrl}/video/${video.id})" from "${user.name}".`;
     content += `\n> ${report.trim().split('\n').join('\n> ')} `;

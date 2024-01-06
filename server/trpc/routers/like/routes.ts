@@ -1,27 +1,30 @@
 import { protectedProcedure, router } from '@/server/trpc/trpc';
+import { getServerSession } from '#auth';
 import { z } from 'zod';
 
 export const likeRouter = router({
-  getVideoCount: protectedProcedure
+  getForVideo: protectedProcedure
     .input(z.object({ videoId: z.number() }))
     .query(async ({ ctx, input }) => {
+      const session = await getServerSession(ctx.event);
       const { videoId } = input;
-      return await ctx.prisma.like.count({ where: { videoId } });
+
+      return {
+        count: await ctx.prisma.like.count({ where: { videoId } }),
+        isLiked: (await ctx.prisma.like.count({ where: { videoId, userId: session?.id } })) > 0,
+      };
     }),
-  isVideoLiked: protectedProcedure
-    .input(z.object({ videoId: z.number(), userId: z.number() }))
-    .query(async ({ ctx, input }) => {
-      const { videoId, userId } = input;
-      return (await ctx.prisma.like.count({ where: { videoId, userId } })) > 0;
-    }),
+
   update: protectedProcedure
-    .input(z.object({ userId: z.number(), videoId: z.number(), like: z.boolean() }))
+    .input(z.object({ videoId: z.number(), liked: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
-      const { userId, videoId, like } = input;
-      if (like) {
+      const session = await getServerSession(ctx.event);
+      const { videoId, liked } = input;
+
+      if (liked) {
         await ctx.prisma.like.create({
           data: {
-            userId,
+            userId: session?.id || 0,
             videoId,
           },
         });
@@ -30,7 +33,7 @@ export const likeRouter = router({
         await ctx.prisma.like.delete({
           where: {
             userId_videoId: {
-              userId,
+              userId: session?.id || 0,
               videoId,
             },
           },

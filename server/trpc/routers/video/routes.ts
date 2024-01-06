@@ -3,11 +3,26 @@ import { getServerSession } from '#auth';
 import { z } from 'zod';
 
 export const videoRouter = router({
-  getAll: protectedProcedure.query(async ({ ctx }) => {
-    const session = await getServerSession(ctx.event);
-    if (!session) throw new Error('No session found');
+  getAllPublic: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.video.findMany({
-      where: { OR: [{ ownerId: session.id }, { published: true }] },
+      where: { published: true },
+      include: { video: true, thumbnail: true },
+      orderBy: { createdAt: 'desc' },
+    });
+  }),
+  getAllLiked: protectedProcedure.query(async ({ ctx }) => {
+    const session = await getServerSession(ctx.event);
+
+    return await ctx.prisma.video.findMany({
+      where: { published: true, likes: { some: { userId: session?.id } } },
+      include: { video: true, thumbnail: true },
+    });
+  }),
+  getAllMine: protectedProcedure.query(async ({ ctx }) => {
+    const session = await getServerSession(ctx.event);
+
+    return await ctx.prisma.video.findMany({
+      where: { ownerId: session?.id },
       include: { video: true, thumbnail: true },
     });
   }),
@@ -15,16 +30,23 @@ export const videoRouter = router({
   getRandom: protectedProcedure
     .input(z.object({ limit: z.number() }))
     .query(async ({ ctx, input }) => {
+      const session = await getServerSession(ctx.event);
       const { limit } = input;
-      const videos = await ctx.prisma.video.findMany({ include: { video: true, thumbnail: true } });
+
+      const videos = await ctx.prisma.video.findMany({
+        where: { published: true },
+        include: { video: true, thumbnail: true },
+      });
       return videos.sort(() => Math.random() - Math.random()).slice(0, limit);
     }),
 
   getSingle: protectedProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
+      const session = await getServerSession(ctx.event);
       const { id } = input;
-      return await ctx.prisma.video.findUniqueOrThrow({
+
+      const video = await ctx.prisma.video.findUniqueOrThrow({
         where: { id },
         include: {
           persons: true,
@@ -38,20 +60,12 @@ export const videoRouter = router({
           },
         },
       });
-    }),
 
-  getLiked: protectedProcedure
-    .input(z.object({ userId: z.number() }))
-    .query(async ({ ctx, input }) => {
-      const { userId } = input;
-      const likes = await ctx.prisma.like.findMany({
-        where: { userId },
-        include: { video: { include: { video: true, thumbnail: true } } },
-        orderBy: { createdAt: 'desc' },
-      });
-      return likes.map((like) => {
-        return like.video;
-      });
+      if (!video.published && video.ownerId !== session?.id) {
+        throw new Error('Video not published');
+      }
+
+      return video;
     }),
 });
 

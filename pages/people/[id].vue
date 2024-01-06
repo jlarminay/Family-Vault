@@ -17,7 +17,7 @@ const person = ref(await personStore.getSingle(personId.value));
   <div>
     <SingleNavMenu />
 
-    <div class="tw_px-6 tw_py-4 tw_max-w-[800px] tw_mx-auto">
+    <main class="tw_px-6 tw_py-4 tw_max-w-[800px] tw_mx-auto">
       <div class="tw_flex tw_flex-wrap">
         <div class="tw_flex tw_items-center tw_gap-4">
           <div
@@ -61,7 +61,7 @@ const person = ref(await personStore.getSingle(personId.value));
           <p class="tw_text-lg tw_italic tw_opacity-70">No Videos Found</p>
         </div>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 

@@ -6,10 +6,11 @@ const menuItems = ref([
   {
     label: 'My Profile',
     if: data.value?.person?.id,
-    icon: 'sym_o_groups',
+    icon: 'sym_o_face',
     to: `/people/${data.value?.person?.id}`,
   },
-  { label: 'Liked Videos', icon: 'sym_o_favorite', to: '/liked' },
+  { label: 'Liked Videos', icon: 'sym_o_favorite', to: '/videos/liked' },
+  { label: 'My Videos', icon: 'sym_o_person', to: '/videos/mine' },
   { type: 'separator' },
   { label: 'All People', icon: 'sym_o_groups', to: '/people' },
   { type: 'separator' },

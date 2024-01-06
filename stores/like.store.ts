@@ -6,30 +6,18 @@ export const useLikeStore = defineStore('like', {
   getters: {},
 
   actions: {
-    async getVideoCount(videoId: number) {
+    async getForVideo(videoId: number) {
       const { $trpc } = useNuxtApp();
 
-      let results = await $trpc.like.getVideoCount.query({ videoId });
+      let results = await $trpc.like.getForVideo.query({ videoId });
       return results;
     },
-    async isVideoLiked(videoId: number) {
+    async update(videoId: number, liked: boolean) {
       const { $trpc } = useNuxtApp();
-      const { data } = useAuth();
-
-      let results = await $trpc.like.isVideoLiked.query({
-        videoId: videoId,
-        userId: data.value?.id || 0,
-      });
-      return results;
-    },
-    async update(videoId: number, like: boolean) {
-      const { $trpc } = useNuxtApp();
-      const { data } = useAuth();
 
       let results = await $trpc.like.update.mutate({
         videoId: videoId,
-        userId: data.value?.id || 0,
-        like,
+        liked,
       });
       return results;
     },

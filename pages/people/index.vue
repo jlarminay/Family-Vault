@@ -26,57 +26,59 @@ async function refreshData() {
     <title>People | Larminay Vault</title>
   </Head>
 
-  <SingleNavMenu />
+  <div>
+    <SingleNavMenu />
 
-  <div class="tw_px-6 tw_py-4 tw_max-w-[800px] tw_mx-auto">
-    <div class="tw_flex tw_justify-between tw_items-start">
-      <h1 class="h1">People</h1>
-      <div class="tw_flex tw_items-center tw_justify-end tw_gap-2 tw_flex-1">
-        <q-btn color="primary" unelevated @click="editModal = true">
-          <q-icon name="sym_o_add" class="tw_mr-1" />
-          New
-        </q-btn>
-        <q-input
-          outlined
-          dense
-          v-model="search"
-          placeholder="Search..."
-          class="tw_w-full tw_max-w-[200px] tw_my-0"
-        />
+    <main class="tw_px-6 tw_py-4 tw_max-w-[800px] tw_mx-auto">
+      <div class="tw_flex tw_justify-between tw_items-start">
+        <h1 class="h1">People</h1>
+        <div class="tw_flex tw_items-center tw_justify-end tw_gap-2 tw_flex-1">
+          <q-btn color="primary" unelevated @click="editModal = true">
+            <q-icon name="sym_o_add" class="tw_mr-1" />
+            New
+          </q-btn>
+          <q-input
+            outlined
+            dense
+            v-model="search"
+            placeholder="Search..."
+            class="tw_w-full tw_max-w-[200px] tw_my-0"
+          />
+        </div>
       </div>
-    </div>
 
-    <div class="tw_mt-6 tw_flex tw_flex-wrap">
-      <NuxtLink
-        v-for="(person, i) in cleanedPersons"
-        :key="i"
-        class="tw_mb-4 tw_pr-2 tw_w-1/2"
-        :to="`/people/${person.id}`"
-      >
-        <div
-          class="tw_flex tw_items-center tw_gap-4 tw_p-2 tw_rounded-xl hover:tw_bg-gray-100 tw_transition-colors tw_duration-300"
+      <div class="tw_mt-6 tw_flex tw_flex-wrap">
+        <NuxtLink
+          v-for="(person, i) in cleanedPersons"
+          :key="i"
+          class="tw_mb-4 tw_pr-2 tw_w-1/2"
+          :to="`/people/${person.id}`"
         >
           <div
-            class="tw_w-[100px] tw_h-[100px] tw_rounded-full tw_overflow-hidden tw_border-4"
-            :class="{
-              'tw_border-red-400': person.gender === 'Female',
-              'tw_border-blue-400': person.gender === 'Male',
-              'tw_border-purple-400': person.gender === 'Other',
-            }"
+            class="tw_flex tw_items-center tw_gap-4 tw_p-2 tw_rounded-xl hover:tw_bg-gray-100 tw_transition-colors tw_duration-300"
           >
-            <img :src="person.image.path" class="tw_object-cover" />
+            <div
+              class="tw_w-[100px] tw_h-[100px] tw_rounded-full tw_overflow-hidden tw_border-4"
+              :class="{
+                'tw_border-red-400': person.gender === 'Female',
+                'tw_border-blue-400': person.gender === 'Male',
+                'tw_border-purple-400': person.gender === 'Other',
+              }"
+            >
+              <img :src="person.image.path" class="tw_object-cover" />
+            </div>
+            <div class="tw_flex-1">
+              <p class="tw_text-xl">{{ person.name }}</p>
+              <p>{{ $dayjs(person.birthday).format('MMM D, YYYY') }}</p>
+              <p class="tw_text-sm tw_opacity-80">{{ person.videos }} videos</p>
+            </div>
           </div>
-          <div class="tw_flex-1">
-            <p class="tw_text-xl">{{ person.name }}</p>
-            <p>{{ $dayjs(person.birthday).format('MMM D, YYYY') }}</p>
-            <p class="tw_text-sm tw_opacity-80">{{ person.videos }} videos</p>
-          </div>
-        </div>
-      </NuxtLink>
-    </div>
-  </div>
+        </NuxtLink>
+      </div>
+    </main>
 
-  <PersonEditModal v-model="editModal" mode="new" @personUpdated="refreshData" />
+    <PersonEditModal v-model="editModal" mode="new" @personUpdated="refreshData" />
+  </div>
 </template>
 
 <style scoped lang="postcss"></style>

@@ -6,10 +6,10 @@ export const useVideoStore = defineStore('video', {
   getters: {},
 
   actions: {
-    async getAll() {
+    async getAllPublic() {
       const { $trpc } = useNuxtApp();
 
-      let results = await $trpc.video.getAll.query();
+      let results = await $trpc.video.getAllPublic.query();
       results = results.map((video: any) => {
         return {
           ...video,
@@ -20,6 +20,35 @@ export const useVideoStore = defineStore('video', {
 
       return results;
     },
+    async getAllLiked() {
+      const { $trpc } = useNuxtApp();
+
+      let results = await $trpc.video.getAllLiked.query();
+      results = results.map((video: any) => {
+        return {
+          ...video,
+          // clean thumbnail url
+          thumbnail: video.thumbnail || { path: 'https://placehold.co/640x360' },
+        };
+      });
+
+      return results;
+    },
+    async getAllMine() {
+      const { $trpc } = useNuxtApp();
+
+      let results = await $trpc.video.getAllMine.query();
+      results = results.map((video: any) => {
+        return {
+          ...video,
+          // clean thumbnail url
+          thumbnail: video.thumbnail || { path: 'https://placehold.co/640x360' },
+        };
+      });
+
+      return results;
+    },
+
     async getRandom(limit: number, ignore: number | undefined = undefined) {
       const { $trpc } = useNuxtApp();
 
@@ -38,21 +67,7 @@ export const useVideoStore = defineStore('video', {
 
       return results;
     },
-    async getLiked() {
-      const { $trpc } = useNuxtApp();
-      const { data } = useAuth();
 
-      let results = await $trpc.video.getLiked.query({ userId: data.value?.id || 0 });
-      results = results.map((video: any) => {
-        return {
-          ...video,
-          // clean thumbnail url
-          thumbnail: video.thumbnail || 'https://placehold.co/640x360',
-        };
-      });
-
-      return results;
-    },
     async getSingle(id: number) {
       const { $trpc } = useNuxtApp();
 

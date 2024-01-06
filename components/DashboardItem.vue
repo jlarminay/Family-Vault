@@ -18,8 +18,13 @@ defineProps({
         <span
           class="tw_absolute tw_bottom-0 tw_right-0 tw_px-2 tw_p-0.5 tw_bg-black tw_bg-opacity-60 tw_text-white tw_rounded-tl-md"
         >
-          {{ formatDuration(video.video.metadata.duration) }}
+          {{ formatDuration(video.video?.metadata?.duration) }}
         </span>
+        <q-icon
+          v-if="!video.published"
+          name="sym_o_lock"
+          class="tw_absolute tw_top-1 tw_left-1 tw_text-white tw_bg-red-600 tw_text-xl tw_rounded-full tw_p-1"
+        />
       </div>
       <div class="tw_p-2">
         <p class="tw_text-xl tw_truncate tw_font-bold">{{ video.title }}</p>

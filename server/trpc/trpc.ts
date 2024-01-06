@@ -7,7 +7,7 @@ export const router = t.router;
 export const middleware = t.middleware;
 
 const authorize = middleware(async ({ ctx, next }) => {
-  const session = getServerSession(ctx.event);
+  const session = await getServerSession(ctx.event);
 
   if (!session) {
     throw new TRPCError({

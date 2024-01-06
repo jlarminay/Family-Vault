@@ -16,7 +16,7 @@ const loading = ref(false);
 async function postComment() {
   loading.value = true;
   const cleanedComment = newComment.value.replace(/\n+/g, '\n');
-  await commentStore.create(props.videoId, data.value?.id, cleanedComment);
+  await commentStore.createForVideo(props.videoId, cleanedComment);
   newComment.value = '';
   loading.value = false;
   emit('commentPosted');

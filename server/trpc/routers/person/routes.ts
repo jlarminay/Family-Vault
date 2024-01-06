@@ -13,15 +13,23 @@ export const personRouter = router({
       videos: result.videos?.length || 0,
     }));
   }),
+
   getSingle: protectedProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
       const { id } = input;
       return await ctx.prisma.person.findUniqueOrThrow({
         where: { id },
-        include: { image: true, videos: { include: { video: true, thumbnail: true } } },
+        include: {
+          image: true,
+          videos: {
+            where: { published: true },
+            include: { video: true, thumbnail: true },
+          },
+        },
       });
     }),
+
   create: protectedProcedure.input(createUserSchema).mutation(async ({ ctx, input }) => {
     return await ctx.prisma.person.create({ data: input });
   }),

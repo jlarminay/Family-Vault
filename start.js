@@ -9,6 +9,7 @@ function main() {
     // fix manual overrides
     shell.cp('-f', './overrides/fluent-ffmpeg.js', './node_modules/fluent-ffmpeg/index.js');
 
+    shell.rm('-rf', './.tmp');
     shell.exec('npm run docker');
     shell.exec('npx prisma generate');
     shell.exec('npm run db:seed');

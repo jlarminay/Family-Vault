@@ -32,7 +32,7 @@ async function confirmDelete() {
   <div>
     <SingleNavMenu />
 
-    <div class="tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto tw_border">
+    <main class="tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto tw_border">
       <h1 class="h1">Reports</h1>
       <div class="tw_mt-6">
         <q-table
@@ -101,24 +101,24 @@ async function confirmDelete() {
           </template>
         </q-table>
       </div>
-    </div>
-  </div>
+    </main>
 
-  <Modal v-model="deleteModal" ref="modal">
-    <template #title>Delete Report</template>
-    <template #body>Are you sure you want to delete this report?</template>
-    <template #actions>
-      <q-btn outline no-caps label="Cancel" class="tw_text-base" color="dark" v-close-popup />
-      <q-btn
-        outline
-        no-caps
-        label="Confirm Delete"
-        class="tw_text-base"
-        color="red"
-        :loading="loading"
-        @click="confirmDelete"
-    /></template>
-  </Modal>
+    <Modal v-model="deleteModal" ref="modal">
+      <template #title>Delete Report</template>
+      <template #body>Are you sure you want to delete this report?</template>
+      <template #actions>
+        <q-btn outline no-caps label="Cancel" class="tw_text-base" color="dark" v-close-popup />
+        <q-btn
+          outline
+          no-caps
+          label="Confirm Delete"
+          class="tw_text-base"
+          color="red"
+          :loading="loading"
+          @click="confirmDelete"
+      /></template>
+    </Modal>
+  </div>
 </template>
 
 <style scoped lang="postcss">
