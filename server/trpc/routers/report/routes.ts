@@ -1,12 +1,12 @@
-import { publicProcedure, router } from '@/server/trpc/trpc';
+import { protectedProcedure, router } from '@/server/trpc/trpc';
 import { z } from 'zod';
 import webhooks from '@/server/utils/webhooks';
 
 export const reportRouter = router({
-  getAll: publicProcedure.query(async ({ ctx, input }) => {
+  getAll: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.report.findMany({ include: { user: true, video: true } });
   }),
-  create: publicProcedure
+  create: protectedProcedure
     .input(z.object({ videoId: z.number(), userId: z.number(), report: z.string().max(256) }))
     .mutation(async ({ ctx, input }) => {
       const { videoId, userId, report } = input;
@@ -25,10 +25,12 @@ export const reportRouter = router({
       // return response
       return response;
     }),
-  delete: publicProcedure.input(z.object({ id: z.number() })).mutation(async ({ ctx, input }) => {
-    const { id } = input;
-    return await ctx.prisma.report.delete({ where: { id } });
-  }),
+  delete: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input;
+      return await ctx.prisma.report.delete({ where: { id } });
+    }),
 });
 
 // export type definition of API

@@ -26,12 +26,12 @@ This will start the following services:
 - 🗹 Auth
 - 🗹 S3 storage
 - 🗹 Reporting videos
-- ☐ Manage Persons
 - ☐ Edit videos
-- ☐ Allow/Block List
-- ☐ Roles
-- ☐ Family Tree
 - ☐ Upload video
 - ☐ Infrastructure
 - ☐ Deployment
-- ☐ PWA
+- ☐ Manage Persons
+- ☐ Allow/Block List
+- ☐ Roles
+- ☐ Family Tree
+- ☐ PWA (?)

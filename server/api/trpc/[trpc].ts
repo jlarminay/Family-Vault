@@ -7,9 +7,10 @@ const prisma = new PrismaClient();
 // export API handler
 export default createNuxtApiHandler({
   router: appRouter as any,
-  createContext: () => {
+  createContext: (event) => {
     return {
       prisma,
+      event,
     };
   },
 });

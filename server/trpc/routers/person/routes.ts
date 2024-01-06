@@ -1,10 +1,10 @@
-import { publicProcedure, router } from '@/server/trpc/trpc';
+import { protectedProcedure, router } from '@/server/trpc/trpc';
 import { z } from 'zod';
 import { createUserSchema, uploadImageSchema } from './schema';
 import S3 from '@/server/utils/s3.js';
 
 export const personRouter = router({
-  getAll: publicProcedure.query(async ({ ctx }) => {
+  getAll: protectedProcedure.query(async ({ ctx }) => {
     const results = await ctx.prisma.person.findMany({
       include: { image: true, videos: { include: { video: true, thumbnail: true } } },
     });
@@ -13,17 +13,19 @@ export const personRouter = router({
       videos: result.videos?.length || 0,
     }));
   }),
-  getSingle: publicProcedure.input(z.object({ id: z.number() })).query(async ({ ctx, input }) => {
-    const { id } = input;
-    return await ctx.prisma.person.findUniqueOrThrow({
-      where: { id },
-      include: { image: true, videos: { include: { video: true, thumbnail: true } } },
-    });
-  }),
-  create: publicProcedure.input(createUserSchema).mutation(async ({ ctx, input }) => {
+  getSingle: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const { id } = input;
+      return await ctx.prisma.person.findUniqueOrThrow({
+        where: { id },
+        include: { image: true, videos: { include: { video: true, thumbnail: true } } },
+      });
+    }),
+  create: protectedProcedure.input(createUserSchema).mutation(async ({ ctx, input }) => {
     return await ctx.prisma.person.create({ data: input });
   }),
-  // uploadImage: publicProcedure.input(uploadImageSchema).mutation(async ({ ctx, input }) => {
+  // uploadImage: protectedProcedure.input(uploadImageSchema).mutation(async ({ ctx, input }) => {
   //   const s3 = new S3();
 
   //   const randomString = Math.random().toString(16).slice(2);

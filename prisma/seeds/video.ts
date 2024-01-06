@@ -11,6 +11,7 @@ export default async () => {
       ownerId: 1,
       videoId: 1,
       thumbnailId: 2,
+      published: true,
       persons: [{ id: 1 }, { id: 2 }, { id: 3 }],
     },
     {
@@ -20,6 +21,7 @@ export default async () => {
       ownerId: 1,
       videoId: 3,
       thumbnailId: 4,
+      published: false,
       persons: [{ id: 2 }, { id: 5 }],
     },
     {
@@ -29,6 +31,25 @@ export default async () => {
       ownerId: 1,
       videoId: 5,
       thumbnailId: 6,
+      published: true,
+    },
+    {
+      title: 'Other User Published',
+      description:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      ownerId: 2,
+      videoId: 7,
+      thumbnailId: 8,
+      published: true,
+    },
+    {
+      title: 'Other User Unpublished',
+      description:
+        'Consectetur purus ut faucibus pulvinar elementum integer enim neque. Etiam non quam lacus suspendisse faucibus interdum. ',
+      ownerId: 2,
+      videoId: 9,
+      thumbnailId: 10,
+      published: false,
     },
   ];
 
@@ -42,6 +63,7 @@ export default async () => {
         videoId: newData[i].videoId,
         thumbnailId: newData[i].thumbnailId,
         ownerId: newData[i].ownerId,
+        published: newData[i].published,
         persons: {
           connect: newData[i].persons ? newData[i].persons : undefined,
         },

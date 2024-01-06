@@ -1,36 +1,44 @@
-import { publicProcedure, router } from '@/server/trpc/trpc';
+import { protectedProcedure, router } from '@/server/trpc/trpc';
+import { getServerSession } from '#auth';
 import { z } from 'zod';
 
 export const videoRouter = router({
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.video.findMany({ include: { video: true, thumbnail: true } });
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    const session = await getServerSession(ctx.event);
+    if (!session) throw new Error('No session found');
+    return await ctx.prisma.video.findMany({
+      where: { OR: [{ ownerId: session.id }, { published: true }] },
+      include: { video: true, thumbnail: true },
+    });
   }),
-  getRandom: publicProcedure
+  getRandom: protectedProcedure
     .input(z.object({ limit: z.number() }))
     .query(async ({ ctx, input }) => {
       const { limit } = input;
       const videos = await ctx.prisma.video.findMany({ include: { video: true, thumbnail: true } });
       return videos.sort(() => Math.random() - Math.random()).slice(0, limit);
     }),
-  getSingle: publicProcedure.input(z.object({ id: z.number() })).query(async ({ ctx, input }) => {
-    const { id } = input;
-    return await ctx.prisma.video.findUniqueOrThrow({
-      where: { id },
-      include: {
-        persons: true,
-        video: true,
-        thumbnail: true,
-        owner: {
-          select: {
-            name: true,
-            avatar: true,
+  getSingle: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const { id } = input;
+      return await ctx.prisma.video.findUniqueOrThrow({
+        where: { id },
+        include: {
+          persons: true,
+          video: true,
+          thumbnail: true,
+          owner: {
+            select: {
+              name: true,
+              avatar: true,
+            },
           },
         },
-      },
-    });
-  }),
+      });
+    }),
 
-  getLiked: publicProcedure
+  getLiked: protectedProcedure
     .input(z.object({ userId: z.number() }))
     .query(async ({ ctx, input }) => {
       const { userId } = input;

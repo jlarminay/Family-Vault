@@ -48,6 +48,7 @@ model Video {
   ownerId     Int
   videoId     Int
   thumbnailId Int
+  published   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

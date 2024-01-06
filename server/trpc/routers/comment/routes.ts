@@ -1,8 +1,8 @@
-import { publicProcedure, router } from '@/server/trpc/trpc';
+import { protectedProcedure, router } from '@/server/trpc/trpc';
 import { z } from 'zod';
 
 export const commentRouter = router({
-  getForVideo: publicProcedure
+  getForVideo: protectedProcedure
     .input(z.object({ videoId: z.number() }))
     .query(async ({ ctx, input }) => {
       const { videoId } = input;
@@ -16,7 +16,7 @@ export const commentRouter = router({
         },
       });
     }),
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         videoId: z.number(),

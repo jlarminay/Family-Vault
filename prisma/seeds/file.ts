@@ -14,6 +14,8 @@ export default async () => {
     './videos/demo1.mp4',
     './videos/demo2.mp4',
     './videos/demo3.mp4',
+    './videos/demo4.mp4',
+    './videos/demo5.mp4',
     './images/alex-gerogory.webp',
     './images/billson-smith.webp',
     './images/david-michel.webp',
@@ -35,14 +37,14 @@ export default async () => {
 
       // manage video
       const video = newData[i];
-      videoData.name = `${randomString}_${video.split('/').pop()}`;
+      videoData.name = video.split('/').pop();
       // get metadata
       const processing = new VideoProcessor('./prisma/seeds/' + video);
       const { duration, resolution, size } = await processing.getMetadata();
       videoData = {
         ...videoData,
         type: 'video',
-        path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/videos/${videoData.name}`,
+        path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/videos/${randomString}_${videoData.name}`,
         size: size,
         metadata: {
           resolution: resolution,
@@ -51,7 +53,7 @@ export default async () => {
       };
       // upload video
       const videoStream = createReadStream(resolve('./prisma/seeds/' + video));
-      await s3.upload({ key: `videos/${videoData.name}`, body: videoStream });
+      await s3.upload({ key: `videos/${randomString}_${videoData.name}`, body: videoStream });
       await prisma.file.create({ data: videoData });
 
       // manage thumbnail
@@ -61,9 +63,9 @@ export default async () => {
       const dimensions = sizeOf(resolve('./.tmp/' + thumbnailData.name));
       // get metadata
       thumbnailData = {
-        ...thumbnailData,
+        name: thumbnailData.name,
         type: 'image',
-        path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/videos/${thumbnailData.name}`,
+        path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/videos/${randomString}_${thumbnailData.name}`,
         size: statSync(resolve('./.tmp/' + thumbnailData.name)).size,
         metadata: {
           resolution: `${dimensions.width}x${dimensions.height}`,
@@ -71,7 +73,7 @@ export default async () => {
       };
       // upload thumbnail
       const imageData = createReadStream(resolve('./.tmp/' + thumbnailData.name));
-      await s3.upload({ key: `videos/${thumbnailData.name}`, body: imageData });
+      await s3.upload({ key: `videos/${randomString}_${thumbnailData.name}`, body: imageData });
       await prisma.file.create({ data: thumbnailData });
     }
 
