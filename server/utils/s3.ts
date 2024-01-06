@@ -1,4 +1,6 @@
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { resolve } from 'path';
+import { createReadStream } from 'fs';
 
 export default class S3 {
   private client: S3Client;
@@ -14,10 +16,14 @@ export default class S3 {
     });
   }
 
-  async upload(opts: { key: string; body: any }) {
-    const { key, body } = opts;
+  async upload(opts: { key: string; filePath: string }) {
+    const { key, filePath } = opts;
 
     try {
+      // get stream body
+      const body = createReadStream(resolve(filePath));
+
+      // upload to s3
       const command = new PutObjectCommand({
         Bucket: process.env.S3_BUCKET,
         Key: key,

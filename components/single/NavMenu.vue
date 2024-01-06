@@ -1,7 +1,10 @@
 <script setup lang="ts">
-const { signOut, data } = useAuth();
-const search = ref('');
+import video from '~/prisma/seeds/video';
 
+const { data } = useAuth();
+
+const videoStore = useVideoStore();
+const search = ref('');
 const menuItems = ref([
   {
     label: 'My Profile',
@@ -24,9 +27,18 @@ const menuItems = ref([
     to: '/logout',
   },
 ]);
+const loading = ref(false);
+const showUploadModal = ref(false);
+const videoData = ref<any>(null);
+const newVideo = ref<any>(null);
 
 function handleSearch() {
   navigateTo(`/dashboard?search=${search.value}`);
+}
+
+async function uploadVideo() {
+  if (!videoData.value && !videoData.value?.base64) return;
+  newVideo.value = await videoStore.uploadVideo(videoData.value.base64);
 }
 </script>
 
@@ -68,9 +80,14 @@ function handleSearch() {
     </div>
 
     <div class="tw_flex tw_items-center tw_gap-4">
-      <q-btn round flat class="!tw_p-0" icon="sym_o_cloud_upload" color="dark" disabled>
-        <q-tooltip>Upload (Coming Soon)</q-tooltip>
-      </q-btn>
+      <q-btn
+        round
+        flat
+        class="!tw_p-0"
+        icon="sym_o_cloud_upload"
+        color="dark"
+        @click="showUploadModal = true"
+      />
       <!-- <q-btn round flat class="!tw_p-0" icon="sym_o_notifications" color="dark" disabled>
         <q-tooltip>Notifications (Coming Soon)</q-tooltip>
       </q-btn> -->
@@ -104,6 +121,51 @@ function handleSearch() {
       </q-btn>
     </div>
   </nav>
+
+  <Modal ref="modal" v-model="showUploadModal" class="tw_w-full" :closeButton="false" persistent>
+    <template #title>Upload Video</template>
+    <template #body>
+      <UploadVideo
+        :maxSize="3 * 1024 * 1024"
+        :formats="['.mp4']"
+        :uploadState="videoStore.uploadState"
+        @fileUpdated="videoData = $event"
+      />
+    </template>
+    <template #actions>
+      <q-btn
+        v-if="videoStore.uploadState.state === 'idle'"
+        outline
+        no-caps
+        rounded
+        label="Cancel"
+        class="tw_text-base"
+        color="dark"
+        v-close-popup
+      />
+      <q-btn
+        v-if="videoStore.uploadState.state === 'idle'"
+        unelevated
+        no-caps
+        rounded
+        :disabled="!videoData?.base64"
+        label="Upload Video"
+        class="tw_text-base"
+        color="primary"
+        @click="uploadVideo"
+      />
+      <q-btn
+        v-if="videoStore.uploadState.state === 'complete'"
+        unelevated
+        no-caps
+        rounded
+        label="Go To Video"
+        class="tw_text-base"
+        color="primary"
+        :to="`/video/${newVideo.id}`"
+      />
+    </template>
+  </Modal>
 </template>
 
 <style scoped lang="postcss">

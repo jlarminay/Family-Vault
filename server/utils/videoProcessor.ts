@@ -1,6 +1,9 @@
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
 import ffprobeInstaller from '@ffprobe-installer/ffprobe';
+import { statSync } from 'fs';
+import { resolve } from 'path';
+import sizeOf from 'image-size';
 
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 ffmpeg.setFfprobePath(ffprobeInstaller.path);
@@ -10,10 +13,6 @@ export default class VideoProcessor {
 
   constructor(video: string) {
     this.videoPath = video;
-  }
-
-  convertToMp4(): boolean {
-    return true;
   }
 
   getThumbnailAt(opts: { time: string; filename: string }): Promise<void> {
@@ -57,5 +56,50 @@ export default class VideoProcessor {
         }
       });
     });
+  }
+
+  async prepareNewVideo(): Promise<any> {
+    let finalData = {
+      randomString: Math.random().toString(16).slice(2),
+      video: {} as any,
+      thumbnail: {} as any,
+    };
+
+    // // // manage video
+    {
+      finalData.video.name = this.videoPath.split('/').pop();
+      // get metadata
+      const { duration, resolution, size } = await this.getMetadata();
+      finalData.video = {
+        name: finalData.video.name,
+        type: 'video',
+        path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/videos/${finalData.randomString}_${finalData.video.name}`,
+        size: size,
+        metadata: {
+          resolution: resolution,
+          duration: duration,
+        },
+      };
+    }
+
+    // // // manage thumbnail
+    {
+      finalData.thumbnail.name = finalData.video.name.replace('.mp4', '.webp');
+      // generate
+      await this.getThumbnailAt({ time: '00:00:00', filename: finalData.thumbnail.name });
+      // get metadata
+      const dimensions = sizeOf(resolve('./.tmp/' + finalData.thumbnail.name));
+      finalData.thumbnail = {
+        name: finalData.thumbnail.name,
+        type: 'image',
+        path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/videos/${finalData.randomString}_${finalData.thumbnail.name}`,
+        size: statSync(resolve('./.tmp/' + finalData.thumbnail.name)).size,
+        metadata: {
+          resolution: `${dimensions.width}x${dimensions.height}`,
+        },
+      };
+    }
+
+    return finalData;
   }
 }

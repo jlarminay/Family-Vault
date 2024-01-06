@@ -7,7 +7,7 @@ function main() {
   // for local development
   if (args.includes('--dev')) {
     // fix manual overrides
-    shell.cp('-f', './overrides/fluent-ffmpeg.js', './node_modules/fluent-ffmpeg/index.js');
+    shell.exec('node ./overrides/index.js');
 
     shell.rm('-rf', './.tmp');
     shell.exec('npm run docker');

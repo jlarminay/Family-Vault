@@ -1,7 +1,12 @@
 import { defineStore } from 'pinia';
 
 export const useVideoStore = defineStore('video', {
-  state: () => ({}),
+  state: () => ({
+    uploadState: {
+      state: 'idle',
+      progress: 0,
+    },
+  }),
 
   getters: {},
 
@@ -77,6 +82,48 @@ export const useVideoStore = defineStore('video', {
         // clean thumbnail url
         thumbnail: results.thumbnail || { path: 'https://placehold.co/640x360' },
       };
+    },
+
+    async uploadVideo(videoData: string) {
+      const { $trpc } = useNuxtApp();
+
+      this.uploadState.state = 'uploading';
+
+      // get packets
+      const allPackets = [];
+      const packetSize = 100000;
+      let i = 0;
+      while (i < videoData.length) {
+        allPackets.push(videoData.slice(i, i + packetSize));
+        i += packetSize;
+      }
+      console.log('packets: ', allPackets.length);
+
+      // send to api
+      const randomString =
+        Math.random().toString(36).substring(2, 12) + Math.random().toString(36).substring(2, 12);
+      console.log('key: ', randomString, randomString.length);
+
+      // upload all packets
+      for (let j = 0; j < allPackets.length; j++) {
+        console.log('-Uploading packet ', j + 1);
+        const response = await $trpc.video.uploadVideo.mutate({
+          key: randomString,
+          name: 'video.mp4',
+          current: j + 1,
+          total: allPackets.length,
+          packet: allPackets[j],
+        });
+
+        // update progress
+        this.uploadState.progress = Math.floor(((j + 1) / allPackets.length) * 100);
+
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        if (typeof response !== 'boolean') {
+          this.uploadState.state = 'complete';
+          return response;
+        }
+      }
     },
   },
 });
