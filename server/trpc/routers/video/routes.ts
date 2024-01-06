@@ -11,6 +11,7 @@ export const videoRouter = router({
       include: { video: true, thumbnail: true },
     });
   }),
+
   getRandom: protectedProcedure
     .input(z.object({ limit: z.number() }))
     .query(async ({ ctx, input }) => {
@@ -18,6 +19,7 @@ export const videoRouter = router({
       const videos = await ctx.prisma.video.findMany({ include: { video: true, thumbnail: true } });
       return videos.sort(() => Math.random() - Math.random()).slice(0, limit);
     }),
+
   getSingle: protectedProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {

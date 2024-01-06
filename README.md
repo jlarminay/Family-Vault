@@ -15,23 +15,6 @@ npm run start
 This will start the following services:
 
 - Nuxt App [http://localhost:3000](http://localhost:3000)
+- Wiki.js [http://localhost:3001](http://localhost:3001)
 - Prisma Studio [http://localhost:5555](http://localhost:5555)
 - S3 Ninja [http://localhost:9444/ui](http://localhost:9444/ui)
-
-## Roadmap
-
-- 🗹 UI library
-- 🗹 Prisma
-- 🗹 TRPC
-- 🗹 Auth
-- 🗹 S3 storage
-- 🗹 Reporting videos
-- ☐ Edit videos
-- ☐ Upload video
-- ☐ Infrastructure
-- ☐ Deployment
-- ☐ Manage Persons
-- ☐ Allow/Block List
-- ☐ Roles
-- ☐ Family Tree
-- ☐ PWA (?)

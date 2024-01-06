@@ -9,10 +9,14 @@ const commentStore = useCommentStore();
 
 const videoId = ref<number>(parseInt(route.params.id as string));
 const video = ref(await videoStore.getSingle(videoId.value));
-const randomVideos = ref(await videoStore.getRandom(6, videoId.value));
-const comments = ref(await commentStore.getForVideo(videoId.value));
-const likeCount = ref(await likeStore.getVideoCount(videoId.value));
-const currentlyLiked = ref(await likeStore.isVideoLiked(videoId.value));
+// const randomVideos = ref(await videoStore.getRandom(6, videoId.value));
+const randomVideos = ref([]);
+// const comments = ref(await commentStore.getForVideo(videoId.value));
+const comments = ref([]);
+// const likeCount = ref(await likeStore.getVideoCount(videoId.value));
+const likeCount = ref(0);
+// const currentlyLiked = ref(await likeStore.isVideoLiked(videoId.value));
+const currentlyLiked = ref(false);
 
 const showMore = ref<boolean>(false);
 const VideoReportModal = ref<boolean>(false);
@@ -21,8 +25,10 @@ async function commentPosted() {
   comments.value = await commentStore.getForVideo(videoId.value);
 }
 async function updateLike() {
-  currentlyLiked.value = await likeStore.update(videoId.value, !currentlyLiked.value);
-  likeCount.value = await likeStore.getVideoCount(videoId.value);
+  video.value = await videoStore.getSingle(videoId.value);
+  console.log(video.value);
+  // currentlyLiked.value = await likeStore.update(videoId.value, !currentlyLiked.value);
+  // likeCount.value = await likeStore.getVideoCount(videoId.value);
 }
 </script>
 
