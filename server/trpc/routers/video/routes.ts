@@ -74,9 +74,7 @@ export const videoRouter = router({
 
   uploadVideo: protectedProcedure.input(uploadVideoSchema).mutation(async ({ ctx, input }) => {
     const session = await getServerSession(ctx.event);
-    const { key, current, name, total, packet } = input;
-
-    // console.log('key: ', key, 'current: ', current, 'total: ', total, 'packet: ', packet.length);
+    const { key, name, count, final, packet } = input;
 
     // create folder if not exists
     if (!fs.existsSync('./.tmp')) {
@@ -84,32 +82,26 @@ export const videoRouter = router({
     }
 
     // append packet to file
-    fs.appendFile(`./.tmp/${key}.${current}.tmp`, packet, () => {});
+    fs.writeFileSync(`./.tmp/${key}.${count}.tmp`, packet);
 
     // if not final packet, return
-    if (current !== total) return true;
+    if (!final) return true;
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     let fileLocation: string = '';
     let videoData: any = {};
 
     // convert data back into video file
     {
-      // sleep for 1 sec
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      // take all files and combine in order
       let allPackets = '';
-      for (let i = 1; i <= total; i++) {
-        const packet = fs.readFileSync(`./.tmp/${key}.${i}.tmp`);
-        fs.unlinkSync(`./.tmp/${key}.${i}.tmp`);
-        allPackets += packet;
-      }
+      fs.readdirSync('./.tmp').forEach((file) => {
+        if (!file.includes(key)) return;
 
-      // convert back into file
-      const fileType = allPackets.split(';base64,')[0].split('/')[1];
-      const fileName = name.replaceAll('.mp4', '');
-      const rawData = allPackets.split(';base64,')[1];
-      const buffer = Buffer.from(rawData, 'base64');
-      fileLocation = `./.tmp/${fileName}.${fileType}`;
+        allPackets += fs.readFileSync(`./.tmp/${file}`);
+        fs.unlinkSync(`./.tmp/${file}`);
+      });
+      const buffer = Buffer.from(allPackets, 'base64');
+      fileLocation = `./.tmp/${key}_${name}`;
       fs.writeFileSync(fileLocation, buffer);
     }
 
@@ -134,13 +126,11 @@ export const videoRouter = router({
 
     // insert into db
     {
-      const dbVideo = await ctx.prisma.file.create({ data: videoData.video });
-      const dbThumbnail = await ctx.prisma.file.create({ data: videoData.thumbnail });
-      console.log('dbVideo: ', dbVideo);
-      console.log('dbThumbnail: ', dbThumbnail);
+      const dbVideo = await ctx.prisma.file.create({ data: { ...videoData.video, name } });
+      const dbThumbnail = await ctx.prisma.file.create({ data: { ...videoData.thumbnail, name } });
       return ctx.prisma.video.create({
         data: {
-          title: videoData.video.name,
+          title: name,
           description: '',
           ownerId: session?.id || 0,
           videoId: dbVideo.id,

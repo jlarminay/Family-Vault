@@ -27,7 +27,6 @@ const menuItems = ref([
     to: '/logout',
   },
 ]);
-const loading = ref(false);
 const showUploadModal = ref(false);
 const videoData = ref<any>(null);
 const newVideo = ref<any>(null);
@@ -37,8 +36,14 @@ function handleSearch() {
 }
 
 async function uploadVideo() {
-  if (!videoData.value && !videoData.value?.base64) return;
-  newVideo.value = await videoStore.uploadVideo(videoData.value.base64);
+  if (!videoData.value || !videoData.value?.name || videoData.value?.error) return;
+  newVideo.value = await videoStore.uploadVideo(videoData.value);
+}
+async function clearUploadState() {
+  videoStore.uploadState.state = 'idle';
+  videoStore.uploadState.progress = 0;
+  newVideo.value = null;
+  showUploadModal.value = false;
 }
 </script>
 
@@ -125,8 +130,19 @@ async function uploadVideo() {
   <Modal ref="modal" v-model="showUploadModal" class="tw_w-full" :closeButton="false" persistent>
     <template #title>Upload Video</template>
     <template #body>
+      <div class="tw_mb-2">
+        <p v-if="videoStore.uploadState?.state === 'idle'" class="tw_text-lg">
+          You can select the video to upload here.
+        </p>
+        <p v-if="videoStore.uploadState?.state === 'uploading'" class="tw_text-lg">
+          Please don't close this window until the upload is complete.
+        </p>
+        <p v-if="videoStore.uploadState?.state === 'complete'" class="tw_text-lg">
+          The upload is now completed. You can safely close this window.
+        </p>
+      </div>
       <UploadVideo
-        :maxSize="3 * 1024 * 1024"
+        :maxSize="3 * 1024 * 1024 * 1024"
         :formats="['.mp4']"
         :uploadState="videoStore.uploadState"
         @fileUpdated="videoData = $event"
@@ -141,18 +157,28 @@ async function uploadVideo() {
         label="Cancel"
         class="tw_text-base"
         color="dark"
-        v-close-popup
+        @click="clearUploadState"
       />
       <q-btn
         v-if="videoStore.uploadState.state === 'idle'"
         unelevated
         no-caps
         rounded
-        :disabled="!videoData?.base64"
+        :disabled="!videoData?.name || videoData?.error"
         label="Upload Video"
         class="tw_text-base"
         color="primary"
         @click="uploadVideo"
+      />
+      <q-btn
+        v-if="videoStore.uploadState.state === 'complete'"
+        outline
+        no-caps
+        rounded
+        label="Close"
+        class="tw_text-base"
+        color="dark"
+        @click="clearUploadState"
       />
       <q-btn
         v-if="videoStore.uploadState.state === 'complete'"
@@ -162,7 +188,8 @@ async function uploadVideo() {
         label="Go To Video"
         class="tw_text-base"
         color="primary"
-        :to="`/video/${newVideo.id}`"
+        @click="clearUploadState"
+        :to="`/video/${newVideo?.id}`"
       />
     </template>
   </Modal>

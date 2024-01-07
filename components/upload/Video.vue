@@ -55,26 +55,17 @@ async function clearFile() {
 async function onFileChange(e: any) {
   error.value = '';
   const file = e.target.files[0];
-  const reader = new FileReader();
-  reader.onload = () => {
-    uploadFile.value = {
-      data: file,
-      base64: reader.result,
-      preview: URL.createObjectURL(file),
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      error: false,
-    };
-
-    // check if valid image
-    if (uploadFile.value.size > props.maxSize) {
-      error.value = 'File size too large';
-      uploadFile.value.error = true;
-    }
-    emit('fileUpdated', uploadFile.value);
+  uploadFile.value = {
+    data: file,
+    name: file.name,
+    size: file.size,
+    type: file.type,
+    error: file.size > props.maxSize,
   };
-  reader.readAsDataURL(file);
+  if (uploadFile.value.error) {
+    error.value = 'File size too large';
+  }
+  emit('fileUpdated', uploadFile.value);
 }
 </script>
 
@@ -82,9 +73,9 @@ async function onFileChange(e: any) {
   <div>
     <pre>{{ uploadState }}</pre>
     <!-- Display -->
-    <div v-if="!!uploadFile.data" class="tw_border-4 tw_rounded-lg tw_px-4 tw_py-2">
-      <div class="tw_flex tw_items-center tw_justify-between tw_gap-4 tw_z-[1]">
-        <div>
+    <div v-if="!!uploadFile.name" class="tw_border-4 tw_rounded-lg tw_px-4 tw_py-2">
+      <div class="tw_w-full tw_flex tw_items-center tw_justify-between tw_gap-4 tw_z-[1]">
+        <div class="tw_flex-grow tw_min-w-0">
           <p class="tw_text-lg tw_truncate">{{ uploadFile.name }}</p>
           <p class="tw_text-sm" :class="{ 'tw_text-red-500': error !== '' }">
             {{ formatSize(uploadFile.size) }} <span v-if="error !== ''">({{ error }})</span>
@@ -100,11 +91,11 @@ async function onFileChange(e: any) {
         />
       </div>
       <div
-        v-if="uploadState.state !== 'idle'"
-        class="tw_mt-2 tw_w-full tw_h-[8px] tw_border tw_rounded-lg tw_overflow-hidden"
+        v-if="uploadState.state === 'uploading'"
+        class="tw_mt-2 tw_w-full tw_h-[16px] tw_border tw_rounded tw_overflow-hidden"
       >
-        <div
-          class="tw_h-full tw_bg-green-500 tw_transition-[width] tw_ease-in-out"
+        <q-skeleton
+          class="tw_bg-green-400 tw_rounded-none tw_h-full tw_transition-[width]"
           :style="`width: ${uploadState.progress}%`"
         />
       </div>

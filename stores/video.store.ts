@@ -84,46 +84,74 @@ export const useVideoStore = defineStore('video', {
       };
     },
 
-    async uploadVideo(videoData: string) {
+    async uploadVideo(video: any) {
       const { $trpc } = useNuxtApp();
 
       this.uploadState.state = 'uploading';
 
-      // get packets
-      const allPackets = [];
-      const packetSize = 100000;
-      let i = 0;
-      while (i < videoData.length) {
-        allPackets.push(videoData.slice(i, i + packetSize));
-        i += packetSize;
-      }
-      console.log('packets: ', allPackets.length);
-
-      // send to api
-      const randomString =
+      const key =
         Math.random().toString(36).substring(2, 12) + Math.random().toString(36).substring(2, 12);
-      console.log('key: ', randomString, randomString.length);
+      const chunkSize = 1 * 1024 * 1024;
+      let start = 0;
+      let i = 1;
+      let response: any;
 
-      // upload all packets
-      for (let j = 0; j < allPackets.length; j++) {
-        console.log('-Uploading packet ', j + 1);
-        const response = await $trpc.video.uploadVideo.mutate({
-          key: randomString,
+      while (start < video.data.size) {
+        const chunk = video.data.slice(start, start + chunkSize);
+        const arrayBuffer = await new Response(chunk).arrayBuffer();
+        const base64String = btoa(
+          new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), ''),
+        );
+        response = await $trpc.video.uploadVideo.mutate({
+          key,
           name: 'video.mp4',
-          current: j + 1,
-          total: allPackets.length,
-          packet: allPackets[j],
+          count: i,
+          final: start + chunkSize >= video.data.size,
+          packet: base64String,
         });
+        start += chunkSize;
+        i++;
 
-        // update progress
-        this.uploadState.progress = Math.floor(((j + 1) / allPackets.length) * 100);
-
+        this.uploadState.progress = Math.min((start / video.data.size) * 100, 100);
         await new Promise((resolve) => setTimeout(resolve, 100));
-        if (typeof response !== 'boolean') {
-          this.uploadState.state = 'complete';
-          return response;
-        }
       }
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      this.uploadState.state = 'complete';
+      return response;
+
+      // // get packets
+      // const allPackets = [];
+      // const packetSize = 1 * 1024 * 1024;
+      // let i = 0;
+      // while (i < videoData.length) {
+      //   allPackets.push(videoData.slice(i, i + packetSize));
+      //   i += packetSize;
+      // }
+
+      // // send to api
+      // const randomString =
+      //   Math.random().toString(36).substring(2, 12) + Math.random().toString(36).substring(2, 12);
+
+      // // upload all packets
+      // for (let j = 0; j < allPackets.length; j++) {
+      //   const response = await $trpc.video.uploadVideo.mutate({
+      //     key: randomString,
+      //     name: 'video.mp4',
+      //     current: j + 1,
+      //     total: allPackets.length,
+      //     packet: allPackets[j],
+      //   });
+
+      //   // update progress
+      //   this.uploadState.progress = Math.floor(((j + 1) / allPackets.length) * 100);
+
+      //   await new Promise((resolve) => setTimeout(resolve, 100));
+      //   if (typeof response !== 'boolean') {
+      //     this.uploadState.state = 'complete';
+      //     return response;
+      //   }
+      // }
     },
   },
 });

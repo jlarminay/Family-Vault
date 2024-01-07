@@ -86,7 +86,11 @@ export default class VideoProcessor {
     {
       finalData.thumbnail.name = finalData.video.name.replace('.mp4', '.webp');
       // generate
-      await this.getThumbnailAt({ time: '00:00:00', filename: finalData.thumbnail.name });
+
+      await this.getThumbnailAt({
+        time: this.getTimestampPercent(finalData.video.metadata.duration, 0.1),
+        filename: finalData.thumbnail.name,
+      });
       // get metadata
       const dimensions = sizeOf(resolve('./.tmp/' + finalData.thumbnail.name));
       finalData.thumbnail = {
@@ -101,5 +105,15 @@ export default class VideoProcessor {
     }
 
     return finalData;
+  }
+
+  private getTimestampPercent(duration: number, percentage: number): string {
+    const lengthPercent = Math.floor(duration * percentage);
+    const hours = Math.floor(lengthPercent / 3600);
+    const minutes = Math.floor((lengthPercent % 3600) / 60);
+    const seconds = lengthPercent % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds
+      .toString()
+      .padStart(2, '0')}`;
   }
 }
