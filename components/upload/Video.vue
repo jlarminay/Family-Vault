@@ -71,7 +71,6 @@ async function onFileChange(e: any) {
 
 <template>
   <div>
-    <pre>{{ uploadState }}</pre>
     <!-- Display -->
     <div v-if="!!uploadFile.name" class="tw_border-4 tw_rounded-lg tw_px-4 tw_py-2">
       <div class="tw_w-full tw_flex tw_items-center tw_justify-between tw_gap-4 tw_z-[1]">

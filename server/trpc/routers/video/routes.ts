@@ -1,7 +1,7 @@
 import { protectedProcedure, router } from '@/server/trpc/trpc';
 import { getServerSession } from '#auth';
 import { z } from 'zod';
-import { uploadVideoSchema } from './schema';
+import { uploadVideoSchema, processVideoSchema } from './schema';
 import fs from 'fs';
 import VideoProcessor from '@/server/utils/videoProcessor.js';
 import S3 from '@/server/utils/s3.js';
@@ -73,20 +73,25 @@ export const videoRouter = router({
     }),
 
   uploadVideo: protectedProcedure.input(uploadVideoSchema).mutation(async ({ ctx, input }) => {
-    const session = await getServerSession(ctx.event);
-    const { key, name, count, final, packet } = input;
+    const { key, count, packet } = input;
 
-    // create folder if not exists
-    if (!fs.existsSync('./.tmp')) {
-      fs.mkdirSync('./.tmp');
+    try {
+      // create folder if not exists
+      if (!fs.existsSync('./.tmp')) {
+        fs.mkdirSync('./.tmp');
+      }
+
+      // append packet to file
+      fs.writeFileSync(`./.tmp/${key}.${count}.tmp`, packet);
+
+      return true;
+    } catch (e) {
+      return false;
     }
-
-    // append packet to file
-    fs.writeFileSync(`./.tmp/${key}.${count}.tmp`, packet);
-
-    // if not final packet, return
-    if (!final) return true;
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }),
+  processVideo: protectedProcedure.input(processVideoSchema).mutation(async ({ ctx, input }) => {
+    const session = await getServerSession(ctx.event);
+    const { key, packets, name } = input;
 
     let fileLocation: string = `./.tmp/${key}_${name}`;
     let videoData: any = {};
@@ -96,19 +101,22 @@ export const videoRouter = router({
       let allBuffers: any = [];
 
       // check that file is ready to be read
-      for (let i = 1; i <= count; i++) {
+      for (let i = 1; i <= packets; i++) {
         const file = `./.tmp/${key}.${i}.tmp`;
 
         let ready = false;
-        while (!ready) {
+        let retries = 0;
+        let maxRetries = 10;
+        while (!ready && retries < maxRetries) {
           try {
             fs.readFileSync(file);
             ready = true;
           } catch (e) {
-            console.log('waiting for file to be ready');
+            retries++;
             await new Promise((resolve) => setTimeout(resolve, 1000));
           }
         }
+        if (!ready) throw new Error('File not ready');
 
         const string = fs.readFileSync(file).toString();
         const buffer = Buffer.from(string, 'base64');
@@ -143,7 +151,9 @@ export const videoRouter = router({
     // insert into db
     {
       const dbVideo = await ctx.prisma.file.create({ data: { ...videoData.video, name } });
-      const dbThumbnail = await ctx.prisma.file.create({ data: { ...videoData.thumbnail, name } });
+      const dbThumbnail = await ctx.prisma.file.create({
+        data: { ...videoData.thumbnail, name },
+      });
       return ctx.prisma.video.create({
         data: {
           title: name,

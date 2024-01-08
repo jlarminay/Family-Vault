@@ -13,7 +13,7 @@ const menuItems = ref([
     to: `/people/${data.value?.person?.id}`,
   },
   { label: 'Liked Videos', icon: 'sym_o_favorite', to: '/videos/liked' },
-  { label: 'My Videos', icon: 'sym_o_person', to: '/videos/mine' },
+  { label: 'My Videos', icon: 'sym_o_movie', to: '/videos/mine' },
   { type: 'separator' },
   { label: 'All People', icon: 'sym_o_groups', to: '/people' },
   { type: 'separator' },
@@ -137,12 +137,16 @@ async function clearUploadState() {
         <p v-if="videoStore.uploadState?.state === 'uploading'" class="tw_text-lg">
           Please don't close this window until the upload is complete.
         </p>
+        <p v-if="videoStore.uploadState?.state === 'processing'" class="tw_text-lg">
+          The upload is complete and the window can now be safely closed. The video is now being
+          processed. This step may take a few minutes.
+        </p>
         <p v-if="videoStore.uploadState?.state === 'complete'" class="tw_text-lg">
           The upload is now completed. You can safely close this window.
         </p>
       </div>
       <UploadVideo
-        :maxSize="3 * 1024 * 1024 * 1024"
+        :maxSize="2 * 1024 * 1024 * 1024"
         :formats="['.mp4']"
         :uploadState="videoStore.uploadState"
         @fileUpdated="videoData = $event"
@@ -171,7 +175,10 @@ async function clearUploadState() {
         @click="uploadVideo"
       />
       <q-btn
-        v-if="videoStore.uploadState.state === 'complete'"
+        v-if="
+          videoStore.uploadState.state === 'processing' ||
+          videoStore.uploadState.state === 'complete'
+        "
         outline
         no-caps
         rounded

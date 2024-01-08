@@ -32,15 +32,15 @@ async function updateLike() {
   <div>
     <SingleNavMenu />
 
-    <main class="tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto">
+    <main class="tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto tw_mb-8">
       <div class="tw_flex tw_gap-4">
-        <div class="tw_grow">
-          <video controls :poster="video.thumbnail.path" class="tw_w-full tw_aspect-video">
+        <div class="tw_grow tw_min-w-0">
+          <video controls :poster="video.thumbnail.path" class="tw_w-full">
             <source :src="video.video.path" type="video/mp4" />
           </video>
           <div class="tw_p-2">
-            <div class="tw_flex tw_justify-between tw_items-center">
-              <h2 class="h2 tw_font-bold">
+            <div class="tw_flex tw_gap-4 tw_justify-between tw_items-start">
+              <h2 class="h2 tw_font-bold tw_min-w-0 tw_flex-grow tw_break-words">
                 <q-icon
                   v-if="!video.published"
                   name="sym_o_lock"
@@ -48,18 +48,21 @@ async function updateLike() {
                 />
                 {{ video.title }}
               </h2>
-              <div class="tw_flex tw_items-center tw_gap-1">
+              <div class="tw_flex tw_items-center tw_gap-2">
                 <q-btn
                   rounded
                   outline
+                  class="tw_flex tw_flex-nowrap"
                   :class="{ 'tw_text-red-500': likes.isLiked }"
                   @click="updateLike()"
                 >
-                  <q-icon
-                    :name="likes.isLiked ? 'o_favorite' : 'o_favorite_border'"
-                    :class="{ tada: likes.isLiked }"
-                  />
-                  <span class="tw_text-lg tw_ml-2">{{ likes.count }}</span>
+                  <div class="tw_flex tw_items-center tw_whitespace-nowrap">
+                    <q-icon
+                      :name="likes.isLiked ? 'o_favorite' : 'o_favorite_border'"
+                      :class="{ tada: likes.isLiked }"
+                    />
+                    <span class="tw_text-lg tw_ml-1">{{ likes.count }}</span>
+                  </div>
                 </q-btn>
 
                 <q-btn
@@ -67,7 +70,7 @@ async function updateLike() {
                   outline
                   size="12px"
                   icon="sym_o_more_horiz"
-                  class="tw_cursor-pointer hover:tw_opacity-70 tw_transition-opacity tw_duration-300 tw_ml-2"
+                  class="tw_cursor-pointer hover:tw_opacity-70 tw_transition-opacity tw_duration-300"
                 >
                   <q-menu :offset="[0, 4]" anchor="bottom right" self="top right">
                     <q-list>
