@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import fs from 'fs';
 
 export const useVideoStore = defineStore('video', {
   state: () => ({
@@ -91,7 +92,7 @@ export const useVideoStore = defineStore('video', {
 
       const key =
         Math.random().toString(36).substring(2, 12) + Math.random().toString(36).substring(2, 12);
-      const chunkSize = 1 * 1024 * 1024;
+      const chunkSize = 2 * 1024 * 1024;
       let start = 0;
       let i = 1;
       let response: any;
@@ -102,6 +103,7 @@ export const useVideoStore = defineStore('video', {
         const base64String = btoa(
           new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), ''),
         );
+
         response = await $trpc.video.uploadVideo.mutate({
           key,
           name: 'video.mp4',
@@ -113,7 +115,6 @@ export const useVideoStore = defineStore('video', {
         i++;
 
         this.uploadState.progress = Math.min((start / video.data.size) * 100, 100);
-        await new Promise((resolve) => setTimeout(resolve, 100));
       }
 
       await new Promise((resolve) => setTimeout(resolve, 1000));

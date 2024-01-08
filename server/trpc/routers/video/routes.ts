@@ -88,21 +88,37 @@ export const videoRouter = router({
     if (!final) return true;
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    let fileLocation: string = '';
+    let fileLocation: string = `./.tmp/${key}_${name}`;
     let videoData: any = {};
 
     // convert data back into video file
     {
-      let allPackets = '';
-      fs.readdirSync('./.tmp').forEach((file) => {
-        if (!file.includes(key)) return;
+      let allBuffers: any = [];
 
-        allPackets += fs.readFileSync(`./.tmp/${file}`);
-        fs.unlinkSync(`./.tmp/${file}`);
-      });
-      const buffer = Buffer.from(allPackets, 'base64');
-      fileLocation = `./.tmp/${key}_${name}`;
-      fs.writeFileSync(fileLocation, buffer);
+      // check that file is ready to be read
+      for (let i = 1; i <= count; i++) {
+        const file = `./.tmp/${key}.${i}.tmp`;
+
+        let ready = false;
+        while (!ready) {
+          try {
+            fs.readFileSync(file);
+            ready = true;
+          } catch (e) {
+            console.log('waiting for file to be ready');
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+          }
+        }
+
+        const string = fs.readFileSync(file).toString();
+        const buffer = Buffer.from(string, 'base64');
+        allBuffers.push(buffer);
+        fs.unlinkSync(file);
+      }
+
+      const combinedStrings = Buffer.concat(allBuffers);
+      fs.writeFileSync(fileLocation, combinedStrings);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
 
     // get metadata
