@@ -1,0 +1,13 @@
+node_modules
+dist
+.env
+.ssh
+
+ansible/hosts.ini
+
+remote/.env
+remote/Caddyfile
+
+terraform/.terraform
+terraform/.terraform.lock.hcl
+terraform/terraform.tfvars

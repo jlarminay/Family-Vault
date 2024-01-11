@@ -22,6 +22,7 @@ logs
 # Local env files
 .env
 .env.*
+!.env.template
 !.env.example
 /test-results/
 /playwright-report/

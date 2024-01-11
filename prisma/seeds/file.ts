@@ -58,7 +58,7 @@ export default async () => {
 
       // upload image
       await s3.upload({
-        key: `persons/${results.image.name}`,
+        key: `persons/${results.randomString}_${results.image.name}`,
         filePath: './prisma/seeds/images/' + results.image.name,
       });
 

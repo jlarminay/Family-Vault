@@ -1,0 +1,139 @@
+---
+- name: Deploy application
+  hosts: webserver
+  gather_facts: false
+  become: true
+
+  vars:
+    volume_name: "{{lookup('env', 'VOLUME_NAME')}}"
+    reset_db: "{{lookup('env', 'RESET_DATABASE') | default('false') }}"
+    docker_user: "{{lookup('env', 'DOCKER_USER')}}"
+    docker_pass: "{{lookup('env', 'DOCKER_PASS')}}"
+
+  tasks:
+    ## ----------------------------------------
+    ## Wait for connection
+    # This task waits for the target host to become reachable before continuing with the playbook execution.
+    # It waits for a delay of 10 seconds, then sleeps for 10 seconds between retries, and times out after 120 seconds.
+    - name: Wait for connection
+      wait_for_connection:
+        delay: 10
+        sleep: 10
+        timeout: 120
+
+    # ## ----------------------------------------
+    # ## Print out hello world
+    # - name: Print out hello world
+    #   shell: echo "Hello world!"
+    # - debug: msg="Hello world!"
+
+    ## ----------------------------------------
+    ## Disable unattended upgrades
+    - name: Disable unattended upgrades
+      shell: |
+        sudo systemctl stop apt-daily.timer
+        sudo systemctl disable apt-daily.timer
+        sudo systemctl disable apt-daily.service
+        sudo systemctl stop apt-daily-upgrade.timer
+        sudo systemctl disable apt-daily-upgrade.timer
+        sudo systemctl disable apt-daily-upgrade.service
+        sudo systemctl daemon-reload
+        sudo systemctl stop unattended-upgrades
+      ignore_errors: true
+
+    ## ----------------------------------------
+    ## Update system
+    - name: Update system
+      apt:
+        upgrade: yes
+        update_cache: true
+
+    ## ----------------------------------------
+    ## Install dependencies
+    - name: Install dependencies
+      apt:
+        name:
+          [
+            'docker.io',
+            'docker-compose',
+            'rsync',
+            'net-tools',
+            'debian-keyring',
+            'debian-archive-keyring',
+            'apt-transport-https',
+            'golang-go',
+          ]
+        state: present
+        update_cache: true
+
+    ## ----------------------------------------
+    ## Mount volume if not mounted
+    - name: Check if volume is mounted
+      shell: echo /mnt/{{ volume_name }}/test
+      register: volume_mounted
+      ignore_errors: true
+    - name: Mount volume
+      shell: |
+        mkdir -p /mnt/{{ volume_name }}
+        mount -o discard,defaults,noatime /dev/disk/by-id/scsi-0DO_Volume_{{ volume_name }} /mnt/{{ volume_name }}
+        echo '/dev/disk/by-id/scsi-0DO_Volume_{{ volume_name }} /mnt/{{ volume_name }} ext4 defaults,nofail,discard 0 0' | sudo tee -a /etc/fstab
+        echo 'mounted' > /mnt/{{ volume_name }}/test
+      when: volume_mounted.stdout is not defined or volume_mounted.stdout == ''
+
+    ## ----------------------------------------
+    ## Install Caddy server
+    - name: Check caddy version
+      shell: caddy version
+      register: caddy_version_output
+      ignore_errors: true
+    - name: Install Caddy
+      shell: |
+        curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+        curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+        sudo apt update
+        sudo apt install caddy
+      when: caddy_version_output.stdout is not defined or caddy_version_output.stdout == ''
+
+    ## ----------------------------------------
+    ## Move files
+    - name: Upload folder to remote server
+      synchronize:
+        src: '../remote/'
+        dest: '/home/app/'
+        mode: push
+        delete: true
+        recursive: true
+
+    - name: Move Caddy config file to the correct location
+      copy:
+        src: '/home/app/Caddyfile'
+        dest: '/etc/caddy/Caddyfile'
+        owner: root
+        group: root
+        mode: 0644
+        remote_src: true
+      notify:
+        - Restart Caddy
+
+    ## ----------------------------------------
+    ## Run apps
+    - name: Run Docker Compose
+      shell: |
+        docker login --username {{docker_user}} --password {{docker_pass}}
+        docker image prune -af
+        y | docker-compose -f docker-compose.yml --env-file .env up -d --build --remove-orphans
+      args:
+        chdir: /home/app
+      notify:
+        - Restart Caddy
+
+    ## ----------------------------------------
+    ## Wipe system if needed
+    - name: Reset and seed database
+      shell: |
+        docker exec lv-server /bin/bash -c "npm run db:seed"
+      when: reset_db == 'true'
+
+  handlers:
+    - name: Restart Caddy
+      shell: caddy reload --config /etc/caddy/Caddyfile
