@@ -1,7 +1,7 @@
 import { protectedProcedure, router } from '@/server/trpc/trpc';
 import { getServerSession } from '#auth';
 import { z } from 'zod';
-import { uploadVideoSchema, processVideoSchema } from './schema';
+import { uploadVideoSchema, processVideoSchema, editVideoSchema } from './schema';
 import fs from 'fs';
 import VideoProcessor from '@/server/utils/videoProcessor.js';
 import S3 from '@/server/utils/s3.js';
@@ -71,6 +71,22 @@ export const videoRouter = router({
 
       return video;
     }),
+
+  update: protectedProcedure.input(editVideoSchema).mutation(async ({ ctx, input }) => {
+    const session = await getServerSession(ctx.event);
+    const { id, title, description } = input;
+
+    // is user the owner
+    const video = await ctx.prisma.video.findUnique({ where: { id } });
+    if (video && video.ownerId !== session?.id) {
+      throw new Error('Forbidden');
+    }
+
+    return await ctx.prisma.video.update({
+      where: { id },
+      data: { title, description },
+    });
+  }),
 
   uploadVideo: protectedProcedure.input(uploadVideoSchema).mutation(async ({ ctx, input }) => {
     const { key, count, packet } = input;

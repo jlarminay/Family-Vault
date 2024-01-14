@@ -12,7 +12,7 @@ const showMore = ref<boolean>(false);
   <div class="tw_mt-4">
     <div :class="{ 'tw_line-clamp-3': !showMore }">
       <!-- Description -->
-      <p>{{ video.description }}</p>
+      <p class="tw_whitespace-pre">{{ video.description }}</p>
 
       <!-- More information -->
       <div v-if="showMore" class="tw_mt-6">

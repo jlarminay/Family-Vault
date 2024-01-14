@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import video from '~/prisma/seeds/video';
-
-const { data } = useAuth();
+const { data: authData } = useAuth();
 
 const videoStore = useVideoStore();
 const search = ref('');
 const menuItems = ref([
   {
     label: 'My Profile',
-    if: data.value?.person?.id,
+    if: authData.value?.person?.id,
     icon: 'sym_o_face',
-    to: `/people/${data.value?.person?.id}`,
+    to: `/people/${authData.value?.person?.id}`,
   },
   { label: 'Liked Videos', icon: 'sym_o_favorite', to: '/videos/liked' },
   { label: 'My Videos', icon: 'sym_o_movie', to: '/videos/mine' },
@@ -98,7 +96,7 @@ async function clearUploadState() {
       </q-btn> -->
       <q-btn round flat class="!tw_p-0" color="white">
         <q-avatar size="40px" class="tw_border">
-          <img :src="data?.avatar" />
+          <img :src="authData?.avatar" />
         </q-avatar>
 
         <!-- Dropdown Menu -->

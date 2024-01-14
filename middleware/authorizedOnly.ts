@@ -1,8 +1,8 @@
 export default defineNuxtRouteMiddleware((to, from) => {
-  const { data } = useAuth();
+  const { data: authData } = useAuth();
 
   // must be authorized
-  if (!data.value) {
+  if (!authData.value) {
     // not authorized
     // redirect to login
     return navigateTo('/login');

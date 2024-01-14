@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { signIn, signOut, status, data } = useAuth();
+const { signIn } = useAuth();
 definePageMeta({
   middleware: 'unauthorized-only',
 });

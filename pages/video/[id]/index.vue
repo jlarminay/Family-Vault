@@ -2,6 +2,7 @@
 definePageMeta({
   middleware: 'authorized-only',
 });
+const { data: authData } = useAuth();
 const route = useRoute();
 const videoStore = useVideoStore();
 const likeStore = useLikeStore();
@@ -74,7 +75,12 @@ async function updateLike() {
                 >
                   <q-menu :offset="[0, 4]" anchor="bottom right" self="top right">
                     <q-list>
-                      <q-item clickable v-close-popup>
+                      <q-item
+                        v-if="authData?.id === video.ownerId"
+                        clickable
+                        v-close-popup
+                        :to="`/video/${video.id}/edit`"
+                      >
                         <q-item-section>Edit</q-item-section>
                       </q-item>
                       <q-item clickable v-close-popup @click="VideoReportModal = true">

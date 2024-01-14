@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import fs from 'fs';
+import video from '~/prisma/seeds/video';
 
 export const useVideoStore = defineStore('video', {
   state: () => ({
@@ -83,6 +84,16 @@ export const useVideoStore = defineStore('video', {
         // clean thumbnail url
         thumbnail: results.thumbnail || { path: 'https://placehold.co/640x360' },
       };
+    },
+    async update(videoData: any) {
+      const { $trpc } = useNuxtApp();
+
+      let results = await $trpc.video.update.mutate({
+        id: videoData.id,
+        title: videoData.title,
+        description: videoData.description,
+      });
+      return results;
     },
 
     async uploadVideo(video: any) {

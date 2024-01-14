@@ -11,3 +11,9 @@ export const processVideoSchema = z.object({
   packets: z.number(),
   name: z.string().max(128),
 });
+
+export const editVideoSchema = z.object({
+  id: z.number(),
+  title: z.string().max(128),
+  description: z.string().max(1024),
+});

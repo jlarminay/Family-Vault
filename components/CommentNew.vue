@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { data } = useAuth();
+const { data: authData } = useAuth();
 const commentStore = useCommentStore();
 
 const emit = defineEmits(['commentPosted']);
@@ -26,7 +26,7 @@ async function postComment() {
 <template>
   <div class="tw_flex tw_gap-4 tw_items-start tw_mt-6 tw_group">
     <div class="tw_w-[40px] tw_h-[40px] tw_bg-gray-200 tw_rounded-full tw_overflow-hidden">
-      <img :src="data?.avatar" class="tw_w-full tw_h-full tw_object-cover" />
+      <img :src="authData?.avatar" class="tw_w-full tw_h-full tw_object-cover" />
     </div>
     <div class="tw_flex-1">
       <q-input
