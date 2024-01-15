@@ -29,7 +29,8 @@ defineProps({
       <div class="tw_p-2">
         <p class="tw_text-base tw_truncate tw_font-bold">{{ video.title }}</p>
         <p class="tw_text-gray-500 tw_text-sm">
-          {{ $dayjs(video.createdAt).format('MMM D, YYYY') }}
+          <!-- {{ $dayjs(video.createdAt).format('MMM D, YYYY') }} -->
+          {{ video.dateDisplay }}
         </p>
       </div>
     </NuxtLink>

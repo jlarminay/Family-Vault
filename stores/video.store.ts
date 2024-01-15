@@ -92,6 +92,8 @@ export const useVideoStore = defineStore('video', {
         id: videoData.id,
         title: videoData.title,
         description: videoData.description,
+        dateDisplay: videoData.dateDisplay,
+        dateOrder: videoData.dateOrder,
       });
       return results;
     },

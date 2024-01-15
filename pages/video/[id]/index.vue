@@ -91,7 +91,7 @@ async function updateLike() {
                 </q-btn>
               </div>
             </div>
-            <p class="tw_text-gray-500">{{ $dayjs(video.createdAt).format('MMMM D, YYYY') }}</p>
+            <p class="tw_text-gray-500">{{ video.dateDisplay }}</p>
 
             <VideoDescription :video="video" />
 

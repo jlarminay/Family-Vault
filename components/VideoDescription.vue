@@ -12,7 +12,7 @@ const showMore = ref<boolean>(false);
   <div class="tw_mt-4">
     <div :class="{ 'tw_line-clamp-3': !showMore }">
       <!-- Description -->
-      <p class="tw_whitespace-pre">{{ video.description }}</p>
+      <p class="tw_whitespace-pre-line">{{ video.description }}</p>
 
       <!-- More information -->
       <div v-if="showMore" class="tw_mt-6">
@@ -27,6 +27,10 @@ const showMore = ref<boolean>(false);
             {{ person.name }}
           </NuxtLink>
           <span v-if="video.persons.length === 0" class="tw_opacity-70 tw_italic"> None </span>
+        </div>
+        <div>
+          <span class="tw_font-bold">Order Date: </span>
+          <span>{{ video.dateOrder }}</span>
         </div>
         <div>
           <span class="tw_font-bold">Video Resolution: </span>

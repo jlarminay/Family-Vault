@@ -65,6 +65,8 @@ export const videoRouter = router({
         },
       });
 
+      video.dateOrder = video.dateOrder.toISOString().split('T')[0] as any;
+
       if (!video.published && video.ownerId !== session?.id) {
         throw new Error('Video not published');
       }
@@ -74,7 +76,7 @@ export const videoRouter = router({
 
   update: protectedProcedure.input(editVideoSchema).mutation(async ({ ctx, input }) => {
     const session = await getServerSession(ctx.event);
-    const { id, title, description } = input;
+    const { id, title, description, dateDisplay, dateOrder } = input;
 
     // is user the owner
     const video = await ctx.prisma.video.findUnique({ where: { id } });
@@ -84,7 +86,7 @@ export const videoRouter = router({
 
     return await ctx.prisma.video.update({
       where: { id },
-      data: { title, description },
+      data: { title, description, dateDisplay, dateOrder },
     });
   }),
 
@@ -171,6 +173,7 @@ export const videoRouter = router({
         data: { ...videoData.thumbnail, name },
       });
       return ctx.prisma.video.create({
+        // @ts-ignore
         data: {
           title: name,
           description: '',
