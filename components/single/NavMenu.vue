@@ -16,8 +16,8 @@ const menuItems = ref([
   { label: 'All People', icon: 'sym_o_groups', to: '/people' },
   { type: 'separator' },
   { label: 'Legal', icon: 'sym_o_policy', to: '/legal' },
-  { label: 'Reports', icon: 'sym_o_flag', to: '/reports' },
   { type: 'separator' },
+  { label: 'Admin', icon: 'sym_o_admin_panel_settings', to: '/admin' },
   {
     label: 'Logout',
     icon: 'sym_o_logout',

@@ -107,16 +107,17 @@ async function confirmDelete() {
       <template #title>Delete Report</template>
       <template #body>Are you sure you want to delete this report?</template>
       <template #actions>
-        <q-btn outline no-caps label="Cancel" class="tw_text-base" color="dark" v-close-popup />
+        <q-btn outline unelevated no-caps rounded label="Cancel" color="dark" v-close-popup />
         <q-btn
-          outline
           no-caps
+          rounded
+          unelevated
           label="Confirm Delete"
-          class="tw_text-base"
-          color="red"
+          color="primary"
           :loading="loading"
           @click="confirmDelete"
-      /></template>
+        />
+      </template>
     </Modal>
   </div>
 </template>

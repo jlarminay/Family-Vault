@@ -28,7 +28,7 @@ definePageMeta({
             @click="signIn('github')"
             class="tw_bg-[#24292e] tw_text-white"
           >
-            <img src="/svgIcon/github.svg" class="tw_w-6 tw_h-6 tw_mr-2" />
+            <q-icon name="fa-brands fa-github" size="sm" class="tw_mr-2" />
             Login with GitHub
           </q-btn>
           <q-btn
@@ -39,7 +39,7 @@ definePageMeta({
             @click="signIn('discord')"
             class="tw_bg-[#7289da] tw_text-white"
           >
-            <img src="/svgIcon/discord.svg" class="tw_w-6 tw_h-6 tw_mr-2" />
+            <q-icon name="fa-brands fa-discord" size="sm" class="tw_mr-2" />
             Login With Discord
           </q-btn>
           <p>

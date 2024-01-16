@@ -33,6 +33,7 @@
 
 .q-form {
   .q-input,
+  .q-field,
   .q-select {
     @apply tw_mb-2;
   }
