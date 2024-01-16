@@ -23,15 +23,16 @@ export default defineNuxtConfig({
     auth: {
       secret: process.env.NEXTAUTH_SECRET,
     },
-    github: {
-      // call back url = http://localhost:3000/api/auth/callback/github
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    },
-    discord: {
-      // call back url = http://localhost:3000/api/auth/callback/discord
-      clientId: process.env.DISCORD_CLIENT_ID,
-      clientSecret: process.env.DISCORD_CLIENT_SECRET,
+    authCredentials: {
+      // github
+      githubClientId: process.env.GITHUB_CLIENT_ID,
+      githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
+      // discord
+      discordClientId: process.env.DISCORD_CLIENT_ID,
+      discordClientSecret: process.env.DISCORD_CLIENT_SECRET,
+      // google
+      googleClientId: process.env.GOOGLE_CLIENT_ID,
+      googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
     },
     s3: {
       bucket: process.env.S3_BUCKET,

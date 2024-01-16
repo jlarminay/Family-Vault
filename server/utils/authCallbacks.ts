@@ -7,6 +7,7 @@ export default {
     const { user, account, profile, email, credentials } = opts;
     try {
       // check if user in db
+      console.log('provider', account.provider);
       const userInDb = await prisma.user.findUniqueOrThrow({
         where: {
           email: user.email,
@@ -14,13 +15,14 @@ export default {
         },
       });
 
-      // if yes, update user avatar
+      // if yes, update user avatar and last login
       await prisma.user.update({
         where: {
           id: userInDb.id,
         },
         data: {
           avatar: user.image,
+          lastLogin: new Date(),
         },
       });
 

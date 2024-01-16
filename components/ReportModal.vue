@@ -46,24 +46,8 @@ async function submitReport() {
       </q-form>
     </template>
     <template #actions>
-      <q-btn
-        outline
-        no-caps
-        rounded
-        label="Cancel"
-        class="tw_text-base"
-        color="dark"
-        v-close-popup
-      />
-      <q-btn
-        unelevated
-        no-caps
-        rounded
-        label="Submit Report"
-        class="tw_text-base"
-        color="red"
-        @click="submitReport"
-      />
+      <q-btn outline no-caps rounded label="Cancel" color="dark" v-close-popup />
+      <q-btn unelevated no-caps rounded label="Submit Report" color="red" @click="submitReport" />
     </template>
   </Modal>
 </template>

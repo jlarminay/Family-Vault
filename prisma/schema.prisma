@@ -11,12 +11,13 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
-  name     String
-  provider String
-  avatar   String?
-  active   Boolean @default(true)
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  name      String
+  provider  String
+  avatar    String?
+  lastLogin DateTime?
+  active    Boolean   @default(true)
 
   comments       Comment[] @relation(name: "CommentToUser") // can have many comments
   uploadedVideos Video[]   @relation(name: "UserToVideo") // can upload many videos

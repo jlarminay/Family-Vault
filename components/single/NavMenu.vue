@@ -157,7 +157,6 @@ async function clearUploadState() {
         no-caps
         rounded
         label="Cancel"
-        class="tw_text-base"
         color="dark"
         @click="clearUploadState"
       />
@@ -168,7 +167,6 @@ async function clearUploadState() {
         rounded
         :disabled="!videoData?.name || videoData?.error"
         label="Upload Video"
-        class="tw_text-base"
         color="primary"
         @click="uploadVideo"
       />

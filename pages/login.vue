@@ -25,6 +25,17 @@ definePageMeta({
             no-caps
             unelevated
             size="18px"
+            @click="signIn('google')"
+            class="tw_bg-[#4285F4] tw_text-white"
+          >
+            <q-icon name="fa-brands fa-google" size="sm" class="tw_mr-2" />
+            Login with Google
+          </q-btn>
+          <q-btn
+            rounded
+            no-caps
+            unelevated
+            size="18px"
             @click="signIn('github')"
             class="tw_bg-[#24292e] tw_text-white"
           >
