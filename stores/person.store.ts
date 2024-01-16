@@ -41,7 +41,6 @@ export const usePersonStore = defineStore('person', {
 
         // check if person has image
         if (response && newImage?.data?.name.length > 0 && newImage?.error === false) {
-          console.log('uploading image');
           await this.uploadImage(response.id, newImage.data, newImage.name);
         }
 

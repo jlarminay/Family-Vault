@@ -7,7 +7,7 @@ export default {
     const { user, account, profile, email, credentials } = opts;
     try {
       // check if user in db
-      console.log('provider', account.provider);
+      // console.log('provider', account.provider);
       const userInDb = await prisma.user.findUniqueOrThrow({
         where: {
           email: user.email,

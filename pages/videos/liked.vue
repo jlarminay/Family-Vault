@@ -4,7 +4,7 @@ definePageMeta({
 });
 
 const videoStore = useVideoStore();
-const allVideos = await videoStore.getAllLiked();
+const allVideos = ref(await videoStore.getAllLiked());
 </script>
 
 <template>

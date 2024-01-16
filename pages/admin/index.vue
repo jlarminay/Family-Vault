@@ -20,7 +20,7 @@ definePageMeta({
           <li><q-btn to="/admin/users" label="Users" /></li>
           <li><q-btn to="/admin/reports" label="Reports" /></li>
           <li>All videos?</li>
-          <li>All collections</li>
+          <li><q-btn to="/admin/collections" label="Collections" /></li>
           <li>Settings?</li>
         </ul>
       </div>

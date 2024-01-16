@@ -6,6 +6,7 @@ import { personRouter } from './person/routes';
 import { likeRouter } from './like/routes';
 import { reportRouter } from './report/routes';
 import { userRouter } from './user/routes';
+import { collectionRouter } from './collection/routes';
 
 export const appRouter = router({
   video: videoRouter,
@@ -14,6 +15,7 @@ export const appRouter = router({
   like: likeRouter,
   report: reportRouter,
   user: userRouter,
+  collection: collectionRouter,
 });
 
 // export type definition of API

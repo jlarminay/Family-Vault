@@ -26,7 +26,7 @@ export default async () => {
     {
       email: 'bannana@email.com',
       name: 'Big Tom',
-      provider: 'discord',
+      provider: 'google',
       avatar: 'https://i.pravatar.cc/150?img=31',
     },
   ];
