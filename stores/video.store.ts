@@ -94,6 +94,8 @@ export const useVideoStore = defineStore('video', {
         description: videoData.description,
         dateDisplay: videoData.dateDisplay,
         dateOrder: videoData.dateOrder,
+        persons: videoData.persons.map((person: any) => person.value),
+        published: videoData.published === 'Yes' ? true : false,
       });
       return results;
     },

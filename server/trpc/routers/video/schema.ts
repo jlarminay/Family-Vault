@@ -15,7 +15,9 @@ export const processVideoSchema = z.object({
 export const editVideoSchema = z.object({
   id: z.number(),
   title: z.string().max(128),
-  description: z.string().max(1024),
+  description: z.string().max(1024).nullable().optional(),
   dateDisplay: z.string().max(64),
   dateOrder: z.coerce.date(),
+  persons: z.array(z.number()).nullable().optional(),
+  published: z.boolean(),
 });

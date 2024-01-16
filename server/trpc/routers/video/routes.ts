@@ -76,17 +76,26 @@ export const videoRouter = router({
 
   update: protectedProcedure.input(editVideoSchema).mutation(async ({ ctx, input }) => {
     const session = await getServerSession(ctx.event);
-    const { id, title, description, dateDisplay, dateOrder } = input;
 
     // is user the owner
-    const video = await ctx.prisma.video.findUnique({ where: { id } });
+    const video = await ctx.prisma.video.findUnique({ where: { id: input.id } });
     if (video && video.ownerId !== session?.id) {
       throw new Error('Forbidden');
     }
 
     return await ctx.prisma.video.update({
-      where: { id },
-      data: { title, description, dateDisplay, dateOrder },
+      where: { id: input.id },
+      data: {
+        title: input.title,
+        description: input.description,
+        dateDisplay: input.dateDisplay,
+        dateOrder: input.dateOrder,
+        persons: {
+          // Replace the existing persons array with the new input.persons array
+          set: input.persons?.map((person) => ({ id: person })) || [],
+        },
+        published: input.published,
+      },
     });
   }),
 

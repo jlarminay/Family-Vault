@@ -50,7 +50,9 @@ const person = ref(await personStore.getSingle(personId.value));
       </div>
 
       <div class="tw_mt-10">
-        <h2 class="h2">Videos</h2>
+        <h2 class="h2">
+          Videos they are in <span class="tw_text-lg">({{ person.videos.length }})</span>
+        </h2>
         <div
           v-if="person.videos.length > 0"
           class="tw_flex tw_gap-0 tw_justify-start tw_mt-4 tw_flex-wrap tw_items-start"

@@ -5,16 +5,39 @@ definePageMeta({
 const route = useRoute();
 const router = useRouter();
 const videoStore = useVideoStore();
+const personStore = usePersonStore();
 
 const form = ref<any>(null);
 const videoId = ref<number>(parseInt(route.params.id as string));
+const allPersons = ref(await personStore.getAll());
 const video = ref(await videoStore.getSingle(videoId.value));
 const videoEdit = ref<any>({});
 const loading = ref(false);
 
+const cleanedPersons = computed(() => {
+  return allPersons.value
+    .filter((person: any) => {
+      // return true;
+      if (!videoEdit.value.persons) return true;
+      return !videoEdit.value.persons.some((p: any) => p.value === person.id);
+    })
+    .map((person: any) => {
+      return {
+        label: person.name,
+        value: person.id,
+      };
+    });
+});
+
 onMounted(() => {
-  videoEdit.value = JSON.parse(JSON.stringify(video.value));
-  videoEdit.value.published = videoEdit.value.published ? 'Yes' : 'No';
+  let newData = JSON.parse(JSON.stringify(video.value));
+  // clean data
+  newData.published = newData.published ? 'Yes' : 'No';
+  newData.persons = newData.persons.map((person: any) => {
+    return { label: person.name, value: person.id };
+  });
+  // return
+  videoEdit.value = newData;
 });
 
 async function updateVideo() {
@@ -42,8 +65,9 @@ async function updateVideo() {
 
     <main class="tw_px-6 tw_py-4 tw_max-w-[1000px] tw_mx-auto tw_mb-8">
       <div class="tw_flex tw_gap-4 tw_items-start tw_relative">
+        <!-- Video Details -->
         <div
-          class="tw_w-[350px] tw_border tw_bg-gray-50 tw_rounded tw_p-4 tw_overflow-hidden tw_sticky tw_top-[84px]"
+          class="tw_w-[350px] tw_min-w-[350px] tw_border tw_bg-gray-50 tw_rounded tw_p-4 tw_overflow-hidden tw_sticky tw_top-[84px]"
         >
           <h2 class="h2 tw_font-bold tw_mb-4">Video Details</h2>
           <!-- <img :src="video.thumbnail.path" class="tw_w-full tw_my-2 tw_rounded" /> -->
@@ -70,6 +94,8 @@ async function updateVideo() {
 
           <!-- <pre>{{ video }}</pre> -->
         </div>
+
+        <!-- Edit Video Data -->
         <div class="tw_grow tw_min-w-0 tw_p-4">
           <h2 class="h2 tw_font-bold tw_mb-2">Edit Video Data</h2>
 
@@ -146,7 +172,10 @@ async function updateVideo() {
                 no-error-icon
                 v-model="videoEdit.persons"
                 label="Video Members"
-                :options="[]"
+                map-options
+                multiple
+                use-chips
+                :options="cleanedPersons"
               />
             </div>
 
@@ -158,7 +187,12 @@ async function updateVideo() {
                 no-error-icon
                 v-model="videoEdit.published"
                 label="Publish Status"
-                :options="['Video is public', 'Video is private']"
+                emit-value
+                map-options
+                :options="[
+                  { label: 'Video is public', value: 'Yes' },
+                  { label: 'Video is private', value: 'No' },
+                ]"
                 required
                 :rules="[(val: string) => !!val || 'Required']"
               />
