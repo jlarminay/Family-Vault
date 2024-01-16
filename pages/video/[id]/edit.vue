@@ -121,27 +121,19 @@ async function updateVideo() {
                 no-error-icon
                 v-model="videoEdit.description"
                 label="Description"
-                required
                 maxlength="1024"
                 autogrow
                 counter
-                :rules="[
-                  (val: string) => !!val || 'Required',
-                  (val: string) => val.length <= 1024 || 'Max 1024 characters',
-                ]"
+                :rules="[(val: string) => val.length <= 1024 || 'Max 1024 characters']"
               />
               <q-input
                 outlined
                 no-error-icon
                 v-model="videoEdit.dateDisplay"
                 label="Date Taken (Display)"
-                required
                 maxlength="64"
                 counter
-                :rules="[
-                  (val: string) => !!val || 'Required',
-                  (val: string) => val.length <= 64 || 'Max 64 characters',
-                ]"
+                :rules="[(val: string) => val.length <= 64 || 'Max 64 characters']"
               />
               <q-input
                 outlined

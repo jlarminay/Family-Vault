@@ -182,13 +182,14 @@ export const videoRouter = router({
         data: { ...videoData.thumbnail, name },
       });
       return ctx.prisma.video.create({
-        // @ts-ignore
         data: {
           title: name,
           description: '',
           ownerId: session?.id || 0,
           videoId: dbVideo.id,
           thumbnailId: dbThumbnail.id,
+          dateDisplay: '',
+          dateOrder: new Date(),
           published: false,
         },
       });

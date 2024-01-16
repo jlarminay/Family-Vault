@@ -44,7 +44,7 @@ model Video {
   id          Int       @id @default(autoincrement())
   title       String
   description String?
-  dateDisplay String
+  dateDisplay String?
   dateOrder   DateTime  @db.Date
   ownerId     Int
   videoId     Int
