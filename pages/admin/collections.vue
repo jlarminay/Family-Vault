@@ -104,7 +104,7 @@ async function saveCollection() {
             </q-td>
           </template>
           <template #body-cell-videos="props">
-            <q-td :props="props"> {{ props.row.videos.length }} Videos </q-td>
+            <q-td :props="props"> {{ props.row.videos }} Videos </q-td>
           </template>
           <template #body-cell-actions="props">
             <q-td :props="props" class="tw_w-0">

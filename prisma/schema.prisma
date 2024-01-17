@@ -63,7 +63,7 @@ model Video {
   report      Report[]     @relation(name: "ReportToVideo") // can be reported multiple times
   allowList   User[]       @relation(name: "UserToVideo1")
   blockList   User[]       @relation(name: "UserToVideo2")
-  collection  Collection[] @relation(name: "VideoToCollection")
+  collections Collection[] @relation(name: "VideoToCollection")
 }
 
 model Like {

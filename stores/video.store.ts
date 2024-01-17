@@ -95,6 +95,7 @@ export const useVideoStore = defineStore('video', {
         dateDisplay: videoData.dateDisplay,
         dateOrder: videoData.dateOrder,
         persons: videoData.persons.map((person: any) => person.value),
+        collections: videoData.collections.map((collection: any) => collection.value),
         published: videoData.published === 'Yes' ? true : false,
       });
       return results;

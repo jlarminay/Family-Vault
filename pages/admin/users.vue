@@ -68,7 +68,7 @@ async function saveUser() {
         <q-table
           flat
           :columns="[
-            { name: 'icons', label: '', field: 'icons', align: 'left', sortable: true },
+            { name: 'icons', label: '', field: 'icons', align: 'left', sortable: false },
             { name: 'name', label: 'Name', field: 'name', align: 'left', sortable: true },
             { name: 'email', label: 'Email', field: 'email', align: 'left', sortable: true },
             {

@@ -6,10 +6,12 @@ const route = useRoute();
 const router = useRouter();
 const videoStore = useVideoStore();
 const personStore = usePersonStore();
+const collectionStore = useCollectionStore();
 
 const form = ref<any>(null);
 const videoId = ref<number>(parseInt(route.params.id as string));
 const allPersons = ref(await personStore.getAll());
+const allCollections = ref(await collectionStore.getAll());
 const video = ref(await videoStore.getSingle(videoId.value));
 const videoEdit = ref<any>({});
 const loading = ref(false);
@@ -24,7 +26,22 @@ const cleanedPersons = computed(() => {
     .map((person: any) => {
       return {
         label: person.name,
+        birthday: person.birthday.split('T')[0],
         value: person.id,
+      };
+    });
+});
+const cleanedCollections = computed(() => {
+  return allCollections.value
+    .filter((collection: any) => {
+      // return true;
+      if (!videoEdit.value.collections) return true;
+      return !videoEdit.value.collections.some((p: any) => p.value === collection.id);
+    })
+    .map((collection: any) => {
+      return {
+        label: collection.name,
+        value: collection.id,
       };
     });
 });
@@ -35,6 +52,9 @@ onMounted(() => {
   newData.published = newData.published ? 'Yes' : 'No';
   newData.persons = newData.persons.map((person: any) => {
     return { label: person.name, value: person.id };
+  });
+  newData.collections = newData.collections.map((collection: any) => {
+    return { label: collection.name, value: collection.id };
   });
   // return
   videoEdit.value = newData;
@@ -167,8 +187,46 @@ async function updateVideo() {
                 map-options
                 multiple
                 use-chips
+                hint=""
                 :options="cleanedPersons"
-              />
+              >
+                <template v-slot:option="scope">
+                  <q-item v-bind="scope.itemProps">
+                    <q-item-section>
+                      <q-item-label>{{ scope.opt.label }}</q-item-label>
+                      <q-item-label caption>{{
+                        $dayjs(scope.opt.birthday).format('MMM D, YYYY')
+                      }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </template>
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="tw_italic tw_opacity-70 tw_text-base tw_text-center">
+                      No options
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+              <q-select
+                outlined
+                no-error-icon
+                v-model="videoEdit.collections"
+                label="Video Collections"
+                map-options
+                multiple
+                use-chips
+                hint=""
+                :options="cleanedCollections"
+              >
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="tw_italic tw_opacity-70 tw_text-base tw_text-center">
+                      No options
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
             </div>
 
             <!-- Security -->

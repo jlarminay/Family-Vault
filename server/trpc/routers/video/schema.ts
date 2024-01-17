@@ -19,5 +19,6 @@ export const editVideoSchema = z.object({
   dateDisplay: z.string().max(64).nullable().optional(),
   dateOrder: z.coerce.date(),
   persons: z.array(z.number()).nullable().optional(),
+  collections: z.array(z.number()).nullable().optional(),
   published: z.boolean(),
 });

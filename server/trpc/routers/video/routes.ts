@@ -54,6 +54,7 @@ export const videoRouter = router({
         where: { id },
         include: {
           persons: true,
+          collections: true,
           video: true,
           thumbnail: true,
           owner: {
@@ -91,8 +92,10 @@ export const videoRouter = router({
         dateDisplay: input.dateDisplay,
         dateOrder: input.dateOrder,
         persons: {
-          // Replace the existing persons array with the new input.persons array
           set: input.persons?.map((person) => ({ id: person })) || [],
+        },
+        collections: {
+          set: input.collections?.map((collection) => ({ id: collection })) || [],
         },
         published: input.published,
       },

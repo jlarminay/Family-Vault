@@ -5,19 +5,31 @@ import { z } from 'zod';
 
 export const collectionRouter = router({
   getAll: protectedProcedure.query(async ({ ctx }) => {
-    const session = await getServerSession(ctx.event);
-    return await ctx.prisma.collection.findMany({ include: { videos: true } });
+    const collections = await ctx.prisma.collection.findMany({ include: { videos: true } });
+    return collections.map((c) => ({
+      ...c,
+      videos: c.videos.length,
+    }));
   }),
   getSingle: protectedProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
+      const session = await getServerSession(ctx.event);
       const { id } = input;
-      return await ctx.prisma.collection.findUniqueOrThrow({
-        where: { id },
+
+      const collection = await ctx.prisma.collection.findUniqueOrThrow({
+        where: {
+          id,
+        },
         include: {
           videos: { include: { video: true, thumbnail: true } },
         },
       });
+
+      return {
+        ...collection,
+        videos: collection.videos.filter((v) => v.published),
+      };
     }),
 
   create: protectedProcedure.input(createCollectionSchema).mutation(async ({ ctx, input }) => {
