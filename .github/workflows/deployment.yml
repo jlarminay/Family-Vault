@@ -1,0 +1,36 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: pulotum/larminay-vault:${{ github.run_id }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    container:
+      image: pulotum/larminay-vault:infrastructure
+    steps:
+      - name: Deploy to remote server
+        uses: actions/checkout@v2
+        run:
+          - export RESET_DATABASE=true
+          - export IMAGE_NAME=pulotum/larminay-vault:${{ github.run_id }}
+          - cd infrastructure
+          - bash deploy.sh

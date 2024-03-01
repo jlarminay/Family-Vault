@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "start": "docker-compose  up -d",
+    "exec": "docker exec -it infrastructure /bin/bash",
+    "push-image": "docker build -t pulotum/larminay-vault:infrastructure . && docker push pulotum/larminay-vault:infrastructure"
+  }
+}

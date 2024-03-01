@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+model User {
+  id             Int       @id @default(autoincrement())
+  email          String    @unique
+  name           String
+  provider       String
+  avatar         String?
+  lastLogin      DateTime?
+  active         Boolean   @default(true)
+  comments       Comment[] @relation(name: "CommentToUser") // can have many comments
+  uploadedVideos Video[]   @relation(name: "UserToVideo") // can upload many videos
+  likes          Like[]    @relation(name: "LikeToUser") // can have many likes
+  report         Report[]  @relation(name: "ReportToUser") // can report many videos
+  person         Person?   @relation(name: "PersonToUser")
+  allowedVideos  Video[]   @relation(name: "UserToVideo1")
+  blockedVideos  Video[]   @relation(name: "UserToVideo2")
+}
+
+model Person {
+  id        Int       @id @default(autoincrement())
+  name      String
+  gender    String?
+  birthday  DateTime? @db.Date
+  deathday  DateTime? @db.Date
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  imageId   Int?
+  image     File?     @relation(name: "FileToPerson", fields: [imageId], references: [id])
+  userId    Int?      @unique
+  user      User?     @relation(name: "PersonToUser", fields: [userId], references: [id])
+  videos    Video[]   @relation(name: "PersonToVideo") // can be in many videos
+}
+
+model Video {
+  id          Int          @id @default(autoincrement())
+  title       String
+  description String?
+  dateDisplay String?
+  dateOrder   DateTime     @db.Date
+  published   Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  ownerId     Int
+  owner       User         @relation(name: "UserToVideo", fields: [ownerId], references: [id])
+  videoId     Int
+  video       File         @relation(name: "VideoVideo", fields: [videoId], references: [id])
+  thumbnailId Int?
+  thumbnail   File?        @relation(name: "VideoThumbnail", fields: [thumbnailId], references: [id])
+  comments    Comment[]    @relation(name: "CommentToVideo") // can have many comments
+  persons     Person[]     @relation(name: "PersonToVideo") // can contain many people
+  likes       Like[]       @relation(name: "LikeToVideo") // can have multiple likes
+  report      Report[]     @relation(name: "ReportToVideo") // can be reported multiple times
+  allowList   User[]       @relation(name: "UserToVideo1")
+  blockList   User[]       @relation(name: "UserToVideo2")
+  collections Collection[] @relation(name: "VideoToCollection")
+}
+
+model Like {
+  // user can only like video once
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  user      User     @relation(name: "LikeToUser", fields: [userId], references: [id])
+  videoId   Int
+  video     Video    @relation(name: "LikeToVideo", fields: [videoId], references: [id])
+
+  @@unique([userId, videoId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  text      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  user      User     @relation(name: "CommentToUser", fields: [userId], references: [id])
+  videoId   Int
+  video     Video    @relation(name: "CommentToVideo", fields: [videoId], references: [id])
+}
+
+model Report {
+  id        Int      @id @default(autoincrement())
+  report    String
+  createdAt DateTime @default(now())
+  userId    Int
+  user      User     @relation(name: "ReportToUser", fields: [userId], references: [id])
+  videoId   Int
+  video     Video    @relation(name: "ReportToVideo", fields: [videoId], references: [id])
+}
+
+model File {
+  id        Int      @id @default(autoincrement())
+  name      String
+  path      String   @unique
+  type      String
+  size      Int
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  video     Video[]  @relation(name: "VideoVideo")
+  thumbnail Video[]  @relation(name: "VideoThumbnail")
+  person    Person[] @relation(name: "FileToPerson")
+}
+
+model Collection {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  videos      Video[]  @relation(name: "VideoToCollection")
+}

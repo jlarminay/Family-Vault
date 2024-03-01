@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  infrastructure:
+    container_name: infrastructure
+    image: pulotum/larminay-vault:infrastructure
+    # build:
+    #   context: ./
+    #   dockerfile: Dockerfile
+    volumes:
+      - ../:/home
+      - ./.ssh/:/root/.ssh/
+    stdin_open: true
+    tty: true
+    entrypoint: /bin/bash
+    env_file: .env
+    working_dir: /home/infrastructure
