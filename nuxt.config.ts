@@ -1,6 +1,7 @@
 import { resolve } from 'node:path';
 
 export default defineNuxtConfig({
+  ssr: false,
   devtools: { enabled: true },
   modules: [
     '@nuxtjs/tailwindcss',
@@ -45,13 +46,14 @@ export default defineNuxtConfig({
       discordUrl: process.env.WEBHOOK_DISCORD_URL,
     },
     public: {
-      baseUrl: process.env.BASE_URL,
+      baseUrl: process.env.AUTH_ORIGIN,
       s3Endpoint: process.env.S3_ENDPOINT,
       s3Bucket: process.env.S3_BUCKET,
     },
   },
 
   auth: {
+    origin: process.env.AUTH_ORIGIN,
     provider: {
       type: 'authjs',
     },
