@@ -5,7 +5,7 @@ networks:
 
 services:
   lv-server:
-    container_name: lv-client
+    container_name: lv-server
     image: ${IMAGE_NAME}
     ports:
       - 3000:3000

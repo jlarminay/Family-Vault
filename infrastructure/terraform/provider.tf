@@ -14,7 +14,7 @@ terraform {
   backend "s3" {
     skip_credentials_validation = true
     skip_metadata_api_check     = true
-    endpoint                    = "nyc3.digitaloceanspaces.com"
+    endpoint                    = "sfo2.digitaloceanspaces.com"
     region                      = "ca-central-1" // needed
     bucket                      = "terraform-state"
     key                         = "terraform.tfstate"
