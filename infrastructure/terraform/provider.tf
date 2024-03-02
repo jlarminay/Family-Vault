@@ -16,7 +16,7 @@ terraform {
     skip_metadata_api_check     = true
     endpoint                    = "sfo2.digitaloceanspaces.com"
     region                      = "ca-central-1" // needed
-    bucket                      = "terraform-state"
+    bucket                      = "larminay-vault-storage"
     key                         = "terraform.tfstate"
   }
 }
