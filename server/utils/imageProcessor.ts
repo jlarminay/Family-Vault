@@ -22,7 +22,7 @@ export default class ImageProcessor {
     finalData.image = {
       name: finalData.image.name,
       type: 'image',
-      path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/persons/${finalData.randomString}_${finalData.image.name}`,
+      path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${process.env.ENVIRONMENT}/persons/${finalData.randomString}_${finalData.image.name}`,
       size: statSync(resolve(this.imagePath)).size,
       metadata: {
         resolution: `${dimensions.width}x${dimensions.height}`,

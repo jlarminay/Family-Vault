@@ -14,10 +14,14 @@ terraform {
   backend "s3" {
     skip_credentials_validation = true
     skip_metadata_api_check     = true
-    endpoint                    = "sfo2.digitaloceanspaces.com"
-    region                      = "ca-central-1" // needed
+    skip_requesting_account_id  = true
+    skip_s3_checksum            = true
+    region                      = "us-west-1" // needed
     bucket                      = "larminay-vault-storage"
     key                         = "terraform.tfstate"
+    endpoints = {
+      s3 = "https://sfo2.digitaloceanspaces.com"
+    }
   }
 }
 
@@ -25,6 +29,6 @@ provider "digitalocean" {
   token = var.do_token
 }
 provider "cloudflare" {
-  api_key = var.cf_api_key
-  email   = var.cf_email
+  api_token = var.cf_api_token
+  email     = var.cf_email
 }

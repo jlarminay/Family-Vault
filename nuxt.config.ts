@@ -22,18 +22,19 @@ export default defineNuxtConfig({
   // environment variables
   runtimeConfig: {
     auth: {
+      baseUrl: process.env.AUTH_ORIGIN,
       secret: process.env.NEXTAUTH_SECRET,
     },
     authCredentials: {
       // github
-      githubClientId: process.env.GITHUB_CLIENT_ID,
-      githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
+      githubClientId: process.env.AUTH_GITHUB_CLIENT_ID,
+      githubClientSecret: process.env.AUTH_GITHUB_CLIENT_SECRET,
       // discord
-      discordClientId: process.env.DISCORD_CLIENT_ID,
-      discordClientSecret: process.env.DISCORD_CLIENT_SECRET,
+      discordClientId: process.env.AUTH_DISCORD_CLIENT_ID,
+      discordClientSecret: process.env.AUTH_DISCORD_CLIENT_SECRET,
       // google
-      googleClientId: process.env.GOOGLE_CLIENT_ID,
-      googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      googleClientId: process.env.AUTH_GOOGLE_CLIENT_ID,
+      googleClientSecret: process.env.AUTH_GOOGLE_CLIENT_SECRET,
     },
     s3: {
       bucket: process.env.S3_BUCKET,

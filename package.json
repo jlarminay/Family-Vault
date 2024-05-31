@@ -29,6 +29,7 @@
     "@quasar/extras": "^1.16.9",
     "@trpc/client": "^10.44.1",
     "@trpc/server": "^10.44.1",
+    "ffmpeg": "^0.0.4",
     "fluent-ffmpeg": "^2.1.2",
     "image-size": "^1.1.1",
     "node-fetch": "^3.3.2",

@@ -1,8 +1,9 @@
-import { PrismaClient } from '@prisma/client';
+import pkg from '@prisma/client';
 import S3 from '../../server/utils/s3.js';
 import { resolve } from 'path';
 import { createReadStream } from 'fs';
 
+const { PrismaClient } = pkg;
 const prisma = new PrismaClient();
 const s3 = new S3();
 
