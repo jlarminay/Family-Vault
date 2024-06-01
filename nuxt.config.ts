@@ -1,6 +1,7 @@
 import { resolve } from 'node:path';
 
 export default defineNuxtConfig({
+  telemetry: false,
   ssr: false,
   devtools: { enabled: true },
   modules: [
