@@ -43,7 +43,17 @@
     ## Install dependencies
     - name: Install dependencies
       apt:
-        name: ['docker.io', 'docker-compose', 'ffmpeg', 'rsync', 'net-tools']
+        name: [
+          'docker.io', 
+          'docker-compose', 
+          'ffmpeg', 
+          'rsync', 
+          'net-tools', 
+          'debian-keyring', 
+          'debian-archive-keyring', 
+          'apt-transport-https',
+          'curl'
+        ]
         state: present
         update_cache: true
       retries: 5
@@ -127,4 +137,8 @@
 
   handlers:
     - name: Restart Caddy
-      shell: caddy reload --config /etc/caddy/Caddyfile
+      shell: |
+        caddy fmt --overwrite
+        caddy reload --config Caddyfile
+    args:
+      executable: /etc/caddy
