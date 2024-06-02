@@ -73,7 +73,7 @@ export default class VideoProcessor {
       finalData.video = {
         name: finalData.video.name,
         type: 'video',
-        path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/videos/${finalData.randomString}_${finalData.video.name}`,
+        path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${process.env.ENVIRONMENT}/videos/${finalData.randomString}_${finalData.video.name}`,
         size: size,
         metadata: {
           resolution: resolution,
@@ -96,7 +96,7 @@ export default class VideoProcessor {
       finalData.thumbnail = {
         name: finalData.thumbnail.name,
         type: 'image',
-        path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/videos/${finalData.randomString}_${finalData.thumbnail.name}`,
+        path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${process.env.ENVIRONMENT}/videos/${finalData.randomString}_${finalData.thumbnail.name}`,
         size: statSync(resolve('./.tmp/' + finalData.thumbnail.name)).size,
         metadata: {
           resolution: `${dimensions.width}x${dimensions.height}`,

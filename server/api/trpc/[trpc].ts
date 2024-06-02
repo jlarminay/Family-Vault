@@ -1,7 +1,8 @@
 import { createNuxtApiHandler } from 'trpc-nuxt';
 import { appRouter } from '@/server/trpc/routers';
-import { PrismaClient } from '@prisma/client';
+import pkg from '@prisma/client';
 
+const { PrismaClient } = pkg;
 const prisma = new PrismaClient();
 
 // export API handler

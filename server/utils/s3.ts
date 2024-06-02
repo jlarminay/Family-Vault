@@ -26,8 +26,9 @@ export default class S3 {
       // upload to s3
       const command = new PutObjectCommand({
         Bucket: process.env.S3_BUCKET,
-        Key: key,
+        Key: `${process.env.ENVIRONMENT}/${key}`,
         Body: body,
+        ACL: 'public-read',
       });
       const response = await this.client.send(command);
 

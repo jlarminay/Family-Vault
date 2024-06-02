@@ -105,6 +105,8 @@ export const videoRouter = router({
   uploadVideo: protectedProcedure.input(uploadVideoSchema).mutation(async ({ ctx, input }) => {
     const { key, count, packet } = input;
 
+    console.log('uploading packet', key, count);
+
     try {
       // create folder if not exists
       if (!fs.existsSync('./.tmp')) {
@@ -122,6 +124,8 @@ export const videoRouter = router({
   processVideo: protectedProcedure.input(processVideoSchema).mutation(async ({ ctx, input }) => {
     const session = await getServerSession(ctx.event);
     const { key, packets, name } = input;
+
+    console.log('processing video', key, packets, name);
 
     let fileLocation: string = `./.tmp/${key}_${name}`;
     let videoData: any = {};

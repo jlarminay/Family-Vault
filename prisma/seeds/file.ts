@@ -1,10 +1,11 @@
-import { PrismaClient } from '@prisma/client';
+import pkg from '@prisma/client';
 import S3 from '../../server/utils/s3.js';
 import VideoProcessor from '../../server/utils/videoProcessor.js';
 import ImageProcessor from '../../server/utils/imageProcessor.js';
 import { resolve } from 'path';
 import { createReadStream, statSync } from 'fs';
 
+const { PrismaClient } = pkg;
 const prisma = new PrismaClient();
 const s3 = new S3();
 

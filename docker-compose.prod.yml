@@ -4,23 +4,6 @@ networks:
   lv-network:
 
 services:
-  lv-server:
-    container_name: lv-client
-    image: ${IMAGE_NAME}
-    ports:
-      - 3000:3000
-    networks:
-      - lv-network
-    environment:
-      - VITE_ENVIRONMENT=${ENVIRONMENT}
-      - VITE_DOMAIN=${DOMAIN}
-      - VITE_AUTH0_DOMAIN=${AUTH0_DOMAIN}
-      - VITE_AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
-      - VITE_CLIENT_ID=${CLIENT_ID}
-      - VITE_REDIRECT_URI=${REDIRECT_URI}
-    depends_on:
-      - lv-postgres
-
   lv-postgres:
     container_name: lv-postgres
     image: postgres:16.1

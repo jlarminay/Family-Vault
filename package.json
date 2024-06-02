@@ -4,13 +4,14 @@
   "type": "module",
   "scripts": {
     "start": "npm i && node start.js --dev",
-    "build": "nuxt build",
+    "build": "nuxt build --dotenv .env.production",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "docker": "docker-compose -f docker-compose.yml up -d",
     "db:reset": "prisma migrate reset --skip-seed -f",
+    "db:deploy": "prisma migrate deploy",
     "db:seed": "prisma migrate reset -f",
     "db:migrate": "prisma migrate dev --name",
     "test": "playwright test"
@@ -29,6 +30,7 @@
     "@quasar/extras": "^1.16.9",
     "@trpc/client": "^10.44.1",
     "@trpc/server": "^10.44.1",
+    "ffmpeg": "^0.0.4",
     "fluent-ffmpeg": "^2.1.2",
     "image-size": "^1.1.1",
     "node-fetch": "^3.3.2",
