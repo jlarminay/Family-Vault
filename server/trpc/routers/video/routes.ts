@@ -125,7 +125,8 @@ export const videoRouter = router({
     const { key, packets, name } = input;
     const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
 
-    let fileLocation: string = `${targetDir}/${key}_${name}`;
+    let cleanedName = name.replace(/\s+/g, '-').toLowerCase();
+    let fileLocation: string = `${targetDir}/${key}_${cleanedName}`;
     let videoData: any = {};
 
     try {
@@ -162,7 +163,7 @@ export const videoRouter = router({
 
         await new Promise((resolve) => setTimeout(resolve, 1000));
       } catch (e) {
-        console.log('failed to combine packets', key, packets, name, e);
+        console.log('failed to combine packets', key, packets, cleanedName, e);
         return false;
       }
 
@@ -171,7 +172,7 @@ export const videoRouter = router({
         const processing = new VideoProcessor(fileLocation);
         videoData = await processing.prepareNewVideo();
       } catch (e) {
-        console.log('failed to process video', key, packets, name, e);
+        console.log('failed to process video', key, packets, cleanedName, e);
         return false;
       }
 

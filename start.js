@@ -6,9 +6,6 @@ function main() {
   // ----------------------------------------
   // for local development
   if (args.includes('--dev')) {
-    // fix manual overrides
-    shell.exec('node ./overrides/index.js');
-
     shell.rm('-rf', './.tmp');
     shell.exec('npm run docker');
     shell.exec('npx prisma generate');
