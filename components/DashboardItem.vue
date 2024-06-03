@@ -4,6 +4,10 @@ defineProps({
     type: Object,
     required: true,
   },
+  liked: {
+    type: Boolean,
+    default: false,
+  },
 });
 </script>
 
@@ -25,10 +29,15 @@ defineProps({
           name="sym_o_lock"
           class="tw_absolute tw_top-1 tw_left-1 tw_text-white tw_bg-red-600 tw_text-xl tw_rounded-full tw_p-1"
         />
+        <q-icon
+          v-if="liked"
+          name="o_favorite"
+          class="tw_absolute tw_top-1 tw_right-1 tw_text-red-600 tw_text-xl tw_rounded-full tw_p-1"
+        />
       </div>
       <div class="tw_p-2">
         <p class="tw_text-base tw_truncate tw_font-bold">{{ video.title }}</p>
-        <p class="tw_text-gray-500 tw_text-sm">
+        <p class="tw_text-gray-500 tw_text-sm tw_truncate">
           <!-- {{ $dayjs(video.createdAt).format('MMM D, YYYY') }} -->
           {{ video.dateDisplay }}
         </p>

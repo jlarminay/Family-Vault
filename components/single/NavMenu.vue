@@ -4,19 +4,13 @@ const { data: authData } = useAuth();
 const videoStore = useVideoStore();
 const search = ref('');
 const menuItems = ref([
-  {
-    label: 'My Profile',
-    if: authData.value?.person?.id,
-    icon: 'sym_o_face',
-    to: `/people/${authData.value?.person?.id}`,
-  },
-  { label: 'Liked Videos', icon: 'sym_o_favorite', to: '/videos/liked' },
-  { label: 'My Videos', icon: 'sym_o_movie', to: '/videos/mine' },
+  { label: 'My Profile', icon: 'sym_o_face', to: '/account', if: authData.value?.person?.id },
+
   { type: 'separator' },
   { label: 'All People', icon: 'sym_o_groups', to: '/people' },
+
   { type: 'separator' },
   { label: 'Legal', icon: 'sym_o_policy', to: '/legal' },
-  { type: 'separator' },
   { label: 'Admin', icon: 'sym_o_admin_panel_settings', to: '/admin' },
   {
     label: 'Logout',

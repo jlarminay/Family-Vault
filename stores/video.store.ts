@@ -1,6 +1,4 @@
 import { defineStore } from 'pinia';
-import fs from 'fs';
-import video from '~/prisma/seeds/video';
 
 export const useVideoStore = defineStore('video', {
   state: () => ({
@@ -13,38 +11,10 @@ export const useVideoStore = defineStore('video', {
   getters: {},
 
   actions: {
-    async getAllPublic() {
+    async getAll() {
       const { $trpc } = useNuxtApp();
 
-      let results = await $trpc.video.getAllPublic.query();
-      results = results.map((video: any) => {
-        return {
-          ...video,
-          // clean thumbnail url
-          thumbnail: video.thumbnail || { path: 'https://placehold.co/640x360' },
-        };
-      });
-
-      return results;
-    },
-    async getAllLiked() {
-      const { $trpc } = useNuxtApp();
-
-      let results = await $trpc.video.getAllLiked.query();
-      results = results.map((video: any) => {
-        return {
-          ...video,
-          // clean thumbnail url
-          thumbnail: video.thumbnail || { path: 'https://placehold.co/640x360' },
-        };
-      });
-
-      return results;
-    },
-    async getAllMine() {
-      const { $trpc } = useNuxtApp();
-
-      let results = await $trpc.video.getAllMine.query();
+      let results = await $trpc.video.getAll.query();
       results = results.map((video: any) => {
         return {
           ...video,
@@ -81,8 +51,6 @@ export const useVideoStore = defineStore('video', {
       let results = await $trpc.video.getSingle.query({ id });
       return {
         ...results,
-        // clean thumbnail url
-        thumbnail: results.thumbnail || { path: 'https://placehold.co/640x360' },
       };
     },
     async update(videoData: any) {

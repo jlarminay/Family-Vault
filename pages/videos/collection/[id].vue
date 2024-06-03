@@ -16,7 +16,7 @@ const collection = ref(await collectionStore.getSingle(parseInt(route.params.id 
   <div>
     <SingleNavMenu />
 
-    <main class="tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto tw_border">
+    <main class="tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto">
       <h1 class="h1">{{ collection.name }}</h1>
       <p class="tw_text-lg tw_whitespace-pre-line">{{ collection.description }}</p>
       <h2 class="h2 tw_mt-6">

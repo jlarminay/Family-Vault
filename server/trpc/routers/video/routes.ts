@@ -7,27 +7,14 @@ import VideoProcessor from '@/server/utils/videoProcessor.js';
 import S3 from '@/server/utils/s3.js';
 
 export const videoRouter = router({
-  getAllPublic: protectedProcedure.query(async ({ ctx }) => {
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    const session = await getServerSession(ctx.event);
     return await ctx.prisma.video.findMany({
-      where: { published: true },
+      where: {
+        OR: [{ published: true }, { ownerId: session?.id }],
+      },
       include: { video: true, thumbnail: true },
       orderBy: { createdAt: 'desc' },
-    });
-  }),
-  getAllLiked: protectedProcedure.query(async ({ ctx }) => {
-    const session = await getServerSession(ctx.event);
-
-    return await ctx.prisma.video.findMany({
-      where: { published: true, likes: { some: { userId: session?.id } } },
-      include: { video: true, thumbnail: true },
-    });
-  }),
-  getAllMine: protectedProcedure.query(async ({ ctx }) => {
-    const session = await getServerSession(ctx.event);
-
-    return await ctx.prisma.video.findMany({
-      where: { ownerId: session?.id },
-      include: { video: true, thumbnail: true },
     });
   }),
 
