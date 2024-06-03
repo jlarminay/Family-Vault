@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import S3 from '../../server/utils/s3.js';
 import VideoProcessor from '../../server/utils/videoProcessor.js';
 import ImageProcessor from '../../server/utils/imageProcessor.js';
+import fs from 'fs';
 
 const prisma = new PrismaClient();
 const s3 = new S3();
@@ -9,6 +10,9 @@ const s3 = new S3();
 export default async () => {
   // define seeds
   const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+  if (fs.existsSync(targetDir)) fs.rmdirSync(targetDir, { recursive: true });
+  if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir);
+
   let count = 0;
   const newData = [
     './videos/demo1.mp4',
@@ -33,16 +37,19 @@ export default async () => {
     if (type === 'mp4') {
       const processing = new VideoProcessor('./prisma/seeds/' + newData[i]);
       const results = await processing.prepareNewVideo();
+      console.log('results');
 
       // upload to s3
       await s3.upload({
         key: `videos/${results.randomString}_${results.video.name}`,
         filePath: './prisma/seeds/videos/' + results.video.name,
       });
+      console.log('uploaded video', results.randomString, results.video.name);
       await s3.upload({
         key: `videos/${results.randomString}_${results.thumbnail.name}`,
         filePath: `${targetDir}/${results.thumbnail.name}`,
       });
+      console.log('uploaded thumbnail', results.randomString, results.thumbnail.name);
 
       // insert into db
       await prisma.file.create({ data: results.video });

@@ -175,7 +175,7 @@ export const videoRouter = router({
         const processing = new VideoProcessor(fileLocation);
         console.log('processing', processing);
         videoData = await processing.prepareNewVideo();
-        console.log('metadata ready', key, name, videoData);
+        console.log('metadata ready', key, name);
       } catch (e) {
         console.log('failed to process video', key, packets, name, e);
         return false;
@@ -207,7 +207,7 @@ export const videoRouter = router({
         const dbThumbnail = await ctx.prisma.file.create({
           data: { ...videoData.thumbnail, name },
         });
-        console.log('inserted into db', key, name, dbVideo, dbThumbnail);
+        console.log('inserted into db', key, name);
         return ctx.prisma.video.create({
           data: {
             title: name,
