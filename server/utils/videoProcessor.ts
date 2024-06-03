@@ -66,10 +66,8 @@ export default class VideoProcessor {
     // // // manage video
     {
       finalData.video.name = this.videoPath.split('/').pop();
-      console.log('starting metadata', finalData.video.name);
       // get metadata
       const { duration, resolution, size } = await this.getMetadata();
-      console.log('metadata', duration, resolution, size);
       finalData.video = {
         name: finalData.video.name,
         type: 'video',
@@ -87,16 +85,13 @@ export default class VideoProcessor {
       finalData.thumbnail.name = finalData.video.name.replace('.mp4', '.webp');
 
       // generate
-      console.log('starting thumbnail', finalData.thumbnail.name);
       await this.getThumbnailAt({
         time: this.getTimestampPercent(finalData.video.metadata.duration, 0.1),
         filename: finalData.thumbnail.name,
       });
-      console.log('thumbnail generated', finalData.thumbnail.name);
 
       // get metadata
       const dimensions = sizeOf(resolve(`${targetDir}/${finalData.thumbnail.name}`));
-      console.log('thumbnail dimensions', dimensions);
       finalData.thumbnail = {
         name: finalData.thumbnail.name,
         type: 'image',

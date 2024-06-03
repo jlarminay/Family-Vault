@@ -125,8 +125,6 @@ export const videoRouter = router({
     const { key, packets, name } = input;
     const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
 
-    console.log('processing video', key, packets, name);
-
     let fileLocation: string = `${targetDir}/${key}_${name}`;
     let videoData: any = {};
 
@@ -170,12 +168,8 @@ export const videoRouter = router({
 
       // get metadata
       try {
-        console.log('getting metadata', key, name);
-        console.log('fileLocation', fileLocation);
         const processing = new VideoProcessor(fileLocation);
-        console.log('processing', processing);
         videoData = await processing.prepareNewVideo();
-        console.log('metadata ready', key, name);
       } catch (e) {
         console.log('failed to process video', key, packets, name, e);
         return false;
@@ -183,18 +177,15 @@ export const videoRouter = router({
 
       // upload to s3
       try {
-        console.log('uploading to s3', key, name);
         const s3 = new S3();
         await s3.upload({
           key: `videos/${videoData.randomString}_${videoData.video.name}`,
           filePath: `${targetDir}/${videoData.video.name}`,
         });
-        console.log('uploaded video', key, name);
         await s3.upload({
           key: `videos/${videoData.randomString}_${videoData.thumbnail.name}`,
           filePath: `${targetDir}/${videoData.thumbnail.name}`,
         });
-        console.log('uploaded thumbnail', key, name);
       } catch (e) {
         console.log('failed to upload to s3', key, packets, name, e);
         return false;
@@ -202,12 +193,10 @@ export const videoRouter = router({
 
       // insert into db
       try {
-        console.log('inserting into db', key, name);
         const dbVideo = await ctx.prisma.file.create({ data: { ...videoData.video, name } });
         const dbThumbnail = await ctx.prisma.file.create({
           data: { ...videoData.thumbnail, name },
         });
-        console.log('inserted into db', key, name);
         return ctx.prisma.video.create({
           data: {
             title: name,
