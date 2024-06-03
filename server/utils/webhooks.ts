@@ -5,8 +5,11 @@ export default {
     const env = useRuntimeConfig() as any;
     const { video, user, report } = opts;
 
+    const urlProtocol = env.public.environment === 'dev' ? 'http://' : 'https://';
+    const videoUrl = `${urlProtocol}${env.public.baseUrl}/video/${video.id}`;
+
     let content = '';
-    content += `Received report on "[${video.title}](${env.public.baseUrl}/video/${video.id})" from "${user.name}".`;
+    content += `Received report on "[${video.title}](${videoUrl})" from "${user.name}".`;
     content += `\n> ${report.trim().split('\n').join('\n> ')} `;
 
     try {

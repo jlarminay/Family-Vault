@@ -9,7 +9,6 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'nuxt-quasar-ui',
     'dayjs-nuxt',
-    'fluent-ffmpeg',
     '@sidebase/nuxt-auth',
   ],
   css: ['@/assets/css/tailwind.css'],
@@ -48,6 +47,7 @@ export default defineNuxtConfig({
       discordUrl: process.env.WEBHOOK_DISCORD_URL,
     },
     public: {
+      environment: process.env.ENVIRONMENT,
       baseUrl: process.env.AUTH_ORIGIN,
       s3Endpoint: process.env.S3_ENDPOINT,
       s3Bucket: process.env.S3_BUCKET,
