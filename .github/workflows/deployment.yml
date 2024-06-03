@@ -66,6 +66,7 @@ jobs:
           DOMAIN: ${{ vars.DOMAIN }}
           VOLUME_NAME: ${{ steps.terraform.outputs.VOLUME_NAME }}
           DROPLET_IP: ${{ steps.terraform.outputs.DROPLET_IP }}
+          WORKING_TMP_FOLDER: ${{ vars.WORKING_TMP_FOLDER }}
           # Database
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
@@ -92,17 +93,6 @@ jobs:
             .env.production
             Caddyfile
             .infrastructure/ansible/hosts.ini
-
-      # - name: Build Nuxt App
-      #   run: |
-      #     cd ..
-      #     npm install --no-package-lock
-      #     cp .infrastructure/remote/.env ./.env
-      #     npm run build
-      #     mv .infrastructure/remote/ .output/
-      #     mv .env .output/
-      #     mv prisma/ .output/
-      #     mv package.json .output/
 
       - name: Set up SSH key
         run: |

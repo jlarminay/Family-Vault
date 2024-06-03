@@ -17,13 +17,14 @@ export default class VideoProcessor {
 
   getThumbnailAt(opts: { time: string; filename: string }): Promise<void> {
     const { time, filename } = opts;
+    const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
 
     return new Promise((resolve, reject) => {
       ffmpeg(this.videoPath)
         .screenshot({
           timestamps: [time],
           filename: filename,
-          folder: './.tmp',
+          folder: targetDir,
         })
         .on('end', () => {
           resolve();
@@ -59,6 +60,7 @@ export default class VideoProcessor {
   }
 
   async prepareNewVideo(): Promise<any> {
+    const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
     let finalData = {
       randomString: Math.random().toString(16).slice(2),
       video: {} as any,
@@ -92,12 +94,12 @@ export default class VideoProcessor {
         filename: finalData.thumbnail.name,
       });
       // get metadata
-      const dimensions = sizeOf(resolve('./.tmp/' + finalData.thumbnail.name));
+      const dimensions = sizeOf(resolve(`${targetDir}/${finalData.thumbnail.name}`));
       finalData.thumbnail = {
         name: finalData.thumbnail.name,
         type: 'image',
         path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${process.env.ENVIRONMENT}/videos/${finalData.randomString}_${finalData.thumbnail.name}`,
-        size: statSync(resolve('./.tmp/' + finalData.thumbnail.name)).size,
+        size: statSync(resolve(`${targetDir}/${finalData.thumbnail.name}`)).size,
         metadata: {
           resolution: `${dimensions.width}x${dimensions.height}`,
         },

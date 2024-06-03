@@ -104,102 +104,111 @@ export const videoRouter = router({
 
   uploadVideo: protectedProcedure.input(uploadVideoSchema).mutation(async ({ ctx, input }) => {
     const { key, count, packet } = input;
+    const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
 
     console.log('uploading packet', key, count);
 
     try {
       // create folder if not exists
-      if (!fs.existsSync('./.tmp')) {
-        fs.mkdirSync('./.tmp');
+      if (!fs.existsSync(targetDir)) {
+        fs.mkdirSync(targetDir);
       }
 
       // append packet to file
-      fs.writeFileSync(`./.tmp/${key}.${count}.tmp`, packet);
+      fs.writeFileSync(`${targetDir}/${key}.${count}.tmp`, packet);
 
+      console.log('packet uploaded', key, count);
       return true;
     } catch (e) {
+      console.log('failed to upload packet', key, count, e);
       return false;
     }
   }),
   processVideo: protectedProcedure.input(processVideoSchema).mutation(async ({ ctx, input }) => {
     const session = await getServerSession(ctx.event);
     const { key, packets, name } = input;
+    const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
 
     console.log('processing video', key, packets, name);
 
-    let fileLocation: string = `./.tmp/${key}_${name}`;
+    let fileLocation: string = `${targetDir}/${key}_${name}`;
     let videoData: any = {};
 
-    // convert data back into video file
-    {
-      let allBuffers: any = [];
+    try {
+      // convert data back into video file
+      {
+        let allBuffers: any = [];
 
-      // check that file is ready to be read
-      for (let i = 1; i <= packets; i++) {
-        const file = `./.tmp/${key}.${i}.tmp`;
+        // check that file is ready to be read
+        for (let i = 1; i <= packets; i++) {
+          const file = `${targetDir}/${key}.${i}.tmp`;
 
-        let ready = false;
-        let retries = 0;
-        let maxRetries = 10;
-        while (!ready && retries < maxRetries) {
-          try {
-            fs.readFileSync(file);
-            ready = true;
-          } catch (e) {
-            retries++;
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+          let ready = false;
+          let retries = 0;
+          let maxRetries = 10;
+          while (!ready && retries < maxRetries) {
+            try {
+              fs.readFileSync(file);
+              ready = true;
+            } catch (e) {
+              retries++;
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+            }
           }
-        }
-        if (!ready) throw new Error('File not ready');
+          if (!ready) throw new Error('File not ready');
 
-        const string = fs.readFileSync(file).toString();
-        const buffer = Buffer.from(string, 'base64');
-        allBuffers.push(buffer);
-        fs.unlinkSync(file);
+          const string = fs.readFileSync(file).toString();
+          const buffer = Buffer.from(string, 'base64');
+          allBuffers.push(buffer);
+          fs.unlinkSync(file);
+        }
+
+        const combinedStrings = Buffer.concat(allBuffers);
+        fs.writeFileSync(fileLocation, combinedStrings);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
 
-      const combinedStrings = Buffer.concat(allBuffers);
-      fs.writeFileSync(fileLocation, combinedStrings);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
+      // get metadata
+      {
+        const processing = new VideoProcessor(fileLocation);
+        videoData = await processing.prepareNewVideo();
+      }
 
-    // get metadata
-    {
-      const processing = new VideoProcessor(fileLocation);
-      videoData = await processing.prepareNewVideo();
-    }
+      // upload to s3
+      {
+        const s3 = new S3();
+        await s3.upload({
+          key: `videos/${videoData.randomString}_${videoData.video.name}`,
+          filePath: `${targetDir}/${videoData.video.name}`,
+        });
+        await s3.upload({
+          key: `videos/${videoData.randomString}_${videoData.thumbnail.name}`,
+          filePath: `${targetDir}/${videoData.thumbnail.name}`,
+        });
+      }
 
-    // upload to s3
-    {
-      const s3 = new S3();
-      await s3.upload({
-        key: `videos/${videoData.randomString}_${videoData.video.name}`,
-        filePath: './.tmp/' + videoData.video.name,
-      });
-      await s3.upload({
-        key: `videos/${videoData.randomString}_${videoData.thumbnail.name}`,
-        filePath: './.tmp/' + videoData.thumbnail.name,
-      });
-    }
-
-    // insert into db
-    {
-      const dbVideo = await ctx.prisma.file.create({ data: { ...videoData.video, name } });
-      const dbThumbnail = await ctx.prisma.file.create({
-        data: { ...videoData.thumbnail, name },
-      });
-      return ctx.prisma.video.create({
-        data: {
-          title: name,
-          description: '',
-          ownerId: session?.id || 0,
-          videoId: dbVideo.id,
-          thumbnailId: dbThumbnail.id,
-          dateDisplay: '',
-          dateOrder: new Date(),
-          published: false,
-        },
-      });
+      // insert into db
+      {
+        const dbVideo = await ctx.prisma.file.create({ data: { ...videoData.video, name } });
+        const dbThumbnail = await ctx.prisma.file.create({
+          data: { ...videoData.thumbnail, name },
+        });
+        return ctx.prisma.video.create({
+          data: {
+            title: name,
+            description: '',
+            ownerId: session?.id || 0,
+            videoId: dbVideo.id,
+            thumbnailId: dbThumbnail.id,
+            dateDisplay: '',
+            dateOrder: new Date(),
+            published: false,
+          },
+        });
+      }
+    } catch (e) {
+      console.log('failed to process video', key, packets, name, e);
+      return false;
     }
   }),
 });

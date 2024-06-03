@@ -1,7 +1,6 @@
 import { type inferAsyncReturnType } from '@trpc/server';
-import pkg from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
-const { PrismaClient } = pkg;
 const prisma = new PrismaClient();
 
 export async function createContext(event: any) {

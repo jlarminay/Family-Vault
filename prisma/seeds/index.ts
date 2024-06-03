@@ -1,4 +1,4 @@
-import pkg from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import user from './user.js';
 import person from './person.js';
 import file from './file.js';
@@ -8,7 +8,6 @@ import like from './like.js';
 import comment from './comment.js';
 import report from './report.js';
 
-const { PrismaClient } = pkg;
 const prisma = new PrismaClient();
 
 async function main() {
