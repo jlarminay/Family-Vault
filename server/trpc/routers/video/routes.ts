@@ -136,7 +136,7 @@ export const videoRouter = router({
 
     try {
       // convert data back into video file
-      {
+      try {
         let allBuffers: any = [];
 
         // check that file is ready to be read
@@ -166,16 +166,22 @@ export const videoRouter = router({
         const combinedStrings = Buffer.concat(allBuffers);
         fs.writeFileSync(fileLocation, combinedStrings);
         await new Promise((resolve) => setTimeout(resolve, 1000));
+      } catch (e) {
+        console.log('failed to combine packets', key, packets, name, e);
+        return false;
       }
 
       // get metadata
-      {
+      try {
         const processing = new VideoProcessor(fileLocation);
         videoData = await processing.prepareNewVideo();
+      } catch (e) {
+        console.log('failed to process video', key, packets, name, e);
+        return false;
       }
 
       // upload to s3
-      {
+      try {
         const s3 = new S3();
         await s3.upload({
           key: `videos/${videoData.randomString}_${videoData.video.name}`,
@@ -185,10 +191,13 @@ export const videoRouter = router({
           key: `videos/${videoData.randomString}_${videoData.thumbnail.name}`,
           filePath: `${targetDir}/${videoData.thumbnail.name}`,
         });
+      } catch (e) {
+        console.log('failed to upload to s3', key, packets, name, e);
+        return false;
       }
 
       // insert into db
-      {
+      try {
         const dbVideo = await ctx.prisma.file.create({ data: { ...videoData.video, name } });
         const dbThumbnail = await ctx.prisma.file.create({
           data: { ...videoData.thumbnail, name },
@@ -205,6 +214,9 @@ export const videoRouter = router({
             published: false,
           },
         });
+      } catch (e) {
+        console.log('failed to insert into db', key, packets, name, e);
+        return false;
       }
     } catch (e) {
       console.log('failed to process video', key, packets, name, e);
