@@ -1,12 +1,7 @@
-import ffmpeg from 'fluent-ffmpeg';
-import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
-import ffprobeInstaller from '@ffprobe-installer/ffprobe';
 import { statSync } from 'fs';
 import { resolve } from 'path';
 import sizeOf from 'image-size';
-
-ffmpeg.setFfmpegPath(ffmpegInstaller.path);
-ffmpeg.setFfprobePath(ffprobeInstaller.path);
+import shell from 'shelljs';
 
 export default class VideoProcessor {
   private videoPath: string;
@@ -15,23 +10,20 @@ export default class VideoProcessor {
     this.videoPath = video;
   }
 
-  getThumbnailAt(opts: { time: string; filename: string }): Promise<void> {
+  async getThumbnailAt(opts: { time: string; filename: string }): Promise<boolean> {
     const { time, filename } = opts;
+    const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
 
-    return new Promise((resolve, reject) => {
-      ffmpeg(this.videoPath)
-        .screenshot({
-          timestamps: [time],
-          filename: filename,
-          folder: './.tmp',
-        })
-        .on('end', () => {
-          resolve();
-        })
-        .on('error', (err) => {
-          reject(err);
-        });
-    });
+    const { stdout, stderr, code } = shell.exec(
+      `ffmpeg -i "${this.videoPath}" -ss ${time} -vframes 1 "${targetDir}/${filename}"`,
+      { silent: true },
+    );
+
+    if (code !== 0) {
+      throw new Error(stderr);
+    }
+
+    return true;
   }
 
   async getMetadata(): Promise<{
@@ -41,24 +33,30 @@ export default class VideoProcessor {
     resolution: string;
     size: number;
   }> {
-    return new Promise((resolve, reject) => {
-      ffmpeg.ffprobe(this.videoPath, (err, metadata) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve({
-            duration: parseInt(metadata.streams[0]?.duration || '0'),
-            width: metadata.streams[0]?.width || 0,
-            height: metadata.streams[0]?.height || 0,
-            resolution: `${metadata.streams[0]?.width}x${metadata.streams[0]?.height}`,
-            size: metadata.format.size || 0,
-          });
-        }
-      });
-    });
+    const { stdout, stderr, code } = shell.exec(
+      `ffprobe -v error -show_entries format=duration:stream=width:stream=height -of default=noprint_wrappers=1:nokey=1 -show_format -show_entries format=size ${this.videoPath}`,
+      { silent: true },
+    );
+
+    if (code !== 0) {
+      throw new Error(stderr);
+    }
+
+    // parse output
+    const output = stdout.trim().split('\n');
+
+    // extract data
+    const width = parseInt(output[0]);
+    const height = parseInt(output[1]);
+    const resolution = `${width}x${height}`;
+    const duration = Math.floor(parseFloat(output[2]));
+    const size = parseInt(output[3]);
+
+    return { duration, width, height, resolution, size };
   }
 
   async prepareNewVideo(): Promise<any> {
+    const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
     let finalData = {
       randomString: Math.random().toString(16).slice(2),
       video: {} as any,
@@ -73,7 +71,7 @@ export default class VideoProcessor {
       finalData.video = {
         name: finalData.video.name,
         type: 'video',
-        path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/videos/${finalData.randomString}_${finalData.video.name}`,
+        path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${process.env.ENVIRONMENT}/videos/${finalData.randomString}_${finalData.video.name}`,
         size: size,
         metadata: {
           resolution: resolution,
@@ -85,19 +83,20 @@ export default class VideoProcessor {
     // // // manage thumbnail
     {
       finalData.thumbnail.name = finalData.video.name.replace('.mp4', '.webp');
-      // generate
 
+      // generate
       await this.getThumbnailAt({
         time: this.getTimestampPercent(finalData.video.metadata.duration, 0.1),
         filename: finalData.thumbnail.name,
       });
+
       // get metadata
-      const dimensions = sizeOf(resolve('./.tmp/' + finalData.thumbnail.name));
+      const dimensions = sizeOf(resolve(`${targetDir}/${finalData.thumbnail.name}`));
       finalData.thumbnail = {
         name: finalData.thumbnail.name,
         type: 'image',
-        path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/videos/${finalData.randomString}_${finalData.thumbnail.name}`,
-        size: statSync(resolve('./.tmp/' + finalData.thumbnail.name)).size,
+        path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${process.env.ENVIRONMENT}/videos/${finalData.randomString}_${finalData.thumbnail.name}`,
+        size: statSync(resolve(`${targetDir}/${finalData.thumbnail.name}`)).size,
         metadata: {
           resolution: `${dimensions.width}x${dimensions.height}`,
         },

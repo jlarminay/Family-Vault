@@ -26,7 +26,7 @@ const cleanedPersons = computed(() => {
     .map((person: any) => {
       return {
         label: person.name,
-        birthday: person.birthday.split('T')[0],
+        birthday: person.birthday ? person.birthday.split('T')[0] : '',
         value: person.id,
       };
     });

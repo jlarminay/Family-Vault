@@ -3,10 +3,10 @@ version: '3.8'
 services:
   infrastructure:
     container_name: infrastructure
-    image: pulotum/larminay-vault:infrastructure
-    # build:
-    #   context: ./
-    #   dockerfile: Dockerfile
+    # image: pulotum/larminay-vault:infrastructure
+    build:
+      context: ./
+      dockerfile: Dockerfile
     volumes:
       - ../:/home
       - ./.ssh/:/root/.ssh/

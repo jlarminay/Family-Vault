@@ -6,9 +6,6 @@
 
   vars:
     volume_name: "{{lookup('env', 'VOLUME_NAME')}}"
-    reset_db: "{{lookup('env', 'RESET_DATABASE') | default('false') }}"
-    docker_user: "{{lookup('env', 'DOCKER_USER')}}"
-    docker_pass: "{{lookup('env', 'DOCKER_PASS')}}"
 
   tasks:
     ## ----------------------------------------
@@ -20,12 +17,6 @@
         delay: 10
         sleep: 10
         timeout: 120
-
-    # ## ----------------------------------------
-    # ## Print out hello world
-    # - name: Print out hello world
-    #   shell: echo "Hello world!"
-    # - debug: msg="Hello world!"
 
     ## ----------------------------------------
     ## Disable unattended upgrades
@@ -56,15 +47,18 @@
           [
             'docker.io',
             'docker-compose',
+            'ffmpeg',
             'rsync',
             'net-tools',
             'debian-keyring',
             'debian-archive-keyring',
             'apt-transport-https',
-            'golang-go',
+            'curl',
           ]
         state: present
         update_cache: true
+      retries: 5
+      delay: 10
 
     ## ----------------------------------------
     ## Mount volume if not mounted
@@ -95,15 +89,27 @@
       when: caddy_version_output.stdout is not defined or caddy_version_output.stdout == ''
 
     ## ----------------------------------------
+    ## Install Node 20.10.0
+    - name: Check node version
+      shell: node -v
+      register: node_version_output
+      ignore_errors: true
+    - name: Install Node
+      shell: |
+        curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+        sudo apt-get install -y nodejs
+        npm install pm2 -g
+      when: node_version_output.stdout is not defined or node_version_output.stdout == ''
+
+    ## ----------------------------------------
     ## Move files
-    - name: Upload folder to remote server
+    - name: Upload built to remote server
       synchronize:
-        src: '../remote/'
+        src: '../../../'
         dest: '/home/app/'
         mode: push
         delete: true
         recursive: true
-
     - name: Move Caddy config file to the correct location
       copy:
         src: '/home/app/Caddyfile'
@@ -119,21 +125,21 @@
     ## Run apps
     - name: Run Docker Compose
       shell: |
-        docker login --username {{docker_user}} --password {{docker_pass}}
         docker image prune -af
-        y | docker-compose -f docker-compose.yml --env-file .env up -d --build --remove-orphans
+        y | docker-compose -f docker-compose.prod.yml --env-file .env.production up -d --build --remove-orphans
       args:
         chdir: /home/app
       notify:
         - Restart Caddy
-
-    ## ----------------------------------------
-    ## Wipe system if needed
-    - name: Reset and seed database
-      shell: |
-        docker exec lv-server /bin/bash -c "npm run db:seed"
-      when: reset_db == 'true'
+    - name: Run Nuxt App
+      shell: bash start-server.sh
+      args:
+        chdir: /home/app/.infrastructure
 
   handlers:
     - name: Restart Caddy
-      shell: caddy reload --config /etc/caddy/Caddyfile
+      shell: |
+        caddy fmt --overwrite
+        caddy reload --config Caddyfile
+      args:
+        chdir: /etc/caddy

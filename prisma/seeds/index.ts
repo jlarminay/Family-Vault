@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-
 import user from './user.js';
 import person from './person.js';
 import file from './file.js';
