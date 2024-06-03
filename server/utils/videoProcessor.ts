@@ -43,10 +43,13 @@ export default class VideoProcessor {
     size: number;
   }> {
     return new Promise((resolve, reject) => {
+      console.log('getting metadata', this.videoPath);
       ffmpeg.ffprobe(this.videoPath, (err, metadata) => {
         if (err) {
+          console.log('failed to get metadata', this.videoPath, err);
           reject(err);
         } else {
+          console.log('metadata', metadata);
           resolve({
             duration: parseInt(metadata.streams[0]?.duration || '0'),
             width: metadata.streams[0]?.width || 0,
@@ -56,6 +59,7 @@ export default class VideoProcessor {
           });
         }
       });
+      console.log('metadata requested', this.videoPath);
     });
   }
 
@@ -70,8 +74,10 @@ export default class VideoProcessor {
     // // // manage video
     {
       finalData.video.name = this.videoPath.split('/').pop();
+      console.log('starting metadata', finalData.video.name);
       // get metadata
       const { duration, resolution, size } = await this.getMetadata();
+      console.log('metadata', duration, resolution, size);
       finalData.video = {
         name: finalData.video.name,
         type: 'video',
@@ -87,14 +93,17 @@ export default class VideoProcessor {
     // // // manage thumbnail
     {
       finalData.thumbnail.name = finalData.video.name.replace('.mp4', '.webp');
-      // generate
 
+      // generate
       await this.getThumbnailAt({
         time: this.getTimestampPercent(finalData.video.metadata.duration, 0.1),
         filename: finalData.thumbnail.name,
       });
+      console.log('thumbnail generated', finalData.thumbnail.name);
+
       // get metadata
       const dimensions = sizeOf(resolve(`${targetDir}/${finalData.thumbnail.name}`));
+      console.log('thumbnail dimensions', dimensions);
       finalData.thumbnail = {
         name: finalData.thumbnail.name,
         type: 'image',

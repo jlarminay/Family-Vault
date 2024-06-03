@@ -106,8 +106,6 @@ export const videoRouter = router({
     const { key, count, packet } = input;
     const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
 
-    console.log('uploading packet', key, count);
-
     try {
       // create folder if not exists
       if (!fs.existsSync(targetDir)) {
@@ -116,8 +114,6 @@ export const videoRouter = router({
 
       // append packet to file
       fs.writeFileSync(`${targetDir}/${key}.${count}.tmp`, packet);
-
-      console.log('packet uploaded', key, count);
       return true;
     } catch (e) {
       console.log('failed to upload packet', key, count, e);
@@ -165,6 +161,7 @@ export const videoRouter = router({
 
         const combinedStrings = Buffer.concat(allBuffers);
         fs.writeFileSync(fileLocation, combinedStrings);
+
         await new Promise((resolve) => setTimeout(resolve, 1000));
       } catch (e) {
         console.log('failed to combine packets', key, packets, name, e);
@@ -173,8 +170,12 @@ export const videoRouter = router({
 
       // get metadata
       try {
+        console.log('getting metadata', key, name);
+        console.log('fileLocation', fileLocation);
         const processing = new VideoProcessor(fileLocation);
+        console.log('processing', processing);
         videoData = await processing.prepareNewVideo();
+        console.log('metadata ready', key, name, videoData);
       } catch (e) {
         console.log('failed to process video', key, packets, name, e);
         return false;
@@ -182,15 +183,18 @@ export const videoRouter = router({
 
       // upload to s3
       try {
+        console.log('uploading to s3', key, name);
         const s3 = new S3();
         await s3.upload({
           key: `videos/${videoData.randomString}_${videoData.video.name}`,
           filePath: `${targetDir}/${videoData.video.name}`,
         });
+        console.log('uploaded video', key, name);
         await s3.upload({
           key: `videos/${videoData.randomString}_${videoData.thumbnail.name}`,
           filePath: `${targetDir}/${videoData.thumbnail.name}`,
         });
+        console.log('uploaded thumbnail', key, name);
       } catch (e) {
         console.log('failed to upload to s3', key, packets, name, e);
         return false;
@@ -198,10 +202,12 @@ export const videoRouter = router({
 
       // insert into db
       try {
+        console.log('inserting into db', key, name);
         const dbVideo = await ctx.prisma.file.create({ data: { ...videoData.video, name } });
         const dbThumbnail = await ctx.prisma.file.create({
           data: { ...videoData.thumbnail, name },
         });
+        console.log('inserted into db', key, name, dbVideo, dbThumbnail);
         return ctx.prisma.video.create({
           data: {
             title: name,
@@ -215,11 +221,11 @@ export const videoRouter = router({
           },
         });
       } catch (e) {
-        console.log('failed to insert into db', key, packets, name, e);
+        console.log('failed to insert into db', key, name, e);
         return false;
       }
     } catch (e) {
-      console.log('failed to process video', key, packets, name, e);
+      console.log('failed to process video', key, name, e);
       return false;
     }
   }),
