@@ -7,6 +7,7 @@ export default class VideoProcessor {
   private videoPath: string;
 
   constructor(video: string) {
+    console.log('VideoProcessor', video);
     this.videoPath = video;
   }
 
