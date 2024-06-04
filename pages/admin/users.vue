@@ -53,7 +53,6 @@ async function saveUser() {
         <h1 class="h1">Users</h1>
         <q-btn
           no-caps
-          rounded
           unelevated
           label="New User"
           color="primary"
@@ -216,10 +215,9 @@ async function saveUser() {
         </q-form>
       </template>
       <template #actions>
-        <q-btn outline unelevated no-caps rounded label="Cancel" color="dark" v-close-popup />
+        <q-btn outline unelevated no-caps label="Cancel" color="dark" v-close-popup />
         <q-btn
           no-caps
-          rounded
           unelevated
           label="Save"
           color="primary"

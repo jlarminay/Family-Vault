@@ -133,24 +133,22 @@ const cleanedAllVideos = computed(() => {
             outlined
             no-error-icon
             hide-bottom-space
-            rounded
             dense
             emit-value
             map-options
             :options="filterOptions"
-            class="tw_rounded-full tw_w-[200px]"
+            class="sm:tw_w-[200px]"
           />
           <q-select
             v-model="sortBy"
             outlined
             no-error-icon
             hide-bottom-space
-            rounded
             dense
             emit-value
             map-options
             :options="sortOptions"
-            class="tw_rounded-full tw_w-[230px]"
+            class="sm:tw_w-[230px]"
           />
         </div>
       </div>

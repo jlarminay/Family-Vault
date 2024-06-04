@@ -51,8 +51,8 @@ async function updateLike() {
               </h2>
               <div class="tw_flex tw_items-center tw_gap-2">
                 <q-btn
-                  rounded
                   outline
+                  rounded
                   class="tw_flex tw_flex-nowrap"
                   :class="{ 'tw_text-red-500': likes.isLiked }"
                   @click="updateLike()"

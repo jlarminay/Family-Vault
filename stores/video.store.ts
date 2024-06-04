@@ -76,7 +76,7 @@ export const useVideoStore = defineStore('video', {
 
       const key =
         Math.random().toString(36).substring(2, 12) + Math.random().toString(36).substring(2, 12);
-      const chunkSize = 2 * 1024 * 1024;
+      const chunkSize = 4 * 1024 * 1024;
       let start = 0;
       let i = 1;
 

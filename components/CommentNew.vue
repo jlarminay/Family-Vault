@@ -42,7 +42,6 @@ async function postComment() {
         <q-btn
           no-caps
           unelevated
-          rounded
           :loading="loading"
           size="14px"
           color="primary"

@@ -70,7 +70,7 @@ const showMore = ref<boolean>(false);
     </div>
 
     <div class="tw_text-center tw_mt-2">
-      <q-btn no-caps unelevated rounded size="14px" color="primary" @click="showMore = !showMore">
+      <q-btn no-caps unelevated size="14px" color="primary" @click="showMore = !showMore">
         {{ showMore ? 'Show Less' : 'Show More' }}
       </q-btn>
     </div>

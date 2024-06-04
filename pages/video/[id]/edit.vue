@@ -251,7 +251,6 @@ async function updateVideo() {
             <!-- Actions -->
             <div class="tw_flex tw_gap-2 tw_justify-end tw_mt-4">
               <q-btn
-                rounded
                 no-caps
                 unelevated
                 outline
@@ -260,7 +259,6 @@ async function updateVideo() {
                 :to="`/video/${video.id}`"
               />
               <q-btn
-                rounded
                 no-caps
                 unelevated
                 color="primary"

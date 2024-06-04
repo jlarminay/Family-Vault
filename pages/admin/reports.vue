@@ -107,10 +107,9 @@ async function confirmDelete() {
       <template #title>Delete Report</template>
       <template #body>Are you sure you want to delete this report?</template>
       <template #actions>
-        <q-btn outline unelevated no-caps rounded label="Cancel" color="dark" v-close-popup />
+        <q-btn outline unelevated no-caps label="Cancel" color="dark" v-close-popup />
         <q-btn
           no-caps
-          rounded
           unelevated
           label="Confirm Delete"
           color="primary"

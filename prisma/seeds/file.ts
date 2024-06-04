@@ -44,12 +44,10 @@ export default async () => {
         key: `videos/${results.randomString}_${results.video.name}`,
         filePath: './prisma/seeds/videos/' + results.video.name,
       });
-      console.log('uploaded video', results.randomString, results.video.name);
       await s3.upload({
         key: `videos/${results.randomString}_${results.thumbnail.name}`,
         filePath: `${targetDir}/${results.thumbnail.name}`,
       });
-      console.log('uploaded thumbnail', results.randomString, results.thumbnail.name);
 
       // insert into db
       await prisma.file.create({ data: results.video });

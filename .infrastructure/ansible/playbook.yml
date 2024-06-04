@@ -89,7 +89,7 @@
       when: caddy_version_output.stdout is not defined or caddy_version_output.stdout == ''
 
     ## ----------------------------------------
-    ## Install Node 20.10.0
+    ## Install Node 20.12.1
     - name: Check node version
       shell: node -v
       register: node_version_output

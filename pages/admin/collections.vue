@@ -53,7 +53,6 @@ async function saveCollection() {
         <h1 class="h1">Collections</h1>
         <q-btn
           no-caps
-          rounded
           unelevated
           label="New Collection"
           color="primary"
@@ -179,10 +178,9 @@ async function saveCollection() {
         </q-form>
       </template>
       <template #actions>
-        <q-btn outline unelevated no-caps rounded label="Cancel" color="dark" v-close-popup />
+        <q-btn outline unelevated no-caps label="Cancel" color="dark" v-close-popup />
         <q-btn
           no-caps
-          rounded
           unelevated
           label="Save"
           color="primary"
@@ -195,10 +193,9 @@ async function saveCollection() {
       <template #title>Delete Collection</template>
       <template #body>Are you sure you want to delete this collection?</template>
       <template #actions>
-        <q-btn outline unelevated no-caps rounded label="Cancel" color="dark" v-close-popup />
+        <q-btn outline unelevated no-caps label="Cancel" color="dark" v-close-popup />
         <q-btn
           no-caps
-          rounded
           unelevated
           label="Confirm Delete"
           color="primary"

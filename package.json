@@ -48,6 +48,7 @@
     "concurrently": "^8.2.2",
     "dayjs-nuxt": "^2.1.9",
     "next-auth": "4.22.5",
+    "npm-check-updates": "^16.14.20",
     "nuxt": "^3.8.2",
     "nuxt-quasar-ui": "^2.0.7",
     "prettier": "^3.1.1",

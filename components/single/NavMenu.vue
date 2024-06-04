@@ -41,6 +41,7 @@ async function clearUploadState() {
 
 <template>
   <nav
+    v-if="$q.screen.width >= 820"
     class="tw_py-2 tw_px-6 tw_border-b tw_flex tw_justify-between tw_items-center tw_sticky tw_top-0 tw_bg-white tw_z-10"
   >
     <div>
@@ -66,7 +67,7 @@ async function clearUploadState() {
         dense
         v-model="search"
         placeholder="Search..."
-        class="tw_min-w-[400px] tw_pr-0"
+        class="tw_min-w-[350px] tw_pr-0"
         color="primary"
         @keyup.enter="handleSearch()"
       >
@@ -149,7 +150,6 @@ async function clearUploadState() {
         v-if="videoStore.uploadState.state === 'idle'"
         outline
         no-caps
-        rounded
         label="Cancel"
         color="dark"
         @click="clearUploadState"
@@ -158,7 +158,6 @@ async function clearUploadState() {
         v-if="videoStore.uploadState.state === 'idle'"
         unelevated
         no-caps
-        rounded
         :disabled="!videoData?.name || videoData?.error"
         label="Upload Video"
         color="primary"
@@ -171,7 +170,6 @@ async function clearUploadState() {
         "
         outline
         no-caps
-        rounded
         label="Close"
         class="tw_text-base"
         color="dark"
@@ -181,7 +179,6 @@ async function clearUploadState() {
         v-if="videoStore.uploadState.state === 'complete'"
         unelevated
         no-caps
-        rounded
         label="Go To Video"
         class="tw_text-base"
         color="primary"

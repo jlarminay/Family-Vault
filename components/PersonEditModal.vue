@@ -92,15 +92,8 @@ async function submitPerson() {
       </q-form>
     </template>
     <template #actions>
-      <q-btn outline no-caps rounded label="Cancel" color="dark" v-close-popup />
-      <q-btn
-        unelevated
-        no-caps
-        rounded
-        label="Create Person"
-        color="primary"
-        @click="submitPerson"
-      />
+      <q-btn outline no-caps label="Cancel" color="dark" v-close-popup />
+      <q-btn unelevated no-caps label="Create Person" color="primary" @click="submitPerson" />
     </template>
   </Modal>
 </template>
