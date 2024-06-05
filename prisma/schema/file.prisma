@@ -1,0 +1,13 @@
+model File {
+  id        Int      @id @default(autoincrement())
+  name      String
+  path      String   @unique
+  type      String
+  size      Int
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  video     Video[]  @relation(name: "VideoVideo")
+  thumbnail Video[]  @relation(name: "VideoThumbnail")
+  person    Person[] @relation(name: "FileToPerson")
+}

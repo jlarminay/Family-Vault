@@ -4,7 +4,7 @@ This is the description.
 
 ## Requirements
 
-- `node 20.12.1`
+- `node 20.14.0`
 - `ffmpeg`
 - `ffprobe`
 

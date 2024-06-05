@@ -1,0 +1,16 @@
+model User {
+  id             Int       @id @default(autoincrement())
+  email          String    @unique
+  name           String
+  provider       String
+  avatar         String?
+  lastLogin      DateTime?
+  active         Boolean   @default(true)
+  comments       Comment[] @relation(name: "CommentToUser") // can have many comments
+  uploadedVideos Video[]   @relation(name: "UserToVideo") // can upload many videos
+  likes          Like[]    @relation(name: "LikeToUser") // can have many likes
+  report         Report[]  @relation(name: "ReportToUser") // can report many videos
+  person         Person?   @relation(name: "PersonToUser")
+  allowedVideos  Video[]   @relation(name: "UserToVideo1")
+  blockedVideos  Video[]   @relation(name: "UserToVideo2")
+}
