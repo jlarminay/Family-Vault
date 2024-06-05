@@ -37,7 +37,6 @@ export default async () => {
     if (type === 'mp4') {
       const processing = new VideoProcessor('./prisma/seeds/' + newData[i]);
       const results = await processing.prepareNewVideo();
-      console.log('results');
 
       // upload to s3
       await s3.upload({

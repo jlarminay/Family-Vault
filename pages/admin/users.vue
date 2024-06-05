@@ -192,6 +192,7 @@ async function saveUser() {
             ]"
           />
           <q-select
+            behavior="menu"
             outlined
             no-error-icon
             v-model="selectedUser.provider"

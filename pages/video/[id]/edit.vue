@@ -91,7 +91,7 @@ async function updateVideo() {
         >
           <h2 class="h2 tw_font-bold tw_mb-4">Video Details</h2>
           <!-- <img :src="video.thumbnail.path" class="tw_w-full tw_my-2 tw_rounded" /> -->
-          <video controls :poster="video.thumbnail.path" class="tw_w-full tw_mb-2">
+          <video controls :poster="video.thumbnail?.path" class="tw_w-full tw_mb-2">
             <source :src="video.video.path" type="video/mp4" />
           </video>
 
@@ -180,6 +180,7 @@ async function updateVideo() {
                 </template>
               </q-input>
               <q-select
+                behavior="menu"
                 outlined
                 no-error-icon
                 v-model="videoEdit.persons"
@@ -209,6 +210,7 @@ async function updateVideo() {
                 </template>
               </q-select>
               <q-select
+                behavior="menu"
                 outlined
                 no-error-icon
                 v-model="videoEdit.collections"
@@ -233,6 +235,7 @@ async function updateVideo() {
             <div class="tw_mt-6">
               <h3 class="h3 tw_font-bold tw_mb-2">Security</h3>
               <q-select
+                behavior="menu"
                 outlined
                 no-error-icon
                 v-model="videoEdit.published"

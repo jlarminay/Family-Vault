@@ -122,13 +122,14 @@ const cleanedAllVideos = computed(() => {
   <div>
     <SingleNavMenu />
 
-    <main class="tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto">
+    <main class="tw_px-1 sm:tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto">
       <div class="tw_flex tw_justify-between tw_items-center">
         <h1 class="h1">
           Dashboard <span class="tw_text-lg">({{ cleanedAllVideos.length }})</span>
         </h1>
         <div class="tw_flex tw_gap-2">
           <q-select
+            behavior="menu"
             v-model="filterBy"
             outlined
             no-error-icon
@@ -140,6 +141,7 @@ const cleanedAllVideos = computed(() => {
             class="sm:tw_w-[200px]"
           />
           <q-select
+            behavior="menu"
             v-model="sortBy"
             outlined
             no-error-icon

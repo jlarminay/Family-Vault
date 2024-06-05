@@ -55,6 +55,7 @@ async function submitPerson() {
           ]"
         />
         <q-select
+          behavior="menu"
           outlined
           no-error-icon
           v-model="realPerson.gender"

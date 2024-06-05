@@ -3,22 +3,7 @@ const { data: authData } = useAuth();
 
 const videoStore = useVideoStore();
 const search = ref('');
-const menuItems = ref([
-  { label: 'My Profile', icon: 'sym_o_face', to: '/account', if: authData.value?.person?.id },
-
-  { type: 'separator' },
-  { label: 'All People', icon: 'sym_o_groups', to: '/people' },
-
-  { type: 'separator' },
-  { label: 'Legal', icon: 'sym_o_policy', to: '/legal' },
-  { label: 'Admin', icon: 'sym_o_admin_panel_settings', to: '/admin' },
-  {
-    label: 'Logout',
-    icon: 'sym_o_logout',
-    class: 'tw_text-red-600',
-    to: '/logout',
-  },
-]);
+const showSearchInput = ref(false);
 const showUploadModal = ref(false);
 const videoData = ref<any>(null);
 const newVideo = ref<any>(null);
@@ -41,33 +26,140 @@ async function clearUploadState() {
 
 <template>
   <nav
-    v-if="$q.screen.width >= 820"
-    class="tw_py-2 tw_px-6 tw_border-b tw_flex tw_justify-between tw_items-center tw_sticky tw_top-0 tw_bg-white tw_z-10"
+    class="tw_py-1 sm:tw_py-2 tw_px-1 sm:tw_px-6 tw_border-b tw_sticky tw_top-0 tw_bg-white tw_z-10"
   >
-    <div>
-      <q-btn
-        to="/dashboard"
-        no-caps
-        flat
-        size="20px"
-        class="tw_group tw_text-black tw_font-montserrat tw_font-bold"
-      >
-        <img
-          src="/logo/logo.svg"
-          class="tw_w-7 tw_mr-2 group-hover:tw_rotate-[720deg] tw_transition-transform tw_duration-1000 tw_ease-in-out"
+    <div v-if="!showSearchInput" class="tw_flex tw_justify-between tw_items-center tw_h-[52px]">
+      <!-- Logo -->
+      <div class="sm:tw_min-w-[250px]">
+        <q-btn
+          to="/dashboard"
+          no-caps
+          flat
+          size="20px"
+          class="tw_group tw_text-black tw_font-montserrat tw_font-bold"
+        >
+          <img
+            src="/logo/logo.svg"
+            class="tw_w-7 tw_mr-2 group-hover:tw_rotate-[720deg] tw_transition-transform tw_duration-1000 tw_ease-in-out"
+          />
+          Larminay Vault
+        </q-btn>
+      </div>
+
+      <!-- Search Input -->
+      <div v-if="$q.screen.gt.sm">
+        <q-input
+          outlined
+          rounded
+          dense
+          v-model="search"
+          placeholder="Search..."
+          class="tw_min-w-[350px] tw_pr-0"
+          color="primary"
+          @keyup.enter="handleSearch()"
+        >
+          <template v-slot:append>
+            <q-btn round dense flat icon="sym_o_search" />
+          </template>
+        </q-input>
+      </div>
+
+      <!-- Right buttons -->
+      <div class="tw_flex tw_items-center tw_justify-end tw_gap-4 sm:tw_min-w-[250px]">
+        <!-- <pre>{{ $q.screen.name }}</pre> -->
+
+        <q-btn
+          v-if="$q.screen.lt.md"
+          round
+          flat
+          class="!tw_p-0"
+          icon="sym_o_search"
+          color="dark"
+          @click="showSearchInput = !showSearchInput"
         />
-        Larminay Vault
-      </q-btn>
+        <!-- <q-btn
+          round
+          flat
+          class="!tw_p-0"
+          icon="sym_o_cloud_upload"
+          color="dark"
+          @click="showUploadModal = true"
+        /> -->
+
+        <!-- <q-btn round flat class="!tw_p-0" icon="sym_o_notifications" color="dark" disabled>
+          <q-tooltip>Notifications (Coming Soon)</q-tooltip>
+        </q-btn> -->
+
+        <q-btn round flat class="!tw_p-0" color="white">
+          <q-avatar size="40px" class="tw_border">
+            <img :src="authData?.avatar" />
+          </q-avatar>
+
+          <!-- Dropdown Menu -->
+          <q-menu class="tw_min-w-[160px]" :offset="[0, 4]">
+            <q-list>
+              <q-item clickable v-close-popup to="/account">
+                <q-item-section avatar>
+                  <q-icon name="sym_o_face" />
+                </q-item-section>
+                <q-item-section>My Profile</q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup @click="showUploadModal = true">
+                <q-item-section avatar>
+                  <q-icon name="sym_o_cloud_upload" />
+                </q-item-section>
+                <q-item-section>Upload Video</q-item-section>
+              </q-item>
+
+              <q-separator />
+              <q-item clickable v-close-popup to="/people">
+                <q-item-section avatar>
+                  <q-icon name="sym_o_groups" />
+                </q-item-section>
+                <q-item-section>All People</q-item-section>
+              </q-item>
+
+              <q-separator />
+              <q-item clickable v-close-popup to="/legal">
+                <q-item-section avatar>
+                  <q-icon name="sym_o_policy" />
+                </q-item-section>
+                <q-item-section>Legal</q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup to="/admin">
+                <q-item-section avatar>
+                  <q-icon name="sym_o_admin_panel_settings" />
+                </q-item-section>
+                <q-item-section>Admin</q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup to="/logout" class="tw_text-red-600">
+                <q-item-section avatar>
+                  <q-icon name="sym_o_logout" />
+                </q-item-section>
+                <q-item-section>Logout</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
+      </div>
     </div>
 
-    <div>
+    <div v-else class="tw_flex tw_gap-4 tw_justify-between tw_items-center tw_h-[52px]">
+      <q-btn
+        round
+        flat
+        class="!tw_p-0"
+        icon="sym_o_arrow_back"
+        color="dark"
+        @click="showSearchInput = !showSearchInput"
+      />
       <q-input
         outlined
         rounded
         dense
         v-model="search"
         placeholder="Search..."
-        class="tw_min-w-[350px] tw_pr-0"
+        class="tw_w-full tw_pr-0"
         color="primary"
         @keyup.enter="handleSearch()"
       >
@@ -75,48 +167,6 @@ async function clearUploadState() {
           <q-btn round dense flat icon="sym_o_search" />
         </template>
       </q-input>
-    </div>
-
-    <div class="tw_flex tw_items-center tw_gap-4">
-      <q-btn
-        round
-        flat
-        class="!tw_p-0"
-        icon="sym_o_cloud_upload"
-        color="dark"
-        @click="showUploadModal = true"
-      />
-      <!-- <q-btn round flat class="!tw_p-0" icon="sym_o_notifications" color="dark" disabled>
-        <q-tooltip>Notifications (Coming Soon)</q-tooltip>
-      </q-btn> -->
-      <q-btn round flat class="!tw_p-0" color="white">
-        <q-avatar size="40px" class="tw_border">
-          <img :src="authData?.avatar" />
-        </q-avatar>
-
-        <!-- Dropdown Menu -->
-        <q-menu class="tw_min-w-[160px]" :offset="[0, 4]">
-          <q-list>
-            <span v-for="(item, i) in menuItems" :key="i">
-              <span v-if="item.if || true">
-                <q-separator v-if="item.type === 'separator'" />
-                <q-item
-                  v-else
-                  clickable
-                  v-close-popup
-                  :class="item.class || ''"
-                  :to="item.to || ''"
-                >
-                  <q-item-section avatar>
-                    <q-icon :name="item.icon" />
-                  </q-item-section>
-                  <q-item-section>{{ item.label }}</q-item-section>
-                </q-item>
-              </span>
-            </span>
-          </q-list>
-        </q-menu>
-      </q-btn>
     </div>
   </nav>
 
