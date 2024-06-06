@@ -7,7 +7,7 @@ const props = defineProps({
     default: false,
   },
 });
-const leftDrawerOpen = ref(false);
+const leftDrawerOpen = ref(props.showFilterMenu);
 
 watch(
   () => props.showFilterMenu,

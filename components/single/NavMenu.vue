@@ -66,8 +66,6 @@ async function clearUploadState() {
 
       <!-- Right buttons -->
       <div class="tw_flex tw_items-center tw_justify-end tw_gap-4 sm:tw_min-w-[250px]">
-        <!-- <pre>{{ $q.screen.name }}</pre> -->
-
         <q-btn
           v-if="$q.screen.lt.md"
           round
@@ -85,10 +83,6 @@ async function clearUploadState() {
           color="dark"
           @click="showUploadModal = true"
         /> -->
-
-        <!-- <q-btn round flat class="!tw_p-0" icon="sym_o_notifications" color="dark" disabled>
-          <q-tooltip>Notifications (Coming Soon)</q-tooltip>
-        </q-btn> -->
 
         <q-btn round flat class="!tw_p-0" color="white">
           <q-avatar size="40px" class="tw_border">

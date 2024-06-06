@@ -3,11 +3,12 @@ definePageMeta({
   middleware: 'authorized-only',
 });
 const { data: authData } = useAuth();
+const $q = useQuasar();
 const route = useRoute();
 
 const videoStore = useVideoStore();
 const likeStore = useLikeStore();
-const showFilterMenu = ref(false);
+const showFilterMenu = ref($q.screen.lt.md ? false : true);
 const allVideos = await videoStore.getAll();
 const allLikes = await likeStore.getAllMine();
 const sortOptions = ref<any>([
@@ -121,47 +122,59 @@ const cleanedAllVideos = computed(() => {
   </Head>
 
   <NuxtLayout name="app" :showFilterMenu="showFilterMenu" @hideFilterMenu="showFilterMenu = false">
-    <template #sidemenu> Lots of good stuff bro </template>
+    <template #sidemenu>
+      <q-form class="tw_p-4">
+        <h4 class="h4">Filter Menu</h4>
+        <q-select
+          behavior="menu"
+          v-model="filterBy"
+          outlined
+          no-error-icon
+          hide-bottom-space
+          dense
+          emit-value
+          map-options
+          :options="filterOptions"
+        />
+        <q-select
+          behavior="menu"
+          v-model="sortBy"
+          outlined
+          no-error-icon
+          hide-bottom-space
+          dense
+          emit-value
+          map-options
+          :options="sortOptions"
+        />
+      </q-form>
+    </template>
     <template #default>
       <main class="tw_px-1 sm:tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto">
-        <button @click="showFilterMenu = !showFilterMenu" class="tw_border">Filter Menu</button>
-        <div class="tw_flex tw_justify-between tw_items-center">
+        <div class="tw_flex tw_justify-start tw_items-center tw_gap-4">
           <h1 class="h1">
             Dashboard <span class="tw_text-lg">({{ cleanedAllVideos.length }})</span>
           </h1>
-          <div class="tw_flex tw_gap-2">
-            <q-select
-              behavior="menu"
-              v-model="filterBy"
-              outlined
-              no-error-icon
-              hide-bottom-space
-              dense
-              emit-value
-              map-options
-              :options="filterOptions"
-              class="sm:tw_w-[200px]"
-            />
-            <q-select
-              behavior="menu"
-              v-model="sortBy"
-              outlined
-              no-error-icon
-              hide-bottom-space
-              dense
-              emit-value
-              map-options
-              :options="sortOptions"
-              class="sm:tw_w-[230px]"
+          <div>
+            <q-btn
+              round
+              flat
+              class="!tw_p-0"
+              icon="sym_o_filter_list"
+              color="dark"
+              @click="showFilterMenu = !showFilterMenu"
             />
           </div>
         </div>
-        <div class="tw_flex tw_gap-0 tw_justify-start tw_mt-6 tw_flex-wrap tw_items-start">
+        <div
+          class="tw_flex tw_gap-0 tw_justify-start tw_mt-6 tw_flex-wrap tw_items-start tw_@container"
+        >
           <DashboardItem
             v-for="(video, i) in cleanedAllVideos"
             :key="i"
             :video="video"
             :liked="allLikes.some((like: any) => like.videoId === video.id)"
+            class="tw_w-full @lg:tw_w-1/2 @xl:tw_w-1/2 @3xl:tw_w-1/3 @5xl:tw_w-1/4 @7xl:tw_w-1/5"
           />
         </div>
       </main>

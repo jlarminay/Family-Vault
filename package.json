@@ -26,6 +26,7 @@
     "@pinia/nuxt": "^0.5.1",
     "@prisma/client": "^5.15.0",
     "@quasar/extras": "^1.16.11",
+    "@tailwindcss/container-queries": "^0.1.1",
     "@trpc/client": "^10.44.1",
     "@trpc/server": "^10.44.1",
     "@types/shelljs": "^0.8.15",
