@@ -26,9 +26,7 @@ async function refreshData() {
     <title>People | Larminay Vault</title>
   </Head>
 
-  <div>
-    <SingleNavMenu />
-
+  <NuxtLayout name="app">
     <main class="tw_px-6 tw_py-4 tw_max-w-[800px] tw_mx-auto">
       <div class="tw_flex tw_justify-between tw_items-start">
         <h1 class="h1">People</h1>
@@ -65,7 +63,7 @@ async function refreshData() {
                 'tw_border-purple-400': person.gender === 'Other',
               }"
             >
-              <img :src="person.image.path" class="tw_object-cover" />
+              <img :src="person?.image?.path" class="tw_object-cover" />
             </div>
             <div class="tw_flex-1">
               <p class="tw_text-xl">{{ person.name }}</p>
@@ -78,7 +76,7 @@ async function refreshData() {
     </main>
 
     <PersonEditModal v-model="editModal" mode="new" @personUpdated="refreshData" />
-  </div>
+  </NuxtLayout>
 </template>
 
 <style scoped lang="postcss"></style>

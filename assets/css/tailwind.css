@@ -18,13 +18,13 @@
 
 @layer components {
   .h1 {
-    @apply tw_text-3xl tw_font-medium tw_font-montserrat;
+    @apply tw_text-2xl sm:tw_text-3xl tw_font-medium tw_font-montserrat;
   }
   .h2 {
-    @apply tw_text-2xl tw_font-medium tw_font-montserrat;
+    @apply tw_text-xl sm:tw_text-2xl tw_font-medium tw_font-montserrat;
   }
   .h3 {
-    @apply tw_text-xl tw_font-medium tw_font-montserrat;
+    @apply tw_text-lg sm:tw_text-xl tw_font-medium tw_font-montserrat;
   }
   .h4 {
     @apply tw_text-lg tw_font-medium tw_font-montserrat;

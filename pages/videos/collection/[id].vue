@@ -13,9 +13,7 @@ const collection = ref(await collectionStore.getSingle(parseInt(route.params.id 
     <title>Collection | Larminay Vault</title>
   </Head>
 
-  <div>
-    <SingleNavMenu />
-
+  <NuxtLayout name="app">
     <main class="tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto">
       <h1 class="h1">{{ collection.name }}</h1>
       <p class="tw_text-lg tw_whitespace-pre-line">{{ collection.description }}</p>
@@ -27,7 +25,7 @@ const collection = ref(await collectionStore.getSingle(parseInt(route.params.id 
         <DashboardItem v-for="(video, i) in collection.videos" :key="i" :video="video" />
       </div>
     </main>
-  </div>
+  </NuxtLayout>
 </template>
 
 <style scoped lang="postcss"></style>

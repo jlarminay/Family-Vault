@@ -80,9 +80,7 @@ async function updateVideo() {
     <title>{{ video.title || 'Video' }} | Larminay Vault</title>
   </Head>
 
-  <div>
-    <SingleNavMenu />
-
+  <NuxtLayout name="app">
     <main class="tw_px-6 tw_py-4 tw_max-w-[1000px] tw_mx-auto tw_mb-8">
       <div class="tw_flex tw_gap-4 tw_items-start tw_relative">
         <!-- Video Details -->
@@ -91,17 +89,17 @@ async function updateVideo() {
         >
           <h2 class="h2 tw_font-bold tw_mb-4">Video Details</h2>
           <!-- <img :src="video.thumbnail.path" class="tw_w-full tw_my-2 tw_rounded" /> -->
-          <video controls :poster="video.thumbnail.path" class="tw_w-full tw_mb-2">
+          <video controls :poster="video.thumbnail?.path" class="tw_w-full tw_mb-2">
             <source :src="video.video.path" type="video/mp4" />
           </video>
 
           <div>
             <span class="tw_font-bold">Duration: </span>
-            <span>{{ formatDuration(video.video.metadata.duration) }}</span>
+            <span>{{ formatDuration(video.video.metadata?.duration) }}</span>
           </div>
           <div>
             <span class="tw_font-bold">Resolution: </span>
-            <span>{{ video.video.metadata.resolution }}</span>
+            <span>{{ video.video.metadata?.resolution }}</span>
           </div>
           <div>
             <span class="tw_font-bold">Size: </span>
@@ -180,6 +178,7 @@ async function updateVideo() {
                 </template>
               </q-input>
               <q-select
+                behavior="menu"
                 outlined
                 no-error-icon
                 v-model="videoEdit.persons"
@@ -209,6 +208,7 @@ async function updateVideo() {
                 </template>
               </q-select>
               <q-select
+                behavior="menu"
                 outlined
                 no-error-icon
                 v-model="videoEdit.collections"
@@ -233,6 +233,7 @@ async function updateVideo() {
             <div class="tw_mt-6">
               <h3 class="h3 tw_font-bold tw_mb-2">Security</h3>
               <q-select
+                behavior="menu"
                 outlined
                 no-error-icon
                 v-model="videoEdit.published"
@@ -271,7 +272,7 @@ async function updateVideo() {
         </div>
       </div>
     </main>
-  </div>
+  </NuxtLayout>
 </template>
 
 <style scoped lang="postcss"></style>

@@ -10,13 +10,11 @@ const { data: authData } = useAuth();
     <title>Account | Larminay Vault</title>
   </Head>
 
-  <div>
-    <SingleNavMenu />
-
+  <NuxtLayout name="app">
     <main class="tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto">
       <pre>{{ authData }}</pre>
     </main>
-  </div>
+  </NuxtLayout>
 </template>
 
 <style scoped lang="postcss"></style>

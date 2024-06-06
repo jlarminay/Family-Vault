@@ -12,7 +12,9 @@ const showMore = ref<boolean>(false);
   <div class="tw_mt-4">
     <div :class="{ 'tw_line-clamp-3': !showMore }">
       <!-- Description -->
-      <p class="tw_whitespace-pre-line">{{ video.description }}</p>
+      <p class="tw_whitespace-pre-line" :class="{ 'tw_opacity-70 tw_italic': !video.description }">
+        {{ video.description || 'No Description' }}
+      </p>
 
       <!-- More information -->
       <div v-if="showMore" class="tw_mt-6">
@@ -70,7 +72,13 @@ const showMore = ref<boolean>(false);
     </div>
 
     <div class="tw_text-center tw_mt-2">
-      <q-btn no-caps unelevated size="14px" color="primary" @click="showMore = !showMore">
+      <q-btn
+        no-caps
+        unelevated
+        :size="$q.screen.lt.sm ? '10px' : '12px'"
+        color="primary"
+        @click="showMore = !showMore"
+      >
         {{ showMore ? 'Show Less' : 'Show More' }}
       </q-btn>
     </div>

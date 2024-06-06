@@ -45,9 +45,7 @@ async function saveCollection() {
     <title>Collections | Larminay Vault</title>
   </Head>
 
-  <div>
-    <SingleNavMenu />
-
+  <NuxtLayout name="app">
     <main class="tw_px-6 tw_py-4 tw_max-w-[1000px] tw_mx-auto">
       <div class="tw_flex tw_justify-between tw_items-center">
         <h1 class="h1">Collections</h1>
@@ -204,7 +202,7 @@ async function saveCollection() {
         />
       </template>
     </Modal>
-  </div>
+  </NuxtLayout>
 </template>
 
 <style scoped lang="postcss">

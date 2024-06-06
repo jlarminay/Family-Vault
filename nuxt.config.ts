@@ -54,8 +54,8 @@ export default defineNuxtConfig({
     },
   },
 
+  // @ts-ignore
   auth: {
-    // @ts-ignore
     origin: process.env.AUTH_ORIGIN,
     provider: {
       type: 'authjs',
@@ -77,6 +77,13 @@ export default defineNuxtConfig({
         negative: '#C10015',
         info: '#31CCEC',
         warning: '#F2C037',
+      },
+      breakpoints: {
+        sm: 640,
+        md: 768,
+        lg: 1024,
+        xl: 1280,
+        '2xl': 1536,
       },
     },
   },
