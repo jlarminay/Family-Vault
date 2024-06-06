@@ -31,13 +31,13 @@ async function updateLike() {
   </Head>
 
   <NuxtLayout name="app">
-    <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1400px] tw_mx-auto tw_mb-8">
+    <main class="sm:tw_px-6 sm:tw_py-4 tw_max-w-[1400px] tw_mx-auto tw_mb-8">
       <div class="tw_flex tw_gap-4">
         <div class="tw_grow tw_min-w-0">
           <video
             controls
             :poster="video.thumbnail?.path"
-            class="tw_w-full tw_sticky sm:tw_relative tw_top-[65px] sm:tw_top-0 tw_z-50"
+            class="tw_w-full tw_sticky sm:tw_relative tw_top-[61px] sm:tw_top-0 tw_z-50"
           >
             <source :src="video.video.path" type="video/mp4" />
           </video>
