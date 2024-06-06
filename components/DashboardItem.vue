@@ -12,7 +12,9 @@ defineProps({
 </script>
 
 <template>
-  <div class="min-[1200px]:tw_w-1/5 min-[1000px]:tw_w-1/4 min-[800px]:tw_w-1/3 tw_w-1/2">
+  <div
+    class="tw_w-full min-[500px]:tw_w-1/2 min-[700px]:tw_w-1/3 min-[900px]:tw_w-1/4 min-[1100px]:tw_w-1/5"
+  >
     <NuxtLink
       class="tw_inline-block tw_w-full tw_rounded tw_overflow-hidden tw_transition hover:tw_bg-slate-200 tw_p-2"
       :to="`/video/${video.id}`"
@@ -39,7 +41,7 @@ defineProps({
         />
       </div>
       <div class="tw_mt-2">
-        <p class="tw_text-base tw_line-clamp-2 sm:tw_line-clamp-1 tw_font-bold">
+        <p class="tw_text-base tw_leading-tight tw_line-clamp-2 tw_font-bold">
           {{ video.title }}
         </p>
         <p class="tw_text-gray-500 tw_text-sm tw_truncate">

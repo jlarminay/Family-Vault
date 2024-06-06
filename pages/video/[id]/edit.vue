@@ -80,9 +80,7 @@ async function updateVideo() {
     <title>{{ video.title || 'Video' }} | Larminay Vault</title>
   </Head>
 
-  <div>
-    <SingleNavMenu />
-
+  <NuxtLayout name="app">
     <main class="tw_px-6 tw_py-4 tw_max-w-[1000px] tw_mx-auto tw_mb-8">
       <div class="tw_flex tw_gap-4 tw_items-start tw_relative">
         <!-- Video Details -->
@@ -97,11 +95,11 @@ async function updateVideo() {
 
           <div>
             <span class="tw_font-bold">Duration: </span>
-            <span>{{ formatDuration(video.video.metadata.duration) }}</span>
+            <span>{{ formatDuration(video.video.metadata?.duration) }}</span>
           </div>
           <div>
             <span class="tw_font-bold">Resolution: </span>
-            <span>{{ video.video.metadata.resolution }}</span>
+            <span>{{ video.video.metadata?.resolution }}</span>
           </div>
           <div>
             <span class="tw_font-bold">Size: </span>
@@ -274,7 +272,7 @@ async function updateVideo() {
         </div>
       </div>
     </main>
-  </div>
+  </NuxtLayout>
 </template>
 
 <style scoped lang="postcss"></style>

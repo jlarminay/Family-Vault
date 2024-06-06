@@ -30,9 +30,7 @@ async function updateLike() {
     <title>{{ video.title || 'Video' }} | Larminay Vault</title>
   </Head>
 
-  <div>
-    <SingleNavMenu />
-
+  <NuxtLayout name="app">
     <main class="tw_px-1 sm:tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto tw_mb-8">
       <div class="tw_flex tw_gap-4">
         <div class="tw_grow tw_min-w-0">
@@ -120,7 +118,7 @@ async function updateLike() {
     </main>
 
     <ReportModal :videoId="videoId" v-model="VideoReportModal" />
-  </div>
+  </NuxtLayout>
 </template>
 
 <style scoped lang="postcss">

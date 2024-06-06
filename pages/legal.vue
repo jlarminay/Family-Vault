@@ -9,9 +9,7 @@ definePageMeta({
     <title>Legal | Larminay Vault</title>
   </Head>
 
-  <div>
-    <SingleNavMenu />
-
+  <NuxtLayout name="app">
     <main class="tw_px-6 tw_py-4 tw_max-w-[800px] tw_mx-auto">
       <h1 class="h1">Legal</h1>
       <div class="tw_mt-6">
@@ -25,7 +23,7 @@ definePageMeta({
         </p>
       </div>
     </main>
-  </div>
+  </NuxtLayout>
 </template>
 
 <style scoped lang="postcss"></style>

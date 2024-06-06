@@ -28,7 +28,7 @@ async function clearUploadState() {
   <nav
     class="tw_py-1 sm:tw_py-2 tw_px-1 sm:tw_px-6 tw_border-b tw_sticky tw_top-0 tw_bg-white tw_z-10"
   >
-    <div v-if="!showSearchInput" class="tw_flex tw_justify-between tw_items-center tw_h-[52px]">
+    <div class="tw_flex tw_justify-between tw_items-center tw_h-[52px]">
       <!-- Logo -->
       <div class="sm:tw_min-w-[250px]">
         <q-btn
@@ -59,7 +59,7 @@ async function clearUploadState() {
           @keyup.enter="handleSearch()"
         >
           <template v-slot:append>
-            <q-btn round dense flat icon="sym_o_search" />
+            <q-btn round dense flat icon="sym_o_search" @click="handleSearch" />
           </template>
         </q-input>
       </div>
@@ -104,7 +104,12 @@ async function clearUploadState() {
                 </q-item-section>
                 <q-item-section>My Profile</q-item-section>
               </q-item>
-              <q-item clickable v-close-popup @click="showUploadModal = true">
+              <q-item
+                v-if="authData?.role === 'admin'"
+                clickable
+                v-close-popup
+                @click="showUploadModal = true"
+              >
                 <q-item-section avatar>
                   <q-icon name="sym_o_cloud_upload" />
                 </q-item-section>
@@ -126,7 +131,7 @@ async function clearUploadState() {
                 </q-item-section>
                 <q-item-section>Legal</q-item-section>
               </q-item>
-              <q-item clickable v-close-popup to="/admin">
+              <q-item v-if="authData?.role === 'admin'" clickable v-close-popup to="/admin">
                 <q-item-section avatar>
                   <q-icon name="sym_o_admin_panel_settings" />
                 </q-item-section>
@@ -144,7 +149,10 @@ async function clearUploadState() {
       </div>
     </div>
 
-    <div v-else class="tw_flex tw_gap-4 tw_justify-between tw_items-center tw_h-[52px]">
+    <div
+      v-if="showSearchInput"
+      class="tw_flex tw_gap-4 tw_justify-between tw_items-center tw_h-[52px]"
+    >
       <q-btn
         round
         flat
@@ -161,10 +169,10 @@ async function clearUploadState() {
         placeholder="Search..."
         class="tw_w-full tw_pr-0"
         color="primary"
-        @keyup.enter="handleSearch()"
+        @keyup.enter="handleSearch"
       >
         <template v-slot:append>
-          <q-btn round dense flat icon="sym_o_search" />
+          <q-btn round dense flat icon="sym_o_search" @click="handleSearch" />
         </template>
       </q-input>
     </div>

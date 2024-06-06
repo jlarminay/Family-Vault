@@ -3,6 +3,7 @@ model User {
   email          String    @unique
   name           String
   provider       String
+  role           String    @default("user")
   avatar         String?
   lastLogin      DateTime?
   active         Boolean   @default(true)

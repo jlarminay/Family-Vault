@@ -7,6 +7,7 @@ const route = useRoute();
 
 const videoStore = useVideoStore();
 const likeStore = useLikeStore();
+const showFilterMenu = ref(false);
 const allVideos = await videoStore.getAll();
 const allLikes = await likeStore.getAllMine();
 const sortOptions = ref<any>([
@@ -119,51 +120,53 @@ const cleanedAllVideos = computed(() => {
     <title>Dashboard | Larminay Vault</title>
   </Head>
 
-  <div>
-    <SingleNavMenu />
-
-    <main class="tw_px-1 sm:tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto">
-      <div class="tw_flex tw_justify-between tw_items-center">
-        <h1 class="h1">
-          Dashboard <span class="tw_text-lg">({{ cleanedAllVideos.length }})</span>
-        </h1>
-        <div class="tw_flex tw_gap-2">
-          <q-select
-            behavior="menu"
-            v-model="filterBy"
-            outlined
-            no-error-icon
-            hide-bottom-space
-            dense
-            emit-value
-            map-options
-            :options="filterOptions"
-            class="sm:tw_w-[200px]"
-          />
-          <q-select
-            behavior="menu"
-            v-model="sortBy"
-            outlined
-            no-error-icon
-            hide-bottom-space
-            dense
-            emit-value
-            map-options
-            :options="sortOptions"
-            class="sm:tw_w-[230px]"
+  <NuxtLayout name="app" :showFilterMenu="showFilterMenu" @hideFilterMenu="showFilterMenu = false">
+    <template #sidemenu> Lots of good stuff bro </template>
+    <template #default>
+      <main class="tw_px-1 sm:tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto">
+        <button @click="showFilterMenu = !showFilterMenu" class="tw_border">Filter Menu</button>
+        <div class="tw_flex tw_justify-between tw_items-center">
+          <h1 class="h1">
+            Dashboard <span class="tw_text-lg">({{ cleanedAllVideos.length }})</span>
+          </h1>
+          <div class="tw_flex tw_gap-2">
+            <q-select
+              behavior="menu"
+              v-model="filterBy"
+              outlined
+              no-error-icon
+              hide-bottom-space
+              dense
+              emit-value
+              map-options
+              :options="filterOptions"
+              class="sm:tw_w-[200px]"
+            />
+            <q-select
+              behavior="menu"
+              v-model="sortBy"
+              outlined
+              no-error-icon
+              hide-bottom-space
+              dense
+              emit-value
+              map-options
+              :options="sortOptions"
+              class="sm:tw_w-[230px]"
+            />
+          </div>
+        </div>
+        <div class="tw_flex tw_gap-0 tw_justify-start tw_mt-6 tw_flex-wrap tw_items-start">
+          <DashboardItem
+            v-for="(video, i) in cleanedAllVideos"
+            :key="i"
+            :video="video"
+            :liked="allLikes.some((like: any) => like.videoId === video.id)"
           />
         </div>
-      </div>
-      <div class="tw_flex tw_gap-0 tw_justify-start tw_mt-6 tw_flex-wrap tw_items-start">
-        <DashboardItem
-          v-for="(video, i) in cleanedAllVideos"
-          :key="i"
-          :video="video"
-          :liked="allLikes.some((like: any) => like.videoId === video.id)"
-        />
-      </div>
-    </main>
-  </div>
+      </main>
+    </template>
+  </NuxtLayout>
 </template>
 
 <style scoped lang="postcss"></style>

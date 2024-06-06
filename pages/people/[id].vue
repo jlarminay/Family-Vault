@@ -14,9 +14,7 @@ const person = ref(await personStore.getSingle(personId.value));
     <title>Person | Larminay Vault</title>
   </Head>
 
-  <div>
-    <SingleNavMenu />
-
+  <NuxtLayout name="app">
     <main class="tw_px-6 tw_py-4 tw_max-w-[800px] tw_mx-auto">
       <div class="tw_flex tw_flex-wrap">
         <div class="tw_flex tw_items-center tw_gap-4">
@@ -64,7 +62,7 @@ const person = ref(await personStore.getSingle(personId.value));
         </div>
       </div>
     </main>
-  </div>
+  </NuxtLayout>
 </template>
 
 <style scoped lang="postcss"></style>

@@ -6,7 +6,7 @@ definePageMeta({
 const reportStore = useReportStore();
 const modal = ref<any>(false);
 const allReports = ref(await reportStore.getAll());
-const selectedReport = ref(null);
+const selectedReport = ref(0);
 const deleteModal = ref(false);
 const loading = ref(false);
 
@@ -29,9 +29,7 @@ async function confirmDelete() {
     <title>Reports | Larminay Vault</title>
   </Head>
 
-  <div>
-    <SingleNavMenu />
-
+  <NuxtLayout name="app">
     <main class="tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto tw_border">
       <h1 class="h1">Reports</h1>
       <div class="tw_mt-6">
@@ -118,7 +116,7 @@ async function confirmDelete() {
         />
       </template>
     </Modal>
-  </div>
+  </NuxtLayout>
 </template>
 
 <style scoped lang="postcss">

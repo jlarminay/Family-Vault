@@ -54,6 +54,7 @@ export default defineNuxtConfig({
     },
   },
 
+  // @ts-ignore
   auth: {
     origin: process.env.AUTH_ORIGIN,
     provider: {
