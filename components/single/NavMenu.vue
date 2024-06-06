@@ -65,7 +65,7 @@ async function clearUploadState() {
       </div>
 
       <!-- Right buttons -->
-      <div class="tw_flex tw_items-center tw_justify-end tw_gap-4 sm:tw_min-w-[250px]">
+      <div class="tw_flex tw_items-center tw_justify-end tw_gap-4 sm:tw_min-w-[250px] tw_pr-4">
         <q-btn
           v-if="$q.screen.lt.md"
           round
@@ -145,7 +145,7 @@ async function clearUploadState() {
 
     <div
       v-if="showSearchInput"
-      class="tw_flex tw_gap-4 tw_justify-between tw_items-center tw_h-[52px]"
+      class="tw_flex tw_gap-4 tw_justify-between tw_items-center tw_h-[52px] tw_mr-4 tw_ml-2"
     >
       <q-btn
         round

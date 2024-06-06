@@ -24,15 +24,15 @@ definePageMeta({
         <div class="tw_flex tw_flex-col tw_gap-2">
           <q-btn
             v-for="provider in [
-              { name: 'Google', color: '#4285F4' },
-              { name: 'GitHub', color: '#24292e' },
-              { name: 'Discord', color: '#7289da' },
+              { name: 'Google', bgColor: 'tw_bg-[#4285F4]' },
+              { name: 'GitHub', bgColor: 'tw_bg-[#24292e]' },
+              { name: 'Discord', bgColor: 'tw_bg-[#7289da]' },
             ]"
             no-caps
             unelevated
             size="18px"
             @click="signIn(provider.name.toLowerCase())"
-            :class="`tw_bg-[${provider.color}] tw_text-white`"
+            :class="`${provider.bgColor} tw_text-white`"
           >
             <q-icon
               :name="`fa-brands fa-${provider.name.toLowerCase()}`"
