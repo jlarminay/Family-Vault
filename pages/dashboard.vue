@@ -166,9 +166,7 @@ const cleanedAllVideos = computed(() => {
             />
           </div>
         </div>
-        <div
-          class="tw_flex tw_gap-0 tw_justify-start tw_mt-6 tw_flex-wrap tw_items-start tw_@container"
-        >
+        <div class="tw_flex tw_gap-0 tw_justify-start tw_flex-wrap tw_items-start tw_@container">
           <DashboardItem
             v-for="(video, i) in cleanedAllVideos"
             :key="i"

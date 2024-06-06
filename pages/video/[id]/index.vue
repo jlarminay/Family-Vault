@@ -31,10 +31,14 @@ async function updateLike() {
   </Head>
 
   <NuxtLayout name="app">
-    <main class="tw_px-1 sm:tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto tw_mb-8">
+    <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1400px] tw_mx-auto tw_mb-8">
       <div class="tw_flex tw_gap-4">
         <div class="tw_grow tw_min-w-0">
-          <video controls :poster="video.thumbnail?.path" class="tw_w-full">
+          <video
+            controls
+            :poster="video.thumbnail?.path"
+            class="tw_w-full tw_sticky sm:tw_relative tw_top-[65px] sm:tw_top-0 tw_z-50"
+          >
             <source :src="video.video.path" type="video/mp4" />
           </video>
 
@@ -109,7 +113,7 @@ async function updateLike() {
         </div>
 
         <!-- other videos (md) -->
-        <div v-if="$q.screen.gt.sm" class="tw_min-w-[300px] tw_w-[300px] tw_px-2">
+        <div v-if="$q.screen.gt.sm" class="tw_min-w-[350px] tw_w-[350px] tw_px-2">
           <h3 class="h3">Related Videos</h3>
 
           <RelatedVideoDisplay v-for="(video, i) in randomVideos" :key="i" :video="video" />
