@@ -1,7 +1,11 @@
 // @ts-ignore
 import { createToaster } from '@meforma/vue-toaster';
 
-export default function (opts: { duration?: number; type?: string; message: string }): void {
+export default function (opts: {
+  duration?: number | false;
+  type?: string;
+  message: string;
+}): void {
   const { duration, type, message } = opts;
   const toaster = createToaster();
 
@@ -44,7 +48,7 @@ export default function (opts: { duration?: number; type?: string; message: stri
     {
       position: 'top',
       type: type,
-      duration: duration || 3000,
+      duration: duration === undefined ? 3000 : duration,
       useDefaultCss: false,
       dismissible: true,
       pauseOnHover: true,
