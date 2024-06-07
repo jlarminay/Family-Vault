@@ -1,5 +1,22 @@
 import { z } from 'zod';
 
+export const searchSchema = z.object({
+  search: z.string().max(128),
+  filterBy: z.string(z.enum(['all', 'liked', 'mine'])),
+  sortBy: z.string(
+    z.enum([
+      'title-asc',
+      'title-desc',
+      'date-taken-desc',
+      'date-taken-asc',
+      'date-added-desc',
+      'date-added-asc',
+      'duration-desc',
+      'duration-asc',
+    ]),
+  ),
+});
+
 export const uploadVideoSchema = z.object({
   key: z.string().max(128),
   count: z.number(),

@@ -11,6 +11,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  posterUrl: {
+    type: String,
+    required: true,
+  },
 });
 
 const player = ref(null);
