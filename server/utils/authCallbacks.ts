@@ -28,7 +28,7 @@ export default {
 
       return true;
     } catch (e) {
-      return false;
+      return '/login?state=error';
     }
   },
   async session(opts: { session: any; token: any; user: any }): Promise<any> {

@@ -1,3 +1,4 @@
+import { sign } from 'node:crypto';
 import { resolve } from 'node:path';
 
 export default defineNuxtConfig({

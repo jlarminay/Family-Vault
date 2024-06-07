@@ -3,6 +3,16 @@ const { signIn } = useAuth();
 definePageMeta({
   middleware: 'unauthorized-only',
 });
+
+onMounted(() => {
+  if (window.location.search.includes('state=error')) {
+    toaster({
+      type: 'error',
+      message: "You don't have permission to access the site.",
+      duration: false,
+    });
+  }
+});
 </script>
 
 <template>
