@@ -81,21 +81,20 @@ async function updateVideo() {
   </Head>
 
   <NuxtLayout name="app">
-    <main class="tw_px-6 tw_py-4 tw_max-w-[1000px] tw_mx-auto tw_mb-8">
-      <div class="tw_flex tw_gap-4 tw_items-start tw_relative">
+    <main class="tw_px-1 sm:tw_px-6 tw_py-4 tw_max-w-[1000px] tw_mx-auto tw_mb-8">
+      <div class="min-[800px]:tw_flex tw_gap-4 tw_items-start tw_relative">
         <!-- Video Details -->
         <div
-          class="tw_w-[350px] tw_min-w-[350px] tw_border tw_bg-gray-50 tw_rounded tw_p-4 tw_overflow-hidden tw_sticky tw_top-[84px]"
+          class="min-[800px]:tw_w-[350px] min-[800px]:tw_min-w-[350px] tw_mb-6 tw_border tw_bg-gray-50 tw_rounded tw_p-4 tw_overflow-hidden min-[800px]:tw_sticky tw_top-[84px]"
         >
           <h2 class="h2 tw_font-bold tw_mb-4">Video Details</h2>
-          <!-- <img :src="video.thumbnail.path" class="tw_w-full tw_my-2 tw_rounded" /> -->
           <video controls :poster="video.thumbnail?.path" class="tw_w-full tw_mb-2">
             <source :src="video.video.path" type="video/mp4" />
           </video>
 
           <div>
             <span class="tw_font-bold">Duration: </span>
-            <span>{{ formatDuration(video.video.metadata?.duration) }}</span>
+            <span>{{ formatDuration(video.video?.metadata?.duration) }}</span>
           </div>
           <div>
             <span class="tw_font-bold">Resolution: </span>

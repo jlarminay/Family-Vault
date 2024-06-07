@@ -54,7 +54,11 @@ const showMore = ref<boolean>(false);
         </div>
         <div class="tw_flex tw_gap-2">
           <span class="tw_font-bold">Video Resolution: </span>
-          <span>{{ video.video.metadata.resolution }}</span>
+          <span>
+            {{ video.video.metadata.resolution }} ({{
+              getAspectRatio(video.video.metadata.resolution)
+            }})
+          </span>
         </div>
         <div class="tw_flex tw_gap-2">
           <span class="tw_font-bold">Video Size: </span>
