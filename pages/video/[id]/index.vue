@@ -41,10 +41,6 @@ async function updateLike() {
             <VideoPlayer
               :videoUrl="video.video?.path || ''"
               :posterUrl="video.thumbnail?.path || ''"
-              :options="{
-                autoplay: true,
-                controls: true,
-              }"
             />
           </div>
 
