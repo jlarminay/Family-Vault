@@ -44,7 +44,7 @@ export default function (opts: { duration?: number; type?: string; message: stri
     {
       position: 'top',
       type: type,
-      duration: duration || 300000,
+      duration: duration || 3000,
       useDefaultCss: false,
       dismissible: true,
       pauseOnHover: true,
