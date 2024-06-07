@@ -45,6 +45,25 @@
   }
 }
 
+.q-table {
+  thead th {
+    @apply tw_text-base tw_font-bold tw_whitespace-nowrap;
+  }
+
+  .q-td {
+    @apply tw_text-base;
+  }
+
+  tbody tr {
+    .actions {
+      @apply tw_opacity-0 tw_transition-opacity tw_duration-300;
+    }
+    &:hover .actions {
+      @apply tw_opacity-100;
+    }
+  }
+}
+
 .q-tooltip {
   @apply tw_bg-dark tw_text-white tw_text-sm tw_font-maven-pro tw_font-normal tw_p-2 tw_rounded-md;
 }

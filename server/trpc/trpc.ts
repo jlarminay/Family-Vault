@@ -21,5 +21,28 @@ const authorize = middleware(async ({ ctx, next }) => {
   });
 });
 
+const adminAuthorize = middleware(async ({ ctx, next }) => {
+  const session = await getServerSession(ctx.event);
+
+  if (!session) {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'You must be logged in to access this resource',
+    });
+  }
+
+  if (session.role !== 'admin') {
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'You must be an admin to access this resource',
+    });
+  }
+
+  return next({
+    ctx,
+  });
+});
+
 export const publicProcedure = t.procedure;
 export const protectedProcedure = publicProcedure.use(authorize);
+export const adminProcedure = publicProcedure.use(adminAuthorize);

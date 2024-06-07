@@ -55,7 +55,7 @@ export const videoRouter = router({
 
       video.dateOrder = video.dateOrder.toISOString().split('T')[0] as any;
 
-      if (!video.published && video.ownerId !== session?.id) {
+      if (!video.published && video.ownerId !== session?.id && session?.role !== 'admin') {
         throw new Error('Video not published');
       }
 

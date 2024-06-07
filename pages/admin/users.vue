@@ -2,65 +2,54 @@
 import validator from 'validator';
 const { data: authData } = useAuth();
 definePageMeta({
-  middleware: 'authorized-only',
+  middleware: 'admin-authorized-only',
 });
 
 const editForm = ref<any>(null);
-const userStore = useUserStore();
-const allUsers = ref(await userStore.getAll());
+const adminStore = useAdminStore();
+const allUsers = ref(await adminStore.userRead());
 const selectedUser = ref<any>(null);
-const deleteModal = ref(false);
 const editModal = ref(false);
 const loading = ref(false);
 
-async function confirmDelete() {
-  loading.value = true;
-  let response = await userStore.delete(selectedUser.value.id);
-  loading.value = false;
-  if (!response) {
-    toaster({ type: 'error', message: 'Something went wrong.<br/>Please try again later.' });
-    return;
-  }
-  toaster({ type: 'success', message: 'Successfully deleted user.' });
-  deleteModal.value = false;
-  allUsers.value = await userStore.getAll();
-}
 async function saveUser() {
   if (!(await editForm.value.validate())) return;
   loading.value = true;
-  let response = await userStore.createOrUpdate(selectedUser.value);
+  let response;
+  if (!selectedUser.value.id) response = await adminStore.userCreate(selectedUser.value);
+  else response = await adminStore.userUpdate(selectedUser.value);
   loading.value = false;
+
   if (!response) {
     toaster({ type: 'error', message: 'Something went wrong.<br/>Please try again later.' });
     return;
   }
   toaster({ type: 'success', message: 'Successfully updated user.' });
   editModal.value = false;
-  allUsers.value = await userStore.getAll();
+  allUsers.value = await adminStore.userRead();
 }
 </script>
 
 <template>
   <Head>
-    <title>Users | Larminay Vault</title>
+    <title>Users | Admin | Larminay Vault</title>
   </Head>
 
   <NuxtLayout name="app">
     <main class="tw_px-6 tw_py-4 tw_max-w-[1000px] tw_mx-auto">
-      <div class="tw_flex tw_justify-between tw_items-center">
-        <h1 class="h1">Users</h1>
+      <AdminSectionHeader title="User">
         <q-btn
           no-caps
           unelevated
           label="New User"
           color="primary"
-          class="tw_mt-4"
           @click="
             selectedUser = {};
             editModal = true;
           "
         />
-      </div>
+      </AdminSectionHeader>
+
       <div class="tw_mt-6">
         <q-table
           flat
@@ -225,42 +214,7 @@ async function saveUser() {
         />
       </template>
     </Modal>
-    <Modal v-model="deleteModal">
-      <template #title>Delete User</template>
-      <template #body>Are you sure you want to delete this user?</template>
-      <template #actions>
-        <q-btn outline unelevated no-caps rounded label="Cancel" color="dark" v-close-popup />
-        <q-btn
-          no-caps
-          rounded
-          unelevated
-          label="Confirm Delete"
-          color="primary"
-          :loading="loading"
-          @click="confirmDelete"
-        />
-      </template>
-    </Modal>
   </NuxtLayout>
 </template>
 
-<style scoped lang="postcss">
-:deep(.q-table) {
-  thead th {
-    @apply tw_text-base tw_font-bold tw_whitespace-nowrap;
-  }
-
-  .q-td {
-    @apply tw_text-base;
-  }
-
-  tbody tr {
-    .actions {
-      @apply tw_opacity-0 tw_transition-opacity tw_duration-300;
-    }
-    &:hover .actions {
-      @apply tw_opacity-100;
-    }
-  }
-}
-</style>
+<style scoped lang="postcss"></style>

@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import validator from 'validator';
-const { data: authData } = useAuth();
 definePageMeta({
-  middleware: 'authorized-only',
+  middleware: 'admin-authorized-only',
 });
 
 const editForm = ref<any>(null);
-const collectionStore = useCollectionStore();
-const allCollections = ref(await collectionStore.getAll());
+const adminStore = useAdminStore();
+const allCollections = ref(await adminStore.collectionRead());
 const selectedCollection = ref<any>(null);
 const deleteModal = ref(false);
 const editModal = ref(false);
@@ -15,52 +13,56 @@ const loading = ref(false);
 
 async function confirmDelete() {
   loading.value = true;
-  let response = await collectionStore.delete(selectedCollection.value.id);
+  let response = await adminStore.collectionDelete(selectedCollection.value.id);
   loading.value = false;
+
   if (!response) {
     toaster({ type: 'error', message: 'Something went wrong.<br/>Please try again later.' });
     return;
   }
   toaster({ type: 'success', message: 'Successfully deleted collection.' });
   deleteModal.value = false;
-  allCollections.value = await collectionStore.getAll();
+  allCollections.value = await adminStore.collectionRead();
 }
 async function saveCollection() {
   if (!(await editForm.value.validate())) return;
   loading.value = true;
-  let response = await collectionStore.createOrUpdate(selectedCollection.value);
+  let response;
+  if (!selectedCollection.value.id)
+    response = await adminStore.collectionCreate(selectedCollection.value);
+  else response = await adminStore.collectionUpdate(selectedCollection.value);
   loading.value = false;
+
   if (!response) {
     toaster({ type: 'error', message: 'Something went wrong.<br/>Please try again later.' });
     return;
   }
   toaster({ type: 'success', message: 'Successfully updated collection.' });
   editModal.value = false;
-  allCollections.value = await collectionStore.getAll();
+  allCollections.value = await adminStore.collectionRead();
 }
 </script>
 
 <template>
   <Head>
-    <title>Collections | Larminay Vault</title>
+    <title>Collections | Admin | Larminay Vault</title>
   </Head>
 
   <NuxtLayout name="app">
     <main class="tw_px-6 tw_py-4 tw_max-w-[1000px] tw_mx-auto">
-      <div class="tw_flex tw_justify-between tw_items-center">
-        <h1 class="h1">Collections</h1>
+      <AdminSectionHeader title="Collections">
         <q-btn
           no-caps
           unelevated
           label="New Collection"
           color="primary"
-          class="tw_mt-4"
           @click="
             selectedCollection = {};
             editModal = true;
           "
         />
-      </div>
+      </AdminSectionHeader>
+
       <div class="tw_mt-6">
         <q-table
           flat
@@ -101,7 +103,7 @@ async function saveCollection() {
             </q-td>
           </template>
           <template #body-cell-videos="props">
-            <q-td :props="props"> {{ props.row.videos }} Videos </q-td>
+            <q-td :props="props"> {{ props.row.videos || 0 }} Videos </q-td>
           </template>
           <template #body-cell-actions="props">
             <q-td :props="props" class="tw_w-0">
