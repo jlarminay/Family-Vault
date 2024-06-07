@@ -20,6 +20,8 @@ export default async () => {
     './videos/demo3.mp4',
     './videos/demo4.mp4',
     './videos/demo5.mp4',
+    './videos/demo6.mp4',
+    './videos/demo7.mp4',
     './images/alex-gerogory.webp',
     './images/billson-smith.webp',
     './images/david-michel.webp',

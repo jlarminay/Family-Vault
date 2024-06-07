@@ -50,7 +50,7 @@
 }
 
 .c-toast-container {
-  @apply tw_z-[9999];
+  @apply tw_z-[9999] tw_mt-4 md:tw_mt-0;
 
   .c-toast {
     @apply tw_z-[9999] tw_pointer-events-auto;
@@ -80,4 +80,11 @@
       }
     }
   }
+}
+
+.plyr {
+  @apply tw_h-full tw_w-full;
+}
+:root {
+  --plyr-color-main: #833deb;
 }

@@ -34,13 +34,15 @@ async function updateLike() {
     <main class="sm:tw_px-6 sm:tw_py-4 tw_max-w-[1400px] tw_mx-auto tw_mb-8">
       <div class="tw_flex tw_gap-4">
         <div class="tw_grow tw_min-w-0">
-          <video
-            controls
-            :poster="video.thumbnail?.path"
-            class="tw_w-full tw_sticky sm:tw_relative tw_top-[61px] sm:tw_top-0 tw_z-50"
+          <div
+            class="tw_sticky tw_top-[61px] sm:tw_top-0 sm:tw_relative tw_w-full tw_z-50 tw_max-h-[40vh] sm:tw_max-h-[50vh]"
+            :style="`aspect-ratio: ${getAspectRatio(video.video?.metadata?.resolution)}`"
           >
-            <source :src="video.video.path" type="video/mp4" />
-          </video>
+            <VideoPlayer
+              :videoUrl="video.video?.path || ''"
+              :posterUrl="video.thumbnail?.path || ''"
+            />
+          </div>
 
           <!-- description -->
           <div class="tw_p-2">
@@ -126,10 +128,6 @@ async function updateLike() {
 </template>
 
 <style scoped lang="postcss">
-video[poster] {
-  object-fit: cover;
-}
-
 .tada {
   animation: tada 1s linear;
 }

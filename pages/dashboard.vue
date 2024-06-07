@@ -124,7 +124,7 @@ const cleanedAllVideos = computed(() => {
   <NuxtLayout name="app" :showFilterMenu="showFilterMenu" @hideFilterMenu="showFilterMenu = false">
     <template #sidemenu>
       <q-form class="tw_p-4">
-        <h4 class="h4 tw_mb-2">Filter Menu</h4>
+        <h3 class="h3 tw_mb-2">Filter Menu</h3>
         <q-select
           behavior="menu"
           v-model="filterBy"
