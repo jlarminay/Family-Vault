@@ -6,12 +6,6 @@ export const useReportStore = defineStore('report', {
   getters: {},
 
   actions: {
-    async getAll() {
-      const { $trpc } = useNuxtApp();
-
-      let results = await $trpc.report.getAll.query();
-      return results;
-    },
     async create(videoId: number, report: string) {
       const { $trpc } = useNuxtApp();
 
@@ -19,12 +13,6 @@ export const useReportStore = defineStore('report', {
         videoId,
         report,
       });
-      return results;
-    },
-    async delete(id: number) {
-      const { $trpc } = useNuxtApp();
-
-      let results = await $trpc.report.delete.mutate({ id });
       return results;
     },
   },

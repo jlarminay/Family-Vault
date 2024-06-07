@@ -1,37 +1,38 @@
 <script setup lang="ts">
 definePageMeta({
-  middleware: 'authorized-only',
+  middleware: 'admin-authorized-only',
 });
 
-const reportStore = useReportStore();
-const modal = ref<any>(false);
-const allReports = ref(await reportStore.getAll());
-const selectedReport = ref(0);
+const adminStore = useAdminStore();
+const allReports = ref(await adminStore.reportRead());
+const selectedReport = ref<any>(null);
 const deleteModal = ref(false);
 const loading = ref(false);
 
 async function confirmDelete() {
   loading.value = true;
-  let response = await reportStore.delete(selectedReport.value);
+  let response = await adminStore.reportDelete(selectedReport.value);
   loading.value = false;
+
   if (!response) {
-    // bad toaster
+    toaster({ type: 'error', message: 'Something went wrong.<br/>Please try again later.' });
     return;
   }
-  // good toaster
+  toaster({ type: 'success', message: 'Successfully deleted report.' });
   deleteModal.value = false;
-  allReports.value = await reportStore.getAll();
+  allReports.value = await adminStore.reportRead();
 }
 </script>
 
 <template>
   <Head>
-    <title>Reports | Larminay Vault</title>
+    <title>Reports | Admin | Larminay Vault</title>
   </Head>
 
   <NuxtLayout name="app">
-    <main class="tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto tw_border">
-      <h1 class="h1">Reports</h1>
+    <main class="tw_px-6 tw_py-4 tw_max-w-[1000px] tw_mx-auto">
+      <AdminSectionHeader title="Reports" />
+
       <div class="tw_mt-6">
         <q-table
           flat

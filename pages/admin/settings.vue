@@ -2,18 +2,23 @@
 definePageMeta({
   middleware: 'admin-authorized-only',
 });
+
+const settingStore = useSettingStore();
+const allSettings = ref(await settingStore.getAll());
 </script>
 
 <template>
   <Head>
-    <title>Admin | Larminay Vault</title>
+    <title>Settings | Admin | Larminay Vault</title>
   </Head>
 
   <NuxtLayout name="app">
     <main class="tw_px-6 tw_py-4 tw_max-w-[1000px] tw_mx-auto">
-      <AdminSectionHeader />
+      <AdminSectionHeader title="Settings" />
 
-      <div>Body goes here</div>
+      <div>
+        <pre>{{ allSettings }}</pre>
+      </div>
     </main>
   </NuxtLayout>
 </template>
