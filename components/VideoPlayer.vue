@@ -1,6 +1,6 @@
 <script setup>
 import Plyr from 'plyr';
-import '/node_modules/plyr/dist/plyr.css';
+import 'plyr/dist/plyr.css';
 
 const props = defineProps({
   options: {
