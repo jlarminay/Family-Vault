@@ -2,118 +2,71 @@
 definePageMeta({
   middleware: 'authorized-only',
 });
-const { data: authData } = useAuth();
 const $q = useQuasar();
 const route = useRoute();
 
 const videoStore = useVideoStore();
 const likeStore = useLikeStore();
+const personStore = usePersonStore();
+const collectionStore = useCollectionStore();
 const showFilterMenu = ref($q.screen.lt.md ? false : true);
-const allVideos = await videoStore.getAll();
-const allLikes = await likeStore.getAllMine();
-const sortOptions = ref<any>([
-  {
-    label: 'Sort: Title (A-Z)',
-    value: 'title-asc',
-  },
-  {
-    label: 'Sort: Title (Z-A)',
-    value: 'title-desc',
-  },
-  {
-    label: 'Sort: Date Taken (Newest)',
-    value: 'date-taken-desc',
-  },
-  {
-    label: 'Sort: Date Taken (Oldest)',
-    value: 'date-taken-asc',
-  },
-  {
-    label: 'Sort: Date Added (Newest)',
-    value: 'date-added-desc',
-  },
-  {
-    label: 'Sort: Date Added (Oldest)',
-    value: 'date-added-asc',
-  },
-]);
-const sortBy = ref<string>('date-added-desc');
-const filterOptions = ref<any>([
-  {
-    label: 'Filter: All',
-    value: 'all',
-  },
-  {
-    label: 'Filter: Liked Videos',
-    value: 'liked',
-  },
-  {
-    label: 'Filter: My Videos',
-    value: 'mine',
-  },
-]);
-const filterBy = ref<string>('all');
+const allVideos = ref<any>([]);
+const allLikes = ref(await likeStore.getAllMine());
+const allPersons = ref(await personStore.getAll());
+const allCollections = ref(await collectionStore.getAll());
 
-const cleanedAllVideos = computed(() => {
-  let sortedVideos = [...allVideos];
-
-  // filter is searched
-  if (route.query?.search) {
-    sortedVideos = sortedVideos.filter((video: any) => {
-      return video.title.toLowerCase().includes(route.query?.search?.toString().toLowerCase());
-    });
-  }
-
-  // filter by
-  switch (filterBy.value) {
-    case 'liked':
-      sortedVideos = sortedVideos.filter((video: any) => {
-        return allLikes.some((like: any) => like.videoId === video.id);
-      });
-      break;
-    case 'mine':
-      sortedVideos = sortedVideos.filter((video: any) => {
-        return video.ownerId === authData.value?.id;
-      });
-      break;
-  }
-
-  // sort by
-  switch (sortBy.value) {
-    case 'title-asc':
-      sortedVideos = sortedVideos.sort((a: any, b: any) => {
-        return a.title.localeCompare(b.title);
-      });
-      break;
-    case 'title-desc':
-      sortedVideos = sortedVideos.sort((a: any, b: any) => {
-        return b.title.localeCompare(a.title);
-      });
-      break;
-    case 'date-taken-desc':
-      sortedVideos = sortedVideos.sort((a: any, b: any) => {
-        return new Date(b.dateOrder).getTime() - new Date(a.dateOrder).getTime();
-      });
-      break;
-    case 'date-taken-asc':
-      sortedVideos = sortedVideos.sort((a: any, b: any) => {
-        return new Date(a.dateOrder).getTime() - new Date(b.dateOrder).getTime();
-      });
-      break;
-    case 'date-added-desc':
-      sortedVideos = sortedVideos.sort((a: any, b: any) => {
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      });
-      break;
-    case 'date-added-asc':
-      sortedVideos = sortedVideos.sort((a: any, b: any) => {
-        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-      });
-      break;
-  }
-
-  return sortedVideos;
+const showAllPersons = ref(false);
+const showAllCollections = ref(false);
+const filters = ref({
+  search: '',
+  sortBy: 'date-added-desc',
+  filterBy: 'all',
+  persons: [] as number[],
+  collections: [] as number[],
 });
+
+watch(
+  () => [filters, route.query.search],
+  async () => {
+    // clean filter
+    filters.value.search = ((route.query.search as string) || '').toLowerCase();
+    // send filter
+    allVideos.value = await videoStore.search(filters.value);
+  },
+  { deep: true, immediate: true },
+);
+
+const cleanedPersons = computed(() => {
+  const sorted = allPersons.value.sort((a, b) => {
+    if (a.videos !== b.videos) {
+      return b.videos - a.videos;
+    } else {
+      return a.name.localeCompare(b.name);
+    }
+  });
+  return showAllPersons.value ? sorted : sorted.slice(0, 4);
+});
+const cleanedCollections = computed(() => {
+  const sorted = allCollections.value.sort((a, b) => {
+    if (a.videos !== b.videos) {
+      return b.videos - a.videos;
+    } else {
+      return a.name.localeCompare(b.name);
+    }
+  });
+  return showAllCollections.value ? sorted : sorted.slice(0, 4);
+});
+
+function clearFilters() {
+  filters.value = {
+    search: '',
+    sortBy: 'date-added-desc',
+    filterBy: 'all',
+    persons: [],
+    collections: [],
+  };
+  navigateTo(`/dashboard`);
+}
 </script>
 
 <template>
@@ -124,36 +77,154 @@ const cleanedAllVideos = computed(() => {
   <NuxtLayout name="app" :showFilterMenu="showFilterMenu" @hideFilterMenu="showFilterMenu = false">
     <template #sidemenu>
       <q-form class="tw_p-4">
-        <h3 class="h3 tw_mb-2">Filter Menu</h3>
-        <q-select
-          behavior="menu"
-          v-model="filterBy"
-          outlined
-          no-error-icon
-          hide-bottom-space
-          dense
-          emit-value
-          map-options
-          :options="filterOptions"
-        />
-        <q-select
-          behavior="menu"
-          v-model="sortBy"
-          outlined
-          no-error-icon
-          hide-bottom-space
-          dense
-          emit-value
-          map-options
-          :options="sortOptions"
-        />
+        <!-- Filters -->
+        <div class="tw_mb-4 tw_pb-4 tw_border-b">
+          <h4 class="h4 tw_ml-1">Filter Videos</h4>
+          <q-chip
+            v-for="(option, i) in [
+              {
+                label: 'All Videos',
+                value: 'all',
+              },
+              {
+                label: 'My Liked Videos',
+                value: 'liked',
+              },
+              {
+                label: 'My Uploaded Videos',
+                value: 'mine',
+              },
+            ]"
+            :key="i"
+            :label="option.label"
+            size="12px"
+            :class="{
+              'tw_bg-primary tw_text-white': filters.filterBy === option.value,
+            }"
+            clickable
+            @click="filters.filterBy = option.value"
+          />
+        </div>
+
+        <!-- Sort -->
+        <div class="tw_mb-4 tw_pb-4 tw_border-b">
+          <h4 class="h4 tw_ml-1">Sort Videos</h4>
+          <q-chip
+            v-for="(option, i) in [
+              {
+                label: 'Title (A-Z)',
+                value: 'title-asc',
+              },
+              {
+                label: 'Title (Z-A)',
+                value: 'title-desc',
+              },
+              {
+                label: 'Date Taken (New)',
+                value: 'date-taken-desc',
+              },
+              {
+                label: 'Date Taken (Old)',
+                value: 'date-taken-asc',
+              },
+              {
+                label: 'Date Added (New)',
+                value: 'date-added-desc',
+              },
+              {
+                label: 'Date Added (Old)',
+                value: 'date-added-asc',
+              },
+            ]"
+            :key="i"
+            :label="option.label"
+            size="12px"
+            :class="{
+              'tw_bg-primary tw_text-white': filters.sortBy === option.value,
+            }"
+            clickable
+            @click="filters.sortBy = option.value"
+          />
+        </div>
+
+        <!-- Person -->
+        <div class="tw_mb-4 tw_pb-4 tw_border-b">
+          <div class="tw_flex tw_justify-between tw_items-center">
+            <h4 class="h4 tw_ml-1">People</h4>
+            <q-btn
+              v-if="allPersons.length > 4"
+              flat
+              dense
+              color="primary"
+              :label="showAllPersons ? 'Show Less' : 'Show All'"
+              size="sm"
+              @click="showAllPersons = !showAllPersons"
+            />
+          </div>
+          <q-chip
+            v-for="(option, i) in cleanedPersons"
+            :key="i"
+            size="12px"
+            :class="{
+              'tw_bg-primary tw_text-white': filters.persons.includes(option.id),
+            }"
+            clickable
+            @click="
+              filters.persons = filters.persons.includes(option.id)
+                ? filters.persons.filter((id) => id !== option.id)
+                : [...filters.persons, option.id]
+            "
+          >
+            <span class="tw_truncate">{{ option.name }}</span>
+            <span class="tw_ml-1">({{ option.videos }})</span>
+          </q-chip>
+        </div>
+
+        <!-- Collection -->
+        <div class="tw_mb-4 tw_pb-4 tw_border-b">
+          <div class="tw_flex tw_justify-between tw_items-center">
+            <h4 class="h4 tw_ml-1">Collection</h4>
+            <q-btn
+              v-if="allCollections.length > 4"
+              flat
+              dense
+              color="primary"
+              :label="showAllCollections ? 'Show Less' : 'Show All'"
+              size="sm"
+              @click="showAllCollections = !showAllCollections"
+            />
+          </div>
+          <q-chip
+            v-for="(option, i) in cleanedCollections"
+            :key="i"
+            size="12px"
+            :class="{
+              'tw_bg-primary tw_text-white': filters.collections.includes(option.id),
+            }"
+            clickable
+            @click="
+              filters.collections = filters.collections.includes(option.id)
+                ? filters.collections.filter((id) => id !== option.id)
+                : [...filters.collections, option.id]
+            "
+          >
+            <span class="tw_truncate">{{ option.name }}</span>
+            <span class="tw_ml-1">({{ option.videos }})</span>
+          </q-chip>
+        </div>
+
+        <!-- buttons -->
+        <div class="tw_flex tw_justify-end">
+          <q-btn outline color="dark" label="Clear Filters" size="sm" @click="clearFilters" />
+        </div>
       </q-form>
     </template>
+
     <template #default>
-      <main class="tw_px-1 sm:tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto">
+      <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1400px] tw_mx-auto">
         <div class="tw_flex tw_justify-start tw_items-center tw_gap-4">
           <h1 class="h1">
-            Dashboard <span class="tw_text-lg">({{ cleanedAllVideos.length }})</span>
+            Dashboard <span class="tw_text-lg">({{ allVideos.length }})</span>
           </h1>
           <div>
             <q-btn
@@ -167,8 +238,11 @@ const cleanedAllVideos = computed(() => {
           </div>
         </div>
         <div class="tw_flex tw_gap-0 tw_justify-start tw_flex-wrap tw_items-start tw_@container">
+          <div class="tw_text-lg tw_mt-4 tw_text-center tw_italic tw_opacity-70 tw_w-full">
+            No Videos Found
+          </div>
           <DashboardItem
-            v-for="(video, i) in cleanedAllVideos"
+            v-for="(video, i) in allVideos"
             :key="i"
             :video="video"
             :liked="allLikes.some((like: any) => like.videoId === video.id)"

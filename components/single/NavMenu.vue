@@ -1,12 +1,21 @@
 <script setup lang="ts">
 const { data: authData } = useAuth();
+const route = useRoute();
 
 const videoStore = useVideoStore();
-const search = ref('');
+const search = ref<string>('');
 const showSearchInput = ref(false);
 const showUploadModal = ref(false);
 const videoData = ref<any>(null);
 const newVideo = ref<any>(null);
+
+watch(
+  () => route.query.search,
+  (value) => {
+    search.value = value as string;
+  },
+  { immediate: true },
+);
 
 function handleSearch() {
   navigateTo(`/dashboard?search=${search.value}`);

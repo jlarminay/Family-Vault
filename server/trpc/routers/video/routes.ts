@@ -1,20 +1,77 @@
 import { protectedProcedure, router } from '@/server/trpc/trpc';
 import { getServerSession } from '#auth';
 import { z } from 'zod';
-import { uploadVideoSchema, processVideoSchema, editVideoSchema } from './schema';
+import { searchSchema, uploadVideoSchema, processVideoSchema, editVideoSchema } from './schema';
 import fs from 'fs';
 import VideoProcessor from '@/server/utils/videoProcessor.js';
 import S3 from '@/server/utils/s3.js';
+import { sort } from 'shelljs';
 
 export const videoRouter = router({
-  getAll: protectedProcedure.query(async ({ ctx }) => {
+  search: protectedProcedure.input(searchSchema).query(async ({ input, ctx }) => {
     const session = await getServerSession(ctx.event);
+
+    // search rules
+    const searchRules = input.search
+      ? { OR: [{ title: { contains: input.search } }, { description: { contains: input.search } }] }
+      : {};
+
+    // filter rules
+    let filterRules;
+    switch (input.filterBy) {
+      case 'liked':
+        filterRules = { AND: [{ published: true }, { likes: { some: { userId: session?.id } } }] };
+        break;
+      case 'mine':
+        filterRules = { ownerId: session?.id };
+        break;
+      case 'all':
+      default:
+        filterRules = { OR: [{ published: true }, { ownerId: session?.id }] };
+        break;
+    }
+
+    // sort rules
+    let sortRules;
+    switch (input.sortBy) {
+      case 'title-asc':
+        sortRules = { title: 'asc' };
+        break;
+      case 'title-desc':
+        sortRules = { title: 'desc' };
+        break;
+      case 'date-taken-desc':
+        sortRules = { dateOrder: 'desc' };
+        break;
+      case 'date-added-asc':
+        sortRules = { createdAt: 'asc' };
+        break;
+      case 'date-taken-asc':
+        sortRules = { dateOrder: 'asc' };
+        break;
+      case 'date-added-desc':
+      default:
+        sortRules = { createdAt: 'desc' };
+        break;
+    }
+
+    // sort persons
+    let personsRules =
+      input.persons.length > 0 ? { persons: { some: { id: { in: input.persons } } } } : {};
+
+    // sort collections
+    let collectionsRules =
+      input.collections.length > 0
+        ? { collections: { some: { id: { in: input.collections } } } }
+        : {};
+
     return await ctx.prisma.video.findMany({
       where: {
-        OR: [{ published: true }, { ownerId: session?.id }],
+        AND: [filterRules, searchRules, personsRules, collectionsRules],
       },
       include: { video: true, thumbnail: true },
-      orderBy: { createdAt: 'desc' },
+      // @ts-ignore
+      orderBy: sortRules,
     });
   }),
 
