@@ -14,6 +14,9 @@ const allVideos = ref<any>([]);
 const allLikes = ref(await likeStore.getAllMine());
 const allPersons = ref(await personStore.getAll());
 const allCollections = ref(await collectionStore.getAll());
+
+const showAllPersons = ref(false);
+const showAllCollections = ref(false);
 const filters = ref({
   search: '',
   sortBy: 'date-added-desc',
@@ -41,7 +44,7 @@ const cleanedPersons = computed(() => {
       return a.name.localeCompare(b.name);
     }
   });
-  return sorted;
+  return showAllPersons.value ? sorted : sorted.slice(0, 4);
 });
 const cleanedCollections = computed(() => {
   const sorted = allCollections.value.sort((a, b) => {
@@ -51,7 +54,7 @@ const cleanedCollections = computed(() => {
       return a.name.localeCompare(b.name);
     }
   });
-  return sorted;
+  return showAllCollections.value ? sorted : sorted.slice(0, 4);
 });
 
 function clearFilters() {
@@ -146,11 +149,21 @@ function clearFilters() {
 
         <!-- Person -->
         <div class="tw_mb-4 tw_pb-4 tw_border-b">
-          <h4 class="h4 tw_ml-1">People</h4>
+          <div class="tw_flex tw_justify-between tw_items-center">
+            <h4 class="h4 tw_ml-1">People</h4>
+            <q-btn
+              v-if="allPersons.length > 4"
+              flat
+              dense
+              color="primary"
+              :label="showAllPersons ? 'Show Less' : 'Show All'"
+              size="sm"
+              @click="showAllPersons = !showAllPersons"
+            />
+          </div>
           <q-chip
             v-for="(option, i) in cleanedPersons"
             :key="i"
-            :label="`${option.name} (${option.videos})`"
             size="12px"
             :class="{
               'tw_bg-primary tw_text-white': filters.persons.includes(option.id),
@@ -161,16 +174,29 @@ function clearFilters() {
                 ? filters.persons.filter((id) => id !== option.id)
                 : [...filters.persons, option.id]
             "
-          />
+          >
+            <span class="tw_truncate">{{ option.name }}</span>
+            <span class="tw_ml-1">({{ option.videos }})</span>
+          </q-chip>
         </div>
 
         <!-- Collection -->
         <div class="tw_mb-4 tw_pb-4 tw_border-b">
-          <h4 class="h4 tw_ml-1">Collection</h4>
+          <div class="tw_flex tw_justify-between tw_items-center">
+            <h4 class="h4 tw_ml-1">Collection</h4>
+            <q-btn
+              v-if="allCollections.length > 4"
+              flat
+              dense
+              color="primary"
+              :label="showAllCollections ? 'Show Less' : 'Show All'"
+              size="sm"
+              @click="showAllCollections = !showAllCollections"
+            />
+          </div>
           <q-chip
             v-for="(option, i) in cleanedCollections"
             :key="i"
-            :label="`${option.name} (${option.videos})`"
             size="12px"
             :class="{
               'tw_bg-primary tw_text-white': filters.collections.includes(option.id),
@@ -181,7 +207,10 @@ function clearFilters() {
                 ? filters.collections.filter((id) => id !== option.id)
                 : [...filters.collections, option.id]
             "
-          />
+          >
+            <span class="tw_truncate">{{ option.name }}</span>
+            <span class="tw_ml-1">({{ option.videos }})</span>
+          </q-chip>
         </div>
 
         <!-- buttons -->
@@ -209,6 +238,9 @@ function clearFilters() {
           </div>
         </div>
         <div class="tw_flex tw_gap-0 tw_justify-start tw_flex-wrap tw_items-start tw_@container">
+          <div class="tw_text-lg tw_mt-4 tw_text-center tw_italic tw_opacity-70 tw_w-full">
+            No Videos Found
+          </div>
           <DashboardItem
             v-for="(video, i) in allVideos"
             :key="i"
