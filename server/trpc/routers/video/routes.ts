@@ -5,7 +5,6 @@ import { searchSchema, uploadVideoSchema, processVideoSchema, editVideoSchema } 
 import fs from 'fs';
 import VideoProcessor from '@/server/utils/videoProcessor.js';
 import S3 from '@/server/utils/s3.js';
-import { sort } from 'shelljs';
 
 export const videoRouter = router({
   search: protectedProcedure.input(searchSchema).query(async ({ input, ctx }) => {
@@ -67,7 +66,26 @@ export const videoRouter = router({
 
     const videos = await ctx.prisma.video.findMany({
       where: {
-        AND: [filterRules, searchRules, personsRules, collectionsRules],
+        AND: [
+          filterRules,
+          searchRules,
+          personsRules,
+          collectionsRules,
+          {
+            OR: [
+              { ownerId: session?.id },
+              { isAllowList: false },
+              { allowList: { some: { id: session?.id } } },
+            ],
+          },
+          {
+            OR: [
+              { ownerId: session?.id },
+              { isBlockList: false },
+              { blockList: { none: { id: session?.id } } },
+            ],
+          },
+        ],
       },
       include: {
         video: true,
@@ -106,7 +124,22 @@ export const videoRouter = router({
 
       const videos = await ctx.prisma.video.findMany({
         where: {
-          OR: [{ published: true }, { ownerId: session?.id }],
+          AND: [
+            {
+              OR: [
+                { ownerId: session?.id },
+                { isAllowList: false },
+                { allowList: { some: { id: session?.id } } },
+              ],
+            },
+            {
+              OR: [
+                { ownerId: session?.id },
+                { isBlockList: false },
+                { blockList: { none: { id: session?.id } } },
+              ],
+            },
+          ],
         },
         include: {
           video: true,
@@ -142,6 +175,22 @@ export const videoRouter = router({
       const video = await ctx.prisma.video.findUniqueOrThrow({
         where: {
           id: input.id,
+          AND: [
+            {
+              OR: [
+                { ownerId: session?.id },
+                { isAllowList: false },
+                { allowList: { some: { id: session?.id } } },
+              ],
+            },
+            {
+              OR: [
+                { ownerId: session?.id },
+                { isBlockList: false },
+                { blockList: { none: { id: session?.id } } },
+              ],
+            },
+          ],
         },
         include: {
           persons: true,
