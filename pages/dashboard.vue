@@ -156,7 +156,7 @@ function clearFilters() {
               flat
               dense
               color="primary"
-              :label="showAllPersons ? 'Show Less' : 'Show All'"
+              :label="showAllPersons ? 'Show Less' : 'Show More'"
               size="sm"
               @click="showAllPersons = !showAllPersons"
             />
@@ -183,13 +183,13 @@ function clearFilters() {
         <!-- Collection -->
         <div class="tw_mb-4 tw_pb-4 tw_border-b">
           <div class="tw_flex tw_justify-between tw_items-center">
-            <h4 class="h4 tw_ml-1">Collection</h4>
+            <h4 class="h4 tw_ml-1">Collections</h4>
             <q-btn
               v-if="allCollections.length > 4"
               flat
               dense
               color="primary"
-              :label="showAllCollections ? 'Show Less' : 'Show All'"
+              :label="showAllCollections ? 'Show Less' : 'Show More'"
               size="sm"
               @click="showAllCollections = !showAllCollections"
             />
@@ -238,7 +238,10 @@ function clearFilters() {
           </div>
         </div>
         <div class="tw_flex tw_gap-0 tw_justify-start tw_flex-wrap tw_items-start tw_@container">
-          <div class="tw_text-lg tw_mt-4 tw_text-center tw_italic tw_opacity-70 tw_w-full">
+          <div
+            v-if="allVideos.length === 0"
+            class="tw_text-lg tw_mt-4 tw_text-center tw_italic tw_opacity-70 tw_w-full"
+          >
             No Videos Found
           </div>
           <DashboardItem
