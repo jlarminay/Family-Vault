@@ -54,7 +54,7 @@ export const useVideoStore = defineStore('video', {
     async update(videoData: any) {
       const { $trpc } = useNuxtApp();
 
-      let results = await $trpc.video.update.mutate({
+      const newVideoData = {
         id: videoData.id,
         title: videoData.title,
         description: videoData.description,
@@ -63,8 +63,17 @@ export const useVideoStore = defineStore('video', {
         persons: videoData.persons.map((person: any) => person.value),
         collections: videoData.collections.map((collection: any) => collection.value),
         published: videoData.published === 'Yes' ? true : false,
-      });
-      return results;
+        allowList:
+          videoData.published === 'Yes' && videoData.allowList
+            ? videoData.allowList.map((user: any) => user.value)
+            : [],
+        blockList:
+          videoData.published === 'Yes' && videoData.blockList
+            ? videoData.blockList.map((user: any) => user.value)
+            : [],
+      };
+
+      return await $trpc.video.update.mutate(newVideoData);
     },
 
     async uploadVideo(video: any) {

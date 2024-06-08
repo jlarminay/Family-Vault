@@ -65,14 +65,37 @@ export const videoRouter = router({
         ? { collections: { some: { id: { in: input.collections } } } }
         : {};
 
-    return await ctx.prisma.video.findMany({
+    const videos = await ctx.prisma.video.findMany({
       where: {
         AND: [filterRules, searchRules, personsRules, collectionsRules],
       },
-      include: { video: true, thumbnail: true },
+      include: {
+        video: true,
+        thumbnail: true,
+        allowList: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        blockList: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        owner: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
       // @ts-ignore
       orderBy: sortRules,
     });
+
+    return videos;
   }),
 
   getRandom: protectedProcedure
@@ -82,8 +105,31 @@ export const videoRouter = router({
       const { limit } = input;
 
       const videos = await ctx.prisma.video.findMany({
-        where: { published: true },
-        include: { video: true, thumbnail: true },
+        where: {
+          OR: [{ published: true }, { ownerId: session?.id }],
+        },
+        include: {
+          video: true,
+          thumbnail: true,
+          allowList: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          blockList: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          owner: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
       });
       return videos.sort(() => Math.random() - Math.random()).slice(0, limit);
     }),
@@ -92,10 +138,11 @@ export const videoRouter = router({
     .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
       const session = await getServerSession(ctx.event);
-      const { id } = input;
 
       const video = await ctx.prisma.video.findUniqueOrThrow({
-        where: { id },
+        where: {
+          id: input.id,
+        },
         include: {
           persons: true,
           collections: true,
@@ -105,6 +152,18 @@ export const videoRouter = router({
             select: {
               name: true,
               avatar: true,
+            },
+          },
+          allowList: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          blockList: {
+            select: {
+              id: true,
+              name: true,
             },
           },
         },
@@ -135,13 +194,23 @@ export const videoRouter = router({
         description: input.description,
         dateDisplay: input.dateDisplay,
         dateOrder: input.dateOrder,
+
         persons: {
           set: input.persons?.map((person) => ({ id: person })) || [],
         },
         collections: {
           set: input.collections?.map((collection) => ({ id: collection })) || [],
         },
+
         published: input.published,
+        isAllowList: (input.allowList && input.allowList?.length > 0) || false,
+        allowList: {
+          set: input.allowList?.map((user) => ({ id: user })) || [],
+        },
+        isBlockList: (input.blockList && input.blockList?.length > 0) || false,
+        blockList: {
+          set: input.blockList?.map((user) => ({ id: user })) || [],
+        },
       },
     });
   }),

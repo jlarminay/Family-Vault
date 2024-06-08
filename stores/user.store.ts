@@ -5,5 +5,16 @@ export const useUserStore = defineStore('user', {
 
   getters: {},
 
-  actions: {},
+  actions: {
+    async getAll() {
+      const { $trpc } = useNuxtApp();
+      const results = await $trpc.user.getAll.query();
+      return results.map((result) => {
+        return {
+          label: result.name,
+          value: result.id,
+        };
+      });
+    },
+  },
 });

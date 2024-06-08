@@ -2,17 +2,20 @@
 definePageMeta({
   middleware: 'authorized-only',
 });
+const { data: authData } = useAuth();
 const route = useRoute();
 const router = useRouter();
+const userStore = useUserStore();
 const videoStore = useVideoStore();
 const personStore = usePersonStore();
 const collectionStore = useCollectionStore();
 
 const form = ref<any>(null);
 const videoId = ref<number>(parseInt(route.params.id as string));
+const video = ref(await videoStore.getSingle(videoId.value));
+const allUsers = ref(await userStore.getAll());
 const allPersons = ref(await personStore.getAll());
 const allCollections = ref(await collectionStore.getAll());
-const video = ref(await videoStore.getSingle(videoId.value));
 const videoEdit = ref<any>({});
 const loading = ref(false);
 
@@ -45,6 +48,20 @@ const cleanedCollections = computed(() => {
       };
     });
 });
+const cleanedAllowList = computed(() => {
+  return allUsers.value.filter((user: any) => {
+    if (!videoEdit.value.allowList) return true;
+    if (user.value === authData?.value?.id) return false;
+    return !videoEdit.value.allowList.some((p: any) => p.value === user.value);
+  });
+});
+const cleanedBlockList = computed(() => {
+  return allUsers.value.filter((user: any) => {
+    if (!videoEdit.value.blockList) return true;
+    if (user.value === authData?.value?.id) return false;
+    return !videoEdit.value.blockList.some((p: any) => p.value === user.value);
+  });
+});
 
 onMounted(() => {
   let newData = JSON.parse(JSON.stringify(video.value));
@@ -55,6 +72,12 @@ onMounted(() => {
   });
   newData.collections = newData.collections.map((collection: any) => {
     return { label: collection.name, value: collection.id };
+  });
+  newData.allowList = newData.allowList.map((user: any) => {
+    return { label: user.name, value: user.id };
+  });
+  newData.blockList = newData.blockList.map((user: any) => {
+    return { label: user.name, value: user.id };
   });
   // return
   videoEdit.value = newData;
@@ -94,7 +117,7 @@ async function updateVideo() {
 
           <div>
             <span class="tw_font-bold">Duration: </span>
-            <span>{{ formatDuration(video.video?.metadata?.duration) }}</span>
+            <span>{{ formatDuration(video?.video?.metadata?.duration) }}</span>
           </div>
           <div>
             <span class="tw_font-bold">Resolution: </span>
@@ -108,8 +131,6 @@ async function updateVideo() {
             <span class="tw_font-bold">Uploaded Date: </span>
             <span>{{ $dayjs(video.createdAt).format('MMMM D, YYYY') }}</span>
           </div>
-
-          <!-- <pre>{{ video }}</pre> -->
         </div>
 
         <!-- Edit Video Data -->
@@ -246,6 +267,48 @@ async function updateVideo() {
                 required
                 :rules="[(val: string) => !!val || 'Required']"
               />
+              <div v-if="videoEdit.published === 'Yes'">
+                <q-select
+                  behavior="menu"
+                  outlined
+                  no-error-icon
+                  v-model="videoEdit.allowList"
+                  label="Allow List"
+                  map-options
+                  multiple
+                  use-chips
+                  hint=""
+                  :options="cleanedAllowList"
+                >
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="tw_italic tw_opacity-70 tw_text-base tw_text-center">
+                        No options
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-select>
+                <q-select
+                  behavior="menu"
+                  outlined
+                  no-error-icon
+                  v-model="videoEdit.blockList"
+                  label="Block List"
+                  map-options
+                  multiple
+                  use-chips
+                  hint=""
+                  :options="cleanedBlockList"
+                >
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="tw_italic tw_opacity-70 tw_text-base tw_text-center">
+                        No options
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-select>
+              </div>
             </div>
 
             <!-- Actions -->

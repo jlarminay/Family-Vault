@@ -40,4 +40,6 @@ export const editVideoSchema = z.object({
   persons: z.array(z.number()).nullable().optional(),
   collections: z.array(z.number()).nullable().optional(),
   published: z.boolean(),
+  allowList: z.array(z.number()).nullable().optional(),
+  blockList: z.array(z.number()).nullable().optional(),
 });
