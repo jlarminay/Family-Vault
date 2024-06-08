@@ -15,6 +15,8 @@ export const searchSchema = z.object({
       'duration-asc',
     ]),
   ),
+  persons: z.array(z.number()),
+  collections: z.array(z.number()),
 });
 
 export const uploadVideoSchema = z.object({

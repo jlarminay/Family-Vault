@@ -1,22 +1,25 @@
 <script setup lang="ts">
-import video from '~/prisma/seeds/video';
-
 definePageMeta({
   middleware: 'authorized-only',
 });
-const { data: authData } = useAuth();
 const $q = useQuasar();
 const route = useRoute();
 
 const videoStore = useVideoStore();
 const likeStore = useLikeStore();
+const personStore = usePersonStore();
+const collectionStore = useCollectionStore();
 const showFilterMenu = ref($q.screen.lt.md ? false : true);
 const allVideos = ref<any>([]);
-const allLikes = await likeStore.getAllMine();
+const allLikes = ref(await likeStore.getAllMine());
+const allPersons = ref(await personStore.getAll());
+const allCollections = ref(await collectionStore.getAll());
 const filters = ref({
   search: '',
   sortBy: 'date-added-desc',
   filterBy: 'all',
+  persons: [] as number[],
+  collections: [] as number[],
 });
 
 watch(
@@ -30,11 +33,34 @@ watch(
   { deep: true, immediate: true },
 );
 
+const cleanedPersons = computed(() => {
+  const sorted = allPersons.value.sort((a, b) => {
+    if (a.videos !== b.videos) {
+      return b.videos - a.videos;
+    } else {
+      return a.name.localeCompare(b.name);
+    }
+  });
+  return sorted;
+});
+const cleanedCollections = computed(() => {
+  const sorted = allCollections.value.sort((a, b) => {
+    if (a.videos !== b.videos) {
+      return b.videos - a.videos;
+    } else {
+      return a.name.localeCompare(b.name);
+    }
+  });
+  return sorted;
+});
+
 function clearFilters() {
   filters.value = {
     search: '',
     sortBy: 'date-added-desc',
     filterBy: 'all',
+    persons: [],
+    collections: [],
   };
   navigateTo(`/dashboard`);
 }
@@ -115,6 +141,46 @@ function clearFilters() {
             }"
             clickable
             @click="filters.sortBy = option.value"
+          />
+        </div>
+
+        <!-- Person -->
+        <div class="tw_mb-4 tw_pb-4 tw_border-b">
+          <h4 class="h4 tw_ml-1">People</h4>
+          <q-chip
+            v-for="(option, i) in cleanedPersons"
+            :key="i"
+            :label="`${option.name} (${option.videos})`"
+            size="12px"
+            :class="{
+              'tw_bg-primary tw_text-white': filters.persons.includes(option.id),
+            }"
+            clickable
+            @click="
+              filters.persons = filters.persons.includes(option.id)
+                ? filters.persons.filter((id) => id !== option.id)
+                : [...filters.persons, option.id]
+            "
+          />
+        </div>
+
+        <!-- Collection -->
+        <div class="tw_mb-4 tw_pb-4 tw_border-b">
+          <h4 class="h4 tw_ml-1">Collection</h4>
+          <q-chip
+            v-for="(option, i) in cleanedCollections"
+            :key="i"
+            :label="`${option.name} (${option.videos})`"
+            size="12px"
+            :class="{
+              'tw_bg-primary tw_text-white': filters.collections.includes(option.id),
+            }"
+            clickable
+            @click="
+              filters.collections = filters.collections.includes(option.id)
+                ? filters.collections.filter((id) => id !== option.id)
+                : [...filters.collections, option.id]
+            "
           />
         </div>
 

@@ -55,9 +55,19 @@ export const videoRouter = router({
         break;
     }
 
+    // sort persons
+    let personsRules =
+      input.persons.length > 0 ? { persons: { some: { id: { in: input.persons } } } } : {};
+
+    // sort collections
+    let collectionsRules =
+      input.collections.length > 0
+        ? { collections: { some: { id: { in: input.collections } } } }
+        : {};
+
     return await ctx.prisma.video.findMany({
       where: {
-        AND: [filterRules, searchRules],
+        AND: [filterRules, searchRules, personsRules, collectionsRules],
       },
       include: { video: true, thumbnail: true },
       // @ts-ignore
