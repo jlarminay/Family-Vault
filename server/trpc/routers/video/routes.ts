@@ -5,7 +5,6 @@ import { searchSchema, uploadVideoSchema, processVideoSchema, editVideoSchema } 
 import fs from 'fs';
 import VideoProcessor from '@/server/utils/videoProcessor.js';
 import S3 from '@/server/utils/s3.js';
-import { sort } from 'shelljs';
 
 export const videoRouter = router({
   search: protectedProcedure.input(searchSchema).query(async ({ input, ctx }) => {
@@ -20,14 +19,16 @@ export const videoRouter = router({
     let filterRules;
     switch (input.filterBy) {
       case 'liked':
-        filterRules = { AND: [{ published: true }, { likes: { some: { userId: session?.id } } }] };
+        filterRules = {
+          AND: [{ likes: { some: { userId: session?.id } } }],
+        };
         break;
       case 'mine':
         filterRules = { ownerId: session?.id };
         break;
       case 'all':
       default:
-        filterRules = { OR: [{ published: true }, { ownerId: session?.id }] };
+        filterRules = {};
         break;
     }
 
@@ -65,14 +66,51 @@ export const videoRouter = router({
         ? { collections: { some: { id: { in: input.collections } } } }
         : {};
 
-    return await ctx.prisma.video.findMany({
+    const videos = await ctx.prisma.video.findMany({
       where: {
-        AND: [filterRules, searchRules, personsRules, collectionsRules],
+        AND: [
+          filterRules,
+          searchRules,
+          personsRules,
+          collectionsRules,
+          {
+            OR: [
+              { ownerId: session?.id },
+              { published: 'public' },
+              {
+                AND: [{ published: 'allow-few' }, { allowList: { some: { id: session?.id } } }],
+              },
+            ],
+          },
+        ],
       },
-      include: { video: true, thumbnail: true },
+      include: {
+        video: true,
+        thumbnail: true,
+        allowList: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        blockList: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        owner: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
       // @ts-ignore
       orderBy: sortRules,
     });
+
+    return videos;
   }),
 
   getRandom: protectedProcedure
@@ -82,8 +120,37 @@ export const videoRouter = router({
       const { limit } = input;
 
       const videos = await ctx.prisma.video.findMany({
-        where: { published: true },
-        include: { video: true, thumbnail: true },
+        where: {
+          OR: [
+            { ownerId: session?.id },
+            { published: 'public' },
+            {
+              AND: [{ published: 'allow-few' }, { allowList: { some: { id: session?.id } } }],
+            },
+          ],
+        },
+        include: {
+          video: true,
+          thumbnail: true,
+          allowList: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          blockList: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          owner: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
       });
       return videos.sort(() => Math.random() - Math.random()).slice(0, limit);
     }),
@@ -92,10 +159,22 @@ export const videoRouter = router({
     .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
       const session = await getServerSession(ctx.event);
-      const { id } = input;
 
       const video = await ctx.prisma.video.findUniqueOrThrow({
-        where: { id },
+        where: {
+          id: input.id,
+          AND: [
+            {
+              OR: [
+                { ownerId: session?.id },
+                { published: 'public' },
+                {
+                  AND: [{ published: 'allow-few' }, { allowList: { some: { id: session?.id } } }],
+                },
+              ],
+            },
+          ],
+        },
         include: {
           persons: true,
           collections: true,
@@ -105,6 +184,18 @@ export const videoRouter = router({
             select: {
               name: true,
               avatar: true,
+            },
+          },
+          allowList: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          blockList: {
+            select: {
+              id: true,
+              name: true,
             },
           },
         },
@@ -135,13 +226,18 @@ export const videoRouter = router({
         description: input.description,
         dateDisplay: input.dateDisplay,
         dateOrder: input.dateOrder,
+
         persons: {
           set: input.persons?.map((person) => ({ id: person })) || [],
         },
         collections: {
           set: input.collections?.map((collection) => ({ id: collection })) || [],
         },
+
         published: input.published,
+        allowList: {
+          set: input.allowList?.map((user) => ({ id: user })) || [],
+        },
       },
     });
   }),
@@ -251,7 +347,7 @@ export const videoRouter = router({
             thumbnailId: dbThumbnail.id,
             dateDisplay: '',
             dateOrder: new Date(),
-            published: false,
+            published: 'private',
           },
         });
       } catch (e) {

@@ -13,7 +13,7 @@ export default async () => {
       ownerId: 1,
       videoId: 1,
       thumbnailId: 2,
-      published: true,
+      published: 'public',
       persons: [{ id: 1 }, { id: 2 }, { id: 3 }],
     },
     {
@@ -25,7 +25,7 @@ export default async () => {
       ownerId: 1,
       videoId: 3,
       thumbnailId: 4,
-      published: true,
+      published: 'public',
       persons: [{ id: 2 }, { id: 5 }],
     },
     {
@@ -37,7 +37,7 @@ export default async () => {
       ownerId: 2,
       videoId: 5,
       thumbnailId: 6,
-      published: false,
+      published: 'private',
     },
     {
       title: 'Other User Published',
@@ -48,7 +48,7 @@ export default async () => {
       ownerId: 1,
       videoId: 7,
       thumbnailId: 8,
-      published: true,
+      published: 'public',
     },
     {
       title: '4:3 video format',
@@ -59,7 +59,7 @@ export default async () => {
       ownerId: 1,
       videoId: 9,
       thumbnailId: 10,
-      published: true,
+      published: 'public',
     },
     {
       title: 'This is a very tall video',
@@ -70,7 +70,7 @@ export default async () => {
       ownerId: 1,
       videoId: 11,
       thumbnailId: 12,
-      published: true,
+      published: 'public',
     },
     {
       title: 'My video is not published!',
@@ -81,7 +81,7 @@ export default async () => {
       ownerId: 1,
       videoId: 13,
       thumbnailId: 14,
-      published: false,
+      published: 'private',
     },
   ];
 

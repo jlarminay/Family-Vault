@@ -27,7 +27,7 @@ defineProps({
         {{ formatDuration(video.video?.metadata?.duration) }}
       </span>
       <q-icon
-        v-if="!video.published"
+        v-if="video.published === 'private'"
         name="sym_o_lock"
         class="tw_absolute tw_top-1 tw_left-1 tw_text-white tw_bg-red-600 tw_text-xl tw_rounded-full tw_p-1"
       />
