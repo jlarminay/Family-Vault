@@ -56,22 +56,7 @@ async function updateLike() {
                 {{ video.title }}
               </h2>
               <div class="tw_flex tw_items-center tw_gap-2">
-                <q-btn
-                  outline
-                  rounded
-                  :size="$q.screen.lt.sm ? '10px' : '12px'"
-                  class="tw_flex tw_flex-nowrap"
-                  :class="{ 'tw_text-red-500': likes.isLiked }"
-                  @click="updateLike()"
-                >
-                  <div class="tw_flex tw_items-center tw_whitespace-nowrap">
-                    <q-icon
-                      :name="likes.isLiked ? 'o_favorite' : 'o_favorite_border'"
-                      :class="{ tada: likes.isLiked }"
-                    />
-                    <span class="tw_text-sm sm:tw_text-lg tw_ml-1">{{ likes.count }}</span>
-                  </div>
-                </q-btn>
+                <LikeButton :count="likes.count" :isLiked="likes.isLiked" @clicked="updateLike" />
 
                 <q-btn
                   round
