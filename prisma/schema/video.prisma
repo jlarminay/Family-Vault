@@ -7,11 +7,9 @@ model Video {
   ownerId     Int
   owner       User     @relation(name: "UserToVideo", fields: [ownerId], references: [id])
 
-  published   Boolean @default(false)
-  isAllowList Boolean @default(false)
-  allowList   User[]  @relation(name: "UserToVideo1")
-  isBlockList Boolean @default(false)
-  blockList   User[]  @relation(name: "UserToVideo2")
+  published String @default("private")
+  allowList User[] @relation(name: "UserToVideo1")
+  blockList User[] @relation(name: "UserToVideo2")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

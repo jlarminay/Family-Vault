@@ -49,7 +49,7 @@ const loading = ref(false);
           <template #body-cell-title="props">
             <q-td :props="props" class="tw_w-[250px]">
               <q-icon
-                v-if="!props.row.published"
+                v-if="props.row.published === 'private'"
                 name="sym_o_lock"
                 class="tw_text-white tw_bg-red-600 tw_text-base tw_rounded-full tw_p-1 tw_mr-2"
               />

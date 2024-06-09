@@ -62,15 +62,8 @@ export const useVideoStore = defineStore('video', {
         dateOrder: videoData.dateOrder,
         persons: videoData.persons.map((person: any) => person.value),
         collections: videoData.collections.map((collection: any) => collection.value),
-        published: videoData.published === 'Yes' ? true : false,
-        allowList:
-          videoData.published === 'Yes' && videoData.allowList
-            ? videoData.allowList.map((user: any) => user.value)
-            : [],
-        blockList:
-          videoData.published === 'Yes' && videoData.blockList
-            ? videoData.blockList.map((user: any) => user.value)
-            : [],
+        published: videoData.published,
+        allowList: videoData.allowList ? videoData.allowList.map((user: any) => user.value) : [],
       };
 
       return await $trpc.video.update.mutate(newVideoData);

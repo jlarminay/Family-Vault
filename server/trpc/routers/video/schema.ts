@@ -39,7 +39,6 @@ export const editVideoSchema = z.object({
   dateOrder: z.coerce.date(),
   persons: z.array(z.number()).nullable().optional(),
   collections: z.array(z.number()).nullable().optional(),
-  published: z.boolean(),
+  published: z.string(z.enum(['public', 'private', 'allow-few', 'deny-few'])),
   allowList: z.array(z.number()).nullable().optional(),
-  blockList: z.array(z.number()).nullable().optional(),
 });

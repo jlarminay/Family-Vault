@@ -55,18 +55,10 @@ const cleanedAllowList = computed(() => {
     return !videoEdit.value.allowList.some((p: any) => p.value === user.value);
   });
 });
-const cleanedBlockList = computed(() => {
-  return allUsers.value.filter((user: any) => {
-    if (!videoEdit.value.blockList) return true;
-    if (user.value === authData?.value?.id) return false;
-    return !videoEdit.value.blockList.some((p: any) => p.value === user.value);
-  });
-});
 
 onMounted(() => {
   let newData = JSON.parse(JSON.stringify(video.value));
   // clean data
-  newData.published = newData.published ? 'Yes' : 'No';
   newData.persons = newData.persons.map((person: any) => {
     return { label: person.name, value: person.id };
   });
@@ -74,9 +66,6 @@ onMounted(() => {
     return { label: collection.name, value: collection.id };
   });
   newData.allowList = newData.allowList.map((user: any) => {
-    return { label: user.name, value: user.id };
-  });
-  newData.blockList = newData.blockList.map((user: any) => {
     return { label: user.name, value: user.id };
   });
   // return
@@ -261,54 +250,34 @@ async function updateVideo() {
                 emit-value
                 map-options
                 :options="[
-                  { label: 'Video is public', value: 'Yes' },
-                  { label: 'Video is private', value: 'No' },
+                  { label: 'Video is private to me', value: 'private' },
+                  { label: 'Video is public to everyone', value: 'public' },
+                  { label: 'Video is public to only a few', value: 'allow-few' },
                 ]"
                 required
                 :rules="[(val: string) => !!val || 'Required']"
               />
-              <div v-if="videoEdit.published === 'Yes'">
-                <q-select
-                  behavior="menu"
-                  outlined
-                  no-error-icon
-                  v-model="videoEdit.allowList"
-                  label="Allow List"
-                  map-options
-                  multiple
-                  use-chips
-                  hint=""
-                  :options="cleanedAllowList"
-                >
-                  <template v-slot:no-option>
-                    <q-item>
-                      <q-item-section class="tw_italic tw_opacity-70 tw_text-base tw_text-center">
-                        No options
-                      </q-item-section>
-                    </q-item>
-                  </template>
-                </q-select>
-                <q-select
-                  behavior="menu"
-                  outlined
-                  no-error-icon
-                  v-model="videoEdit.blockList"
-                  label="Block List"
-                  map-options
-                  multiple
-                  use-chips
-                  hint=""
-                  :options="cleanedBlockList"
-                >
-                  <template v-slot:no-option>
-                    <q-item>
-                      <q-item-section class="tw_italic tw_opacity-70 tw_text-base tw_text-center">
-                        No options
-                      </q-item-section>
-                    </q-item>
-                  </template>
-                </q-select>
-              </div>
+              <q-select
+                v-if="videoEdit.published === 'allow-few'"
+                behavior="menu"
+                outlined
+                no-error-icon
+                v-model="videoEdit.allowList"
+                label="Who can see the video?"
+                map-options
+                multiple
+                use-chips
+                hint=""
+                :options="cleanedAllowList"
+              >
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="tw_italic tw_opacity-70 tw_text-base tw_text-center">
+                      No options
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
             </div>
 
             <!-- Actions -->

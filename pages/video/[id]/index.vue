@@ -49,7 +49,7 @@ async function updateLike() {
             <div class="tw_flex tw_gap-4 tw_justify-between tw_items-start">
               <h2 class="h2 tw_font-bold tw_min-w-0 tw_flex-grow tw_break-words">
                 <q-icon
-                  v-if="!video.published"
+                  v-if="video.published === 'private'"
                   name="sym_o_lock"
                   class="tw_text-white tw_bg-red-600 tw_text-xl tw_rounded-full tw_p-1"
                 />

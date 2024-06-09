@@ -19,14 +19,16 @@ export const videoRouter = router({
     let filterRules;
     switch (input.filterBy) {
       case 'liked':
-        filterRules = { AND: [{ published: true }, { likes: { some: { userId: session?.id } } }] };
+        filterRules = {
+          AND: [{ likes: { some: { userId: session?.id } } }],
+        };
         break;
       case 'mine':
         filterRules = { ownerId: session?.id };
         break;
       case 'all':
       default:
-        filterRules = { OR: [{ published: true }, { ownerId: session?.id }] };
+        filterRules = {};
         break;
     }
 
@@ -74,15 +76,10 @@ export const videoRouter = router({
           {
             OR: [
               { ownerId: session?.id },
-              { isAllowList: false },
-              { allowList: { some: { id: session?.id } } },
-            ],
-          },
-          {
-            OR: [
-              { ownerId: session?.id },
-              { isBlockList: false },
-              { blockList: { none: { id: session?.id } } },
+              { published: 'public' },
+              {
+                AND: [{ published: 'allow-few' }, { allowList: { some: { id: session?.id } } }],
+              },
             ],
           },
         ],
@@ -124,20 +121,11 @@ export const videoRouter = router({
 
       const videos = await ctx.prisma.video.findMany({
         where: {
-          AND: [
+          OR: [
+            { ownerId: session?.id },
+            { published: 'public' },
             {
-              OR: [
-                { ownerId: session?.id },
-                { isAllowList: false },
-                { allowList: { some: { id: session?.id } } },
-              ],
-            },
-            {
-              OR: [
-                { ownerId: session?.id },
-                { isBlockList: false },
-                { blockList: { none: { id: session?.id } } },
-              ],
+              AND: [{ published: 'allow-few' }, { allowList: { some: { id: session?.id } } }],
             },
           ],
         },
@@ -179,15 +167,10 @@ export const videoRouter = router({
             {
               OR: [
                 { ownerId: session?.id },
-                { isAllowList: false },
-                { allowList: { some: { id: session?.id } } },
-              ],
-            },
-            {
-              OR: [
-                { ownerId: session?.id },
-                { isBlockList: false },
-                { blockList: { none: { id: session?.id } } },
+                { published: 'public' },
+                {
+                  AND: [{ published: 'allow-few' }, { allowList: { some: { id: session?.id } } }],
+                },
               ],
             },
           ],
@@ -252,13 +235,8 @@ export const videoRouter = router({
         },
 
         published: input.published,
-        isAllowList: (input.allowList && input.allowList?.length > 0) || false,
         allowList: {
           set: input.allowList?.map((user) => ({ id: user })) || [],
-        },
-        isBlockList: (input.blockList && input.blockList?.length > 0) || false,
-        blockList: {
-          set: input.blockList?.map((user) => ({ id: user })) || [],
         },
       },
     });
@@ -369,7 +347,7 @@ export const videoRouter = router({
             thumbnailId: dbThumbnail.id,
             dateDisplay: '',
             dateOrder: new Date(),
-            published: false,
+            published: 'private',
           },
         });
       } catch (e) {
