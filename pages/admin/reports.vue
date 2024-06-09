@@ -82,7 +82,7 @@ async function confirmDelete() {
                   round
                   flat
                   size="12px"
-                  icon="sym_o_delete_outline"
+                  icon="o_delete_outline"
                   class="tw_text-red-600"
                   @click="
                     deleteModal = true;

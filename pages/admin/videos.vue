@@ -50,7 +50,7 @@ const loading = ref(false);
             <q-td :props="props" class="tw_w-[250px]">
               <q-icon
                 v-if="props.row.published === 'private'"
-                name="sym_o_lock"
+                name="o_lock"
                 class="tw_text-white tw_bg-red-600 tw_text-base tw_rounded-full tw_p-1 tw_mr-2"
               />
               <NuxtLink :to="`/video/${props.row.id}`" class="link">
@@ -79,7 +79,7 @@ const loading = ref(false);
                   round
                   flat
                   size="12px"
-                  icon="sym_o_edit"
+                  icon="o_edit"
                   class="tw_text-blue-600"
                   @click="
                     editModal = true;
@@ -90,7 +90,7 @@ const loading = ref(false);
                   round
                   flat
                   size="12px"
-                  icon="sym_o_delete"
+                  icon="o_delete"
                   class="tw_text-red-600"
                   @click="
                     deleteModal = true;

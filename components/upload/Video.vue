@@ -82,7 +82,7 @@ async function onFileChange(e: any) {
         </div>
         <q-btn
           v-if="uploadState.state === 'idle'"
-          icon="sym_o_delete"
+          icon="o_delete"
           round
           flat
           class="tw_text-red-500"
@@ -107,7 +107,7 @@ async function onFileChange(e: any) {
       class="tw_cursor-pointer tw_rounded tw_w-full tw_h-[150px] tw_border-4 tw_border-gray-300 tw_text-gray-600 tw_border-dashed tw_flex tw_justify-center tw_items-center tw_p-4"
     >
       <div class="tw_text-center">
-        <q-icon name="sym_o_upload" size="30px" />
+        <q-icon name="o_upload" size="30px" />
         <span class="tw_font-maven-pro tw_text-xl tw_font-bold">Upload File</span>
         <br />
         <p class="tw_text-sm">Allowed formats: {{ cleanedFormats }}</p>

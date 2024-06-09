@@ -175,7 +175,7 @@ async function updateVideo() {
                 ]"
               >
                 <template v-slot:append>
-                  <q-icon name="sym_o_event" class="cursor-pointer">
+                  <q-icon name="o_event" class="cursor-pointer">
                     <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                       <q-date v-model="videoEdit.dateOrder" mask="YYYY-MM-DD">
                         <div class="row items-center justify-end">

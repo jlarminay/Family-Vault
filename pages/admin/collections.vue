@@ -112,7 +112,7 @@ async function saveCollection() {
                   round
                   flat
                   size="12px"
-                  icon="sym_o_edit"
+                  icon="o_edit"
                   class="tw_text-blue-600"
                   @click="
                     editModal = true;
@@ -123,7 +123,7 @@ async function saveCollection() {
                   round
                   flat
                   size="12px"
-                  icon="sym_o_delete"
+                  icon="o_delete"
                   class="tw_text-red-600"
                   @click="
                     deleteModal = true;

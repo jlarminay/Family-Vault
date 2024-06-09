@@ -73,7 +73,7 @@ async function submitPerson() {
           :rules="[(val: string) => !val || validator.isISO8601(val) || 'Invalid date']"
         >
           <template v-slot:append>
-            <q-icon name="sym_o_calendar_month" class="cursor-pointer">
+            <q-icon name="o_calendar_month" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-date v-model="realPerson.birthday" mask="YYYY-MM-DD">
                   <div class="row items-center justify-end">
