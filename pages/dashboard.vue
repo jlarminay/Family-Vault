@@ -231,7 +231,7 @@ function clearFilters() {
               round
               flat
               class="!tw_p-0"
-              icon="sym_o_filter_list"
+              icon="o_filter_list"
               color="dark"
               @click="showFilterMenu = !showFilterMenu"
             />

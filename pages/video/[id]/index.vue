@@ -50,8 +50,8 @@ async function updateLike() {
               <h2 class="h2 tw_font-bold tw_min-w-0 tw_flex-grow tw_break-words">
                 <q-icon
                   v-if="video.published === 'private'"
-                  name="sym_o_lock"
-                  class="tw_text-white tw_bg-red-600 tw_text-xl tw_rounded-full tw_p-1"
+                  name="lock"
+                  class="tw_text-primary tw_text-2xl tw_rounded-full tw_p-0.5"
                 />
                 {{ video.title }}
               </h2>
@@ -77,7 +77,7 @@ async function updateLike() {
                   round
                   outline
                   :size="$q.screen.lt.sm ? '10px' : '12px'"
-                  icon="sym_o_more_horiz"
+                  icon="o_more_horiz"
                   class="tw_cursor-pointer hover:tw_opacity-70 tw_transition-opacity tw_duration-300"
                 >
                   <q-menu :offset="[0, 4]" anchor="bottom right" self="top right">
@@ -127,35 +127,4 @@ async function updateLike() {
   </NuxtLayout>
 </template>
 
-<style scoped lang="postcss">
-.tada {
-  animation: tada 1s linear;
-}
-@keyframes tada {
-  from {
-    transform: scale3d(1, 1, 1);
-  }
-
-  10%,
-  20% {
-    transform: scale3d(0.8, 0.8, 0.8) rotate3d(0, 0, 1, -10deg);
-  }
-
-  30%,
-  50%,
-  70%,
-  90% {
-    transform: scale3d(1.2, 1.2, 1.2) rotate3d(0, 0, 1, 10deg);
-  }
-
-  40%,
-  60%,
-  80% {
-    transform: scale3d(1.2, 1.2, 1.2) rotate3d(0, 0, 1, -10deg);
-  }
-
-  to {
-    transform: scale3d(1, 1, 1);
-  }
-}
-</style>
+<style scoped lang="postcss"></style>

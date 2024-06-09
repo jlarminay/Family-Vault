@@ -37,7 +37,7 @@ const person = ref(await personStore.getSingle(personId.value));
                 flat
                 size="12px"
                 disable
-                icon="sym_o_edit"
+                icon="o_edit"
                 :to="`/people/${person.id}/edit`"
               />
             </div>

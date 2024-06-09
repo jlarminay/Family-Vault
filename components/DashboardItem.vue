@@ -28,13 +28,13 @@ defineProps({
       </span>
       <q-icon
         v-if="video.published === 'private'"
-        name="sym_o_lock"
-        class="tw_absolute tw_top-1 tw_left-1 tw_text-white tw_bg-red-600 tw_text-xl tw_rounded-full tw_p-1"
+        name="lock"
+        class="tw_absolute tw_top-1 tw_left-1 tw_text-primary tw_text-2xl tw_rounded-full tw_p-0.5"
       />
       <q-icon
         v-if="liked"
         name="o_favorite"
-        class="tw_absolute tw_top-1 tw_right-1 tw_text-red-600 tw_text-xl tw_rounded-full tw_p-1"
+        class="tw_absolute tw_top-1 tw_right-1 tw_text-red-600 tw_text-xl tw_rounded-full tw_p-0.5"
       />
     </div>
     <div class="tw_mt-2">

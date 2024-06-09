@@ -83,7 +83,7 @@ async function saveUser() {
                   }"
                 />
                 <q-icon
-                  :name="`sym_o_${props.row.active ? 'check_circle' : 'cancel'}`"
+                  :name="`o_${props.row.active ? 'check_circle' : 'cancel'}`"
                   class="tw_text-2xl"
                   :class="{
                     'tw_text-green-600': props.row.active,
@@ -125,7 +125,7 @@ async function saveUser() {
                   round
                   flat
                   size="12px"
-                  icon="sym_o_edit"
+                  icon="o_edit"
                   class="tw_text-blue-600"
                   @click="
                     editModal = true;

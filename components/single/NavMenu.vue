@@ -68,7 +68,7 @@ async function clearUploadState() {
           @keyup.enter="handleSearch()"
         >
           <template v-slot:append>
-            <q-btn round dense flat icon="sym_o_search" @click="handleSearch" />
+            <q-btn round dense flat icon="o_search" @click="handleSearch" />
           </template>
         </q-input>
       </div>
@@ -80,7 +80,7 @@ async function clearUploadState() {
           round
           flat
           class="!tw_p-0"
-          icon="sym_o_search"
+          icon="o_search"
           color="dark"
           @click="showSearchInput = !showSearchInput"
         />
@@ -88,22 +88,22 @@ async function clearUploadState() {
           round
           flat
           class="!tw_p-0"
-          icon="sym_o_cloud_upload"
+          icon="o_cloud_upload"
           color="dark"
           @click="showUploadModal = true"
         /> -->
 
         <q-btn round flat class="!tw_p-0" color="white">
-          <q-avatar size="40px" class="tw_border">
-            <img :src="authData?.avatar" />
-          </q-avatar>
+          <div class="tw_w-[40px] tw_aspect-square tw_rounded-full tw_overflow-hidden tw_border">
+            <img :src="authData?.avatar" class="tw_w-full" />
+          </div>
 
           <!-- Dropdown Menu -->
           <q-menu class="tw_min-w-[160px]" :offset="[0, 4]">
             <q-list>
               <q-item clickable v-close-popup to="/account">
                 <q-item-section avatar>
-                  <q-icon name="sym_o_face" />
+                  <q-icon name="o_face" />
                 </q-item-section>
                 <q-item-section>My Profile</q-item-section>
               </q-item>
@@ -114,7 +114,7 @@ async function clearUploadState() {
                 @click="showUploadModal = true"
               >
                 <q-item-section avatar>
-                  <q-icon name="sym_o_cloud_upload" />
+                  <q-icon name="o_cloud_upload" />
                 </q-item-section>
                 <q-item-section>Upload Video</q-item-section>
               </q-item>
@@ -122,7 +122,7 @@ async function clearUploadState() {
               <q-separator />
               <q-item clickable v-close-popup to="/people">
                 <q-item-section avatar>
-                  <q-icon name="sym_o_groups" />
+                  <q-icon name="o_groups" />
                 </q-item-section>
                 <q-item-section>All People</q-item-section>
               </q-item>
@@ -130,19 +130,19 @@ async function clearUploadState() {
               <q-separator />
               <q-item clickable v-close-popup to="/legal">
                 <q-item-section avatar>
-                  <q-icon name="sym_o_policy" />
+                  <q-icon name="o_policy" />
                 </q-item-section>
                 <q-item-section>Legal</q-item-section>
               </q-item>
               <q-item v-if="authData?.role === 'admin'" clickable v-close-popup to="/admin">
                 <q-item-section avatar>
-                  <q-icon name="sym_o_admin_panel_settings" />
+                  <q-icon name="o_admin_panel_settings" />
                 </q-item-section>
                 <q-item-section>Admin</q-item-section>
               </q-item>
               <q-item clickable v-close-popup to="/logout" class="tw_text-red-600">
                 <q-item-section avatar>
-                  <q-icon name="sym_o_logout" />
+                  <q-icon name="o_logout" />
                 </q-item-section>
                 <q-item-section>Logout</q-item-section>
               </q-item>
@@ -160,7 +160,7 @@ async function clearUploadState() {
         round
         flat
         class="!tw_p-0"
-        icon="sym_o_arrow_back"
+        icon="o_arrow_back"
         color="dark"
         @click="showSearchInput = !showSearchInput"
       />
@@ -175,7 +175,7 @@ async function clearUploadState() {
         @keyup.enter="handleSearch"
       >
         <template v-slot:append>
-          <q-btn round dense flat icon="sym_o_search" @click="handleSearch" />
+          <q-btn round dense flat icon="o_search" @click="handleSearch" />
         </template>
       </q-input>
     </div>

@@ -32,7 +32,7 @@ async function refreshData() {
         <h1 class="h1">People</h1>
         <div class="tw_flex tw_items-center tw_justify-end tw_gap-2 tw_flex-1">
           <q-btn color="primary" unelevated @click="editModal = true">
-            <q-icon name="sym_o_add" class="tw_mr-1" />
+            <q-icon name="o_add" class="tw_mr-1" />
             New
           </q-btn>
           <q-input
