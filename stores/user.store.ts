@@ -16,5 +16,10 @@ export const useUserStore = defineStore('user', {
         };
       });
     },
+
+    async updateOwn(id: number, name: string) {
+      const { $trpc } = useNuxtApp();
+      return await $trpc.user.updateOwn.mutate({ id, name });
+    },
   },
 });

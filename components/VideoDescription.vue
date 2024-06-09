@@ -21,12 +21,7 @@ const showMore = ref<boolean>(false);
         <div class="tw_flex tw_gap-2">
           <div class="tw_font-bold">Collections:</div>
           <div class="tw_flex tw_gap-2 tw_flex-wrap">
-            <NuxtLink
-              v-for="(collection, i) in video.collections"
-              :key="i"
-              class="link"
-              :href="`/videos/collection/${collection.id}`"
-            >
+            <NuxtLink v-for="(collection, i) in video.collections" :key="i">
               {{ collection.name }}
             </NuxtLink>
             <span v-if="video.collections.length === 0" class="tw_opacity-70 tw_italic">
@@ -37,12 +32,7 @@ const showMore = ref<boolean>(false);
         <div class="tw_flex tw_gap-2">
           <div class="tw_font-bold">Includes:</div>
           <div class="tw_flex tw_gap-2 tw_flex-wrap">
-            <NuxtLink
-              v-for="(person, i) in video.persons"
-              :key="i"
-              class="link"
-              :href="`/people/${person.id}`"
-            >
+            <NuxtLink v-for="(person, i) in video.persons" :key="i">
               {{ person.name }}
             </NuxtLink>
             <span v-if="video.persons.length === 0" class="tw_opacity-70 tw_italic"> None </span>

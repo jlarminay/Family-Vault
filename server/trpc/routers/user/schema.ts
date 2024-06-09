@@ -15,3 +15,8 @@ export const editUserSchema = z.object({
   role: z.string(z.enum(['admin', 'user'])),
   active: z.boolean(),
 });
+
+export const editOwnUserSchema = z.object({
+  id: z.number(),
+  name: z.string().max(64),
+});
