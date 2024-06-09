@@ -8,7 +8,20 @@ screenSizes.forEach((size) => {
     await page.setViewportSize(size);
     await page.goto('/');
 
-    // check page
     await expect(page.locator('h1')).toContainText('Exciting news');
+  });
+
+  test(`Login - ${size.name}`, async ({ page }) => {
+    // setup
+    await page.setViewportSize(size);
+    await page.goto('/');
+
+    await page.locator('.q-btn', { hasText: 'Login' }).click();
+
+    await expect(page.locator('p', { hasText: 'Login' })).toBeVisible();
+    await page.locator('.q-btn', { hasText: 'Credentials' }).click();
+
+    page.waitForURL('/dashboard');
+    await expect(page.locator('h1', { hasText: 'Dashboard' })).toBeVisible();
   });
 });

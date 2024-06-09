@@ -8,15 +8,15 @@ export default async () => {
   // define seeds
   const newData = [
     {
-      userId: 1,
-      videoId: 1,
-    },
-    {
       userId: 2,
       videoId: 1,
     },
     {
       userId: 3,
+      videoId: 1,
+    },
+    {
+      userId: 4,
       videoId: 2,
     },
   ];

@@ -8,45 +8,45 @@ export default async () => {
     {
       text: 'This is a good comment',
       videoId: 1,
-      userId: 1,
+      userId: 2,
       createdAt: new Date('2023-11-01'),
     },
     {
       text: 'This is a bad comment',
       videoId: 1,
-      userId: 2,
+      userId: 3,
       createdAt: new Date('2023-09-26'),
     },
     {
       text: 'This is another comment',
       videoId: 1,
-      userId: 2,
+      userId: 3,
       createdAt: new Date('2023-12-22'),
     },
     {
       text: 'This is a comment',
       videoId: 2,
+      userId: 4,
+    },
+    {
+      text: 'This is a comment',
+      videoId: 2,
       userId: 3,
     },
     {
       text: 'This is a comment',
       videoId: 2,
-      userId: 2,
-    },
-    {
-      text: 'This is a comment',
-      videoId: 2,
-      userId: 2,
-    },
-    {
-      text: 'This is a comment',
-      videoId: 3,
       userId: 3,
     },
     {
       text: 'This is a comment',
       videoId: 3,
-      userId: 2,
+      userId: 4,
+    },
+    {
+      text: 'This is a comment',
+      videoId: 3,
+      userId: 3,
     },
   ];
 

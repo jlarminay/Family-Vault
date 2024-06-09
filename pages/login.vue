@@ -34,6 +34,7 @@ onMounted(() => {
         <div class="tw_flex tw_flex-col tw_gap-2">
           <q-btn
             v-for="provider in [
+              { name: 'Credentials', bgColor: 'tw_bg-[#973cd2]', hide: !isOnTestingServer() },
               { name: 'Google', bgColor: 'tw_bg-[#4285F4]' },
               { name: 'GitHub', bgColor: 'tw_bg-[#24292e]' },
               { name: 'Discord', bgColor: 'tw_bg-[#7289da]' },
@@ -42,7 +43,7 @@ onMounted(() => {
             unelevated
             size="18px"
             @click="signIn(provider.name.toLowerCase())"
-            :class="`${provider.bgColor} tw_text-white`"
+            :class="`${provider.bgColor} tw_text-white ${provider.hide ? 'tw_hidden' : ''}`"
           >
             <q-icon
               :name="`fa-brands fa-${provider.name.toLowerCase()}`"
