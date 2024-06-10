@@ -6,10 +6,17 @@ export default async () => {
   // define seeds
   const newData = [
     {
-      email: 'test@email.com',
-      name: 'Test Account',
+      email: 'test-user@email.com',
+      name: 'Test User',
       provider: 'credentials',
-      avatar: 'https://placehold.co/500/973cd2/fff?text=Test+Account',
+      avatar: 'https://placehold.co/500/833deb/fff?text=Test+Account',
+      role: 'user',
+    },
+    {
+      email: 'test-admin@email.com',
+      name: 'Test Admin',
+      provider: 'credentials',
+      avatar: 'https://placehold.co/500/ee3664/fff?text=Test+Admin',
       role: 'admin',
     },
     {

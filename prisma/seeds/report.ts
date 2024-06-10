@@ -7,12 +7,12 @@ export default async () => {
   const newData = [
     {
       report: 'This video is very inappropriate.',
-      userId: 3,
+      userId: 4,
       videoId: 1,
     },
     {
       report: 'This video is very inappropriate also.',
-      userId: 4,
+      userId: 5,
       videoId: 3,
     },
   ];
