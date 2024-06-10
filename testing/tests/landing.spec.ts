@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { screenSizes } from '../values';
+import Login from '../fixtures/Login';
 
 // test all screen sizes
 screenSizes.forEach((size) => {
@@ -14,14 +15,11 @@ screenSizes.forEach((size) => {
   test(`Login - ${size.name}`, async ({ page }) => {
     // setup
     await page.setViewportSize(size);
-    await page.goto('/');
+    const login = new Login(page);
 
-    await page.locator('.q-btn', { hasText: 'Login' }).click();
+    // login
+    await login.login({ email: 'test@email.com', password: 'Password1' });
 
-    await expect(page.locator('p', { hasText: 'Login' })).toBeVisible();
-    await page.locator('.q-btn', { hasText: 'Credentials' }).click();
-
-    page.waitForURL('/dashboard');
     await expect(page.locator('h1', { hasText: 'Dashboard' })).toBeVisible();
   });
 });
