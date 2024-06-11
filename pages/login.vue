@@ -32,6 +32,7 @@ onMounted(() => {
           Login
         </p>
         <div class="tw_flex tw_flex-col tw_gap-2">
+          <TestingLoginButton v-if="isOnTestingServer()" />
           <q-btn
             v-for="provider in [
               { name: 'Google', bgColor: 'tw_bg-[#4285F4]' },
@@ -41,8 +42,9 @@ onMounted(() => {
             no-caps
             unelevated
             size="18px"
-            @click="signIn(provider.name.toLowerCase())"
-            :class="`${provider.bgColor} tw_text-white`"
+            @click="signIn(provider.name.toLowerCase(), { email: 'test', password: 'test' })"
+            class="tw_text-white"
+            :class="`${provider.bgColor}`"
           >
             <q-icon
               :name="`fa-brands fa-${provider.name.toLowerCase()}`"

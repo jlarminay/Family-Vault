@@ -8,10 +8,10 @@ export default defineConfig({
   outputDir: './testing/results',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  workers: process.env.TESTING_URL ? 3 : 2,
-  retries: process.env.TESTING_URL ? 2 : 1,
-  timeout: process.env.TESTING_URL ? 60000 : 60000, // ms
-  maxFailures: process.env.TESTING_URL ? 3 : 3,
+  workers: process.env.AUTH_ORIGIN ? 3 : 2,
+  retries: process.env.AUTH_ORIGIN ? 2 : 1,
+  timeout: process.env.AUTH_ORIGIN ? 60000 : 60000, // ms
+  maxFailures: process.env.AUTH_ORIGIN ? 3 : 3,
   reporter: [
     ['list'],
     [
@@ -24,7 +24,7 @@ export default defineConfig({
   ],
 
   use: {
-    baseURL: process.env.TESTING_URL ? process.env.TESTING_URL : 'http://localhost:3000',
+    baseURL: `http://${process.env.AUTH_ORIGIN || 'localhost:3000'}`,
     trace: 'retain-on-failure',
     video: 'retain-on-failure',
   },

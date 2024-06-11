@@ -40,7 +40,7 @@ export default async () => {
       birthday: new Date('1994-08-09'),
       gender: 'Male',
       imageId: 20,
-      userId: 1,
+      userId: 3,
     },
   ];
 

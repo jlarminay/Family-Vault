@@ -9,11 +9,18 @@ export default async () => {
       name: 'Placeholder',
       description: 'This is a placeholder collection',
       videos: {
-        connect: [{ id: 1 }],
+        connect: [{ id: 1 }, { id: 2 }, { id: 3 }],
       },
     },
     {
       name: 'Another One',
+      description: 'This is a placeholder collection',
+      videos: {
+        connect: [{ id: 3 }, { id: 4 }, { id: 5 }],
+      },
+    },
+    {
+      name: 'Empty Collection',
       description: 'This is a placeholder collection',
     },
   ];
