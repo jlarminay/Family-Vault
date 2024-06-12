@@ -164,15 +164,22 @@ export const videoRouter = router({
         where: {
           id: input.id,
           AND: [
-            {
-              OR: [
-                { ownerId: session?.id },
-                { published: 'public' },
-                {
-                  AND: [{ published: 'allow-few' }, { allowList: { some: { id: session?.id } } }],
-                },
-              ],
-            },
+            // allow admin to see any video, but they must have the url
+            // the videos won't show in search results
+            session?.role !== 'admin'
+              ? {
+                  OR: [
+                    { ownerId: session?.id },
+                    { published: 'public' },
+                    {
+                      AND: [
+                        { published: 'allow-few' },
+                        { allowList: { some: { id: session?.id } } },
+                      ],
+                    },
+                  ],
+                }
+              : {},
           ],
         },
         include: {

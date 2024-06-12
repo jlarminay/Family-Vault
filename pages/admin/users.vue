@@ -36,7 +36,7 @@ async function saveUser() {
   </Head>
 
   <NuxtLayout name="app">
-    <main class="tw_px-6 tw_py-4 tw_max-w-[1000px] tw_mx-auto">
+    <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1000px] tw_mx-auto">
       <AdminSectionHeader title="User">
         <q-btn
           no-caps
@@ -57,6 +57,7 @@ async function saveUser() {
             { name: 'icons', label: '', field: 'icons', align: 'left', sortable: false },
             { name: 'name', label: 'Name', field: 'name', align: 'left', sortable: true },
             { name: 'email', label: 'Email', field: 'email', align: 'left', sortable: true },
+            { name: 'role', label: 'Role', field: 'role', align: 'left', sortable: true },
             {
               name: 'lastLogin',
               label: 'Last Login',
@@ -107,6 +108,11 @@ async function saveUser() {
           <template #body-cell-email="props">
             <q-td :props="props">
               {{ props.row.email }}
+            </q-td>
+          </template>
+          <template #body-cell-role="props">
+            <q-td :props="props">
+              {{ props.row.role.charAt(0).toUpperCase() + props.row.role.slice(1) }}
             </q-td>
           </template>
           <template #body-cell-lastLogin="props">
@@ -190,6 +196,21 @@ async function saveUser() {
               { label: 'Github', value: 'github' },
               { label: 'Discord', value: 'discord' },
               { label: 'Google', value: 'google' },
+            ]"
+            required
+            :rules="[(val: string) => !!val || 'Required']"
+          />
+          <q-select
+            behavior="menu"
+            outlined
+            no-error-icon
+            v-model="selectedUser.role"
+            label="User Role"
+            emit-value
+            map-options
+            :options="[
+              { label: 'User', value: 'user' },
+              { label: 'Admin', value: 'admin' },
             ]"
             required
             :rules="[(val: string) => !!val || 'Required']"

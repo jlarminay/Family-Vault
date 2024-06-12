@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import dayjs from 'dayjs';
 definePageMeta({
   middleware: 'admin-authorized-only',
 });
@@ -18,7 +19,7 @@ const loading = ref(false);
   </Head>
 
   <NuxtLayout name="app">
-    <main class="tw_px-6 tw_py-4 tw_max-w-[1000px] tw_mx-auto">
+    <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1000px] tw_mx-auto">
       <AdminSectionHeader title="Collections" />
 
       <div class="tw_mt-6">
@@ -27,41 +28,43 @@ const loading = ref(false);
           :columns="[
             { name: 'title', label: 'Title', field: 'title', align: 'left', sortable: true },
             {
-              name: 'createdAt',
-              label: 'Created At',
-              field: 'createdAt',
-              align: 'left',
-              sortable: true,
-            },
-            {
               name: 'owner',
               label: 'Owner',
               field: 'owner',
               align: 'left',
               sortable: true,
             },
-            // { name: 'actions', label: '', field: 'actions', align: 'right', sortable: false },
+            {
+              name: 'createdAt',
+              label: 'Created At',
+              field: 'createdAt',
+              align: 'left',
+              sortable: true,
+            },
           ]"
+          behavior="menu"
           :rows="allVideos"
           :wrap-cells="true"
           :rows-per-page-options="[25, 50, 100, 0]"
         >
           <template #body-cell-title="props">
-            <q-td :props="props" class="tw_w-[250px]">
-              <q-icon
-                v-if="props.row.published === 'private'"
-                name="o_lock"
-                class="tw_text-white tw_bg-red-600 tw_text-base tw_rounded-full tw_p-1 tw_mr-2"
-              />
-              <NuxtLink :to="`/video/${props.row.id}`" class="link">
-                {{ props.row.title }}
-              </NuxtLink>
+            <q-td :props="props">
+              <div class="tw_flex tw_items-center tw_justify-start">
+                <q-icon
+                  v-if="props.row.published === 'private'"
+                  name="lock"
+                  class="tw_text-primary tw_text-base tw_rounded-full tw_mr-2"
+                />
+                <NuxtLink :to="`/video/${props.row.id}`" class="link tw_line-clamp-1">
+                  {{ props.row.title }}
+                </NuxtLink>
+              </div>
             </q-td>
           </template>
           <template #body-cell-createdAt="props">
             <q-td :props="props">
               <div class="tw_line-clamp-1">
-                {{ props.row.createdAt }}
+                {{ dayjs(props.row.createdAt).format('MMM D, YYYY') }}
               </div>
             </q-td>
           </template>
@@ -69,34 +72,6 @@ const loading = ref(false);
             <q-td :props="props">
               <div class="tw_line-clamp-1">
                 {{ props.row.owner.name }}
-              </div>
-            </q-td>
-          </template>
-          <template #body-cell-actions="props">
-            <q-td :props="props" class="tw_w-0">
-              <div class="actions tw_flex tw_justify-end tw_gap-1">
-                <q-btn
-                  round
-                  flat
-                  size="12px"
-                  icon="o_edit"
-                  class="tw_text-blue-600"
-                  @click="
-                    editModal = true;
-                    selectedCollection = JSON.parse(JSON.stringify(props.row));
-                  "
-                />
-                <q-btn
-                  round
-                  flat
-                  size="12px"
-                  icon="o_delete"
-                  class="tw_text-red-600"
-                  @click="
-                    deleteModal = true;
-                    selectedCollection = JSON.parse(JSON.stringify(props.row));
-                  "
-                />
               </div>
             </q-td>
           </template>
