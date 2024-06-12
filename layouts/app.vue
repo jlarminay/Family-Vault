@@ -23,7 +23,13 @@ watch(
       <SingleNavMenu />
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" side="left" bordered @hide="emits('hideFilterMenu')">
+    <q-drawer
+      v-if="!!$slots['sidemenu']"
+      v-model="leftDrawerOpen"
+      side="left"
+      bordered
+      @hide="emits('hideFilterMenu')"
+    >
       <slot name="sidemenu" />
     </q-drawer>
 

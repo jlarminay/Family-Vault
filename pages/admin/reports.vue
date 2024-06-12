@@ -30,7 +30,7 @@ async function confirmDelete() {
   </Head>
 
   <NuxtLayout name="app">
-    <main class="tw_px-6 tw_py-4 tw_max-w-[1000px] tw_mx-auto">
+    <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1000px] tw_mx-auto">
       <AdminSectionHeader title="Reports" />
 
       <div class="tw_mt-6">
@@ -59,10 +59,17 @@ async function confirmDelete() {
             </q-td>
           </template>
           <template #body-cell-video="props">
-            <q-td :props="props" class="tw_truncate tw_max-w-[200px]">
-              <NuxtLink class="link" :to="`/video/${props.row.video.id}`">
-                {{ props.row.video.title }}
-              </NuxtLink>
+            <q-td :props="props">
+              <div class="tw_flex tw_items-center tw_justify-start">
+                <q-icon
+                  v-if="props.row.video.published === 'private'"
+                  name="lock"
+                  class="tw_text-primary tw_text-base tw_rounded-full tw_mr-2"
+                />
+                <NuxtLink :to="`/video/${props.row.video.id}`" class="link tw_line-clamp-1">
+                  {{ props.row.video.title }}
+                </NuxtLink>
+              </div>
             </q-td>
           </template>
           <template #body-cell-report="props">
@@ -75,6 +82,7 @@ async function confirmDelete() {
               {{ $dayjs(props.row.createdAt).format('MMM D, YYYY') }}
             </q-td>
           </template>
+
           <template #body-cell-actions="props">
             <q-td :props="props" class="tw_w-0">
               <div class="actions">

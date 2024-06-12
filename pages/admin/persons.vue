@@ -5,59 +5,58 @@ definePageMeta({
 
 const editForm = ref<any>(null);
 const adminStore = useAdminStore();
-const allCollections = ref(await adminStore.collectionRead());
-const selectedCollection = ref<any>(null);
+const allPersons = ref(await adminStore.personRead());
+const selectedPerson = ref<any>(null);
 const deleteModal = ref(false);
 const editModal = ref(false);
 const loading = ref(false);
 
 async function confirmDelete() {
   loading.value = true;
-  let response = await adminStore.collectionDelete(selectedCollection.value.id);
+  let response = await adminStore.personDelete(selectedPerson.value.id);
   loading.value = false;
 
   if (!response) {
     toaster({ type: 'error', message: 'Something went wrong.<br/>Please try again later.' });
     return;
   }
-  toaster({ type: 'success', message: 'Successfully deleted collection.' });
+  toaster({ type: 'success', message: 'Successfully deleted person.' });
   deleteModal.value = false;
-  allCollections.value = await adminStore.collectionRead();
+  allPersons.value = await adminStore.personRead();
 }
-async function saveCollection() {
+async function savePerson() {
   if (!(await editForm.value.validate())) return;
   loading.value = true;
   let response;
-  if (!selectedCollection.value.id)
-    response = await adminStore.collectionCreate(selectedCollection.value);
-  else response = await adminStore.collectionUpdate(selectedCollection.value);
+  if (!selectedPerson.value.id) response = await adminStore.personCreate(selectedPerson.value);
+  else response = await adminStore.personUpdate(selectedPerson.value);
   loading.value = false;
 
   if (!response) {
     toaster({ type: 'error', message: 'Something went wrong.<br/>Please try again later.' });
     return;
   }
-  toaster({ type: 'success', message: 'Successfully updated collection.' });
+  toaster({ type: 'success', message: 'Successfully updated person.' });
   editModal.value = false;
-  allCollections.value = await adminStore.collectionRead();
+  allPersons.value = await adminStore.personRead();
 }
 </script>
 
 <template>
   <Head>
-    <title>Collections | Admin | Larminay Vault</title>
+    <title>Persons | Admin | Larminay Vault</title>
   </Head>
 
   <NuxtLayout name="app">
     <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1000px] tw_mx-auto">
-      <AdminSectionHeader title="Collections">
+      <AdminSectionHeader title="Persons">
         <q-btn
           no-caps
           unelevated
-          label="New Collection"
+          label="New Person"
           color="primary"
           @click="
-            selectedCollection = {};
+            selectedPerson = {};
             editModal = true;
           "
         />
@@ -77,7 +76,7 @@ async function saveCollection() {
             },
             { name: 'actions', label: '', field: 'actions', align: 'right', sortable: false },
           ]"
-          :rows="allCollections"
+          :rows="allPersons"
           :wrap-cells="true"
           :rows-per-page-options="[25, 50, 100, 0]"
         >
@@ -89,6 +88,7 @@ async function saveCollection() {
           <template #body-cell-videos="props">
             <q-td :props="props">{{ props.row.videos.length || 0 }} Videos</q-td>
           </template>
+
           <template #body-cell-actions="props">
             <q-td :props="props" class="tw_w-0">
               <div class="actions tw_flex tw_justify-end tw_gap-1">
@@ -100,7 +100,7 @@ async function saveCollection() {
                   class="tw_text-blue-600"
                   @click="
                     editModal = true;
-                    selectedCollection = JSON.parse(JSON.stringify(props.row));
+                    selectedPerson = JSON.parse(JSON.stringify(props.row));
                   "
                 />
                 <q-btn
@@ -111,7 +111,7 @@ async function saveCollection() {
                   class="tw_text-red-600"
                   @click="
                     deleteModal = true;
-                    selectedCollection = JSON.parse(JSON.stringify(props.row));
+                    selectedPerson = JSON.parse(JSON.stringify(props.row));
                   "
                 />
               </div>
@@ -120,7 +120,7 @@ async function saveCollection() {
 
           <template #no-data>
             <div class="tw_w-full tw_text-center">
-              <p class="tw_text-lg tw_italic tw_opacity-70">No collections found.</p>
+              <p class="tw_text-lg tw_italic tw_opacity-70">No persons found.</p>
             </div>
           </template>
         </q-table>
@@ -128,13 +128,13 @@ async function saveCollection() {
     </main>
 
     <Modal v-model="editModal">
-      <template #title>Edit Collection</template>
+      <template #title>Edit Person</template>
       <template #body>
-        <q-form greedy ref="editForm" @submit.prevent="saveCollection">
+        <q-form greedy ref="editForm" @submit.prevent="savePerson">
           <q-input
             outlined
             no-error-icon
-            v-model="selectedCollection.name"
+            v-model="selectedPerson.name"
             label="Name"
             maxlength="64"
             autogrow
@@ -155,13 +155,13 @@ async function saveCollection() {
           label="Save"
           color="primary"
           :loading="loading"
-          @click="saveCollection"
+          @click="savePerson"
         />
       </template>
     </Modal>
     <Modal v-model="deleteModal">
-      <template #title>Delete Collection</template>
-      <template #body>Are you sure you want to delete this collection?</template>
+      <template #title>Delete Person</template>
+      <template #body>Are you sure you want to delete this person?</template>
       <template #actions>
         <q-btn outline unelevated no-caps label="Cancel" color="dark" v-close-popup />
         <q-btn

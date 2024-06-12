@@ -35,7 +35,7 @@ async function updateUser() {
   </Head>
 
   <NuxtLayout name="app">
-    <main class="tw_px-6 tw_py-4 tw_max-w-[800px] tw_mx-auto">
+    <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[800px] tw_mx-auto">
       <h1 class="h1">Account</h1>
 
       <div

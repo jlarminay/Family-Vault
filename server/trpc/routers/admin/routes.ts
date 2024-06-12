@@ -1,34 +1,12 @@
 import { adminProcedure, router } from '@/server/trpc/trpc';
-import { getServerSession } from '#auth';
 import { z } from 'zod';
-import { editVideoSchema } from '../video/schema';
-import { createCollectionSchema, editCollectionSchema } from '../collection/schema';
-import { createUserSchema, editUserSchema } from '../user/schema';
 
 export const adminRouter = router({
-  // video (RU)
+  // video (R)
   ...{
     videoRead: adminProcedure.query(async ({ ctx }) => {
       return await ctx.prisma.video.findMany({
         include: { persons: true, owner: true },
-      });
-    }),
-    videoUpdate: adminProcedure.input(editVideoSchema).mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.video.update({
-        where: { id: input.id },
-        data: {
-          title: input.title,
-          description: input.description,
-          dateDisplay: input.dateDisplay,
-          dateOrder: input.dateOrder,
-          persons: {
-            set: input.persons?.map((person) => ({ id: person })) || [],
-          },
-          collections: {
-            set: input.collections?.map((collection) => ({ id: collection })) || [],
-          },
-          published: input.published,
-        },
       });
     }),
   },
@@ -45,26 +23,33 @@ export const adminRouter = router({
   // collection (CRUD)
   ...{
     collectionCreate: adminProcedure
-      .input(createCollectionSchema)
+      .input(
+        z.object({
+          name: z.string().max(64),
+        }),
+      )
       .mutation(async ({ ctx, input }) => {
         return await ctx.prisma.collection.create({
           data: {
             name: input.name,
-            description: input.description,
           },
         });
       }),
     collectionRead: adminProcedure.query(async ({ ctx }) => {
-      return await ctx.prisma.collection.findMany();
+      return await ctx.prisma.collection.findMany({ include: { videos: true } });
     }),
     collectionUpdate: adminProcedure
-      .input(editCollectionSchema)
+      .input(
+        z.object({
+          id: z.number(),
+          name: z.string().max(64),
+        }),
+      )
       .mutation(async ({ ctx, input }) => {
         return await ctx.prisma.collection.update({
           where: { id: input.id },
           data: {
             name: input.name,
-            description: input.description,
           },
         });
       }),
@@ -79,31 +64,51 @@ export const adminRouter = router({
 
   // user (CRU)
   ...{
-    userCreate: adminProcedure.input(createUserSchema).mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.user.create({
-        data: {
-          name: input.name,
-          email: input.email,
-          provider: input.provider,
-          role: input.role,
-        },
-      });
-    }),
+    userCreate: adminProcedure
+      .input(
+        z.object({
+          name: z.string().max(64),
+          email: z.string().max(128),
+          provider: z.string(z.enum(['github', 'discord', 'google'])),
+          role: z.string(z.enum(['admin', 'user'])),
+        }),
+      )
+      .mutation(async ({ ctx, input }) => {
+        return await ctx.prisma.user.create({
+          data: {
+            name: input.name,
+            email: input.email,
+            provider: input.provider,
+            role: input.role,
+          },
+        });
+      }),
     userRead: adminProcedure.query(async ({ ctx }) => {
       return await ctx.prisma.user.findMany();
     }),
-    userUpdate: adminProcedure.input(editUserSchema).mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.user.update({
-        where: { id: input.id },
-        data: {
-          name: input.name,
-          email: input.email,
-          provider: input.provider,
-          role: input.role,
-          active: input.active,
-        },
-      });
-    }),
+    userUpdate: adminProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          name: z.string().max(64),
+          email: z.string().max(128),
+          provider: z.string(z.enum(['github', 'discord', 'google'])),
+          role: z.string(z.enum(['admin', 'user'])),
+          active: z.boolean(),
+        }),
+      )
+      .mutation(async ({ ctx, input }) => {
+        return await ctx.prisma.user.update({
+          where: { id: input.id },
+          data: {
+            name: input.name,
+            email: input.email,
+            provider: input.provider,
+            role: input.role,
+            active: input.active,
+          },
+        });
+      }),
   },
 
   // report (RD)
@@ -115,6 +120,39 @@ export const adminRouter = router({
       .input(z.object({ id: z.number() }))
       .mutation(async ({ ctx, input }) => {
         return await ctx.prisma.report.delete({
+          where: { id: input.id },
+        });
+      }),
+  },
+
+  // person (CRUD)
+  ...{
+    personCreate: adminProcedure
+      .input(z.object({ name: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        return await ctx.prisma.person.create({
+          data: {
+            name: input.name,
+          },
+        });
+      }),
+    personRead: adminProcedure.query(async ({ ctx }) => {
+      return await ctx.prisma.person.findMany({ include: { videos: true } });
+    }),
+    personUpdate: adminProcedure
+      .input(z.object({ id: z.number(), name: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        return await ctx.prisma.person.update({
+          where: { id: input.id },
+          data: {
+            name: input.name,
+          },
+        });
+      }),
+    personDelete: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ ctx, input }) => {
+        return await ctx.prisma.person.delete({
           where: { id: input.id },
         });
       }),

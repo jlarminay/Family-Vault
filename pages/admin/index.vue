@@ -10,7 +10,7 @@ definePageMeta({
   </Head>
 
   <NuxtLayout name="app">
-    <main class="tw_px-6 tw_py-4 tw_max-w-[1000px] tw_mx-auto">
+    <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1000px] tw_mx-auto">
       <AdminSectionHeader />
 
       <div>Body goes here</div>
