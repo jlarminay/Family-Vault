@@ -5,9 +5,6 @@ const route = useRoute();
 const videoStore = useVideoStore();
 const search = ref<string>('');
 const showSearchInput = ref(false);
-const showUploadModal = ref(false);
-const videoData = ref<any>(null);
-const newVideo = ref<any>(null);
 
 watch(
   () => route.query.search,
@@ -19,17 +16,6 @@ watch(
 
 function handleSearch() {
   navigateTo(`/dashboard?search=${search.value}`);
-}
-
-async function uploadVideo() {
-  if (!videoData.value || !videoData.value?.name || videoData.value?.error) return;
-  newVideo.value = await videoStore.uploadVideo(videoData.value);
-}
-async function clearUploadState() {
-  videoStore.uploadState.state = 'idle';
-  videoStore.uploadState.progress = 0;
-  newVideo.value = null;
-  showUploadModal.value = false;
 }
 </script>
 
@@ -84,14 +70,6 @@ async function clearUploadState() {
           color="dark"
           @click="showSearchInput = !showSearchInput"
         />
-        <!-- <q-btn
-          round
-          flat
-          class="!tw_p-0"
-          icon="o_cloud_upload"
-          color="dark"
-          @click="showUploadModal = true"
-        /> -->
 
         <q-btn round flat class="!tw_p-0" color="white">
           <div class="tw_w-[40px] tw_aspect-square tw_rounded-full tw_overflow-hidden tw_border">
@@ -111,20 +89,12 @@ async function clearUploadState() {
                 v-if="authData?.role === 'admin'"
                 clickable
                 v-close-popup
-                @click="showUploadModal = true"
+                @click="videoStore.showUploadModal = true"
               >
                 <q-item-section avatar>
                   <q-icon name="o_cloud_upload" />
                 </q-item-section>
                 <q-item-section>Upload Video</q-item-section>
-              </q-item>
-
-              <q-separator />
-              <q-item clickable v-close-popup to="/people">
-                <q-item-section avatar>
-                  <q-icon name="o_groups" />
-                </q-item-section>
-                <q-item-section>All People</q-item-section>
               </q-item>
 
               <q-separator />
@@ -181,73 +151,7 @@ async function clearUploadState() {
     </div>
   </nav>
 
-  <Modal ref="modal" v-model="showUploadModal" class="tw_w-full" :closeButton="false" persistent>
-    <template #title>Upload Video</template>
-    <template #body>
-      <div class="tw_mb-2">
-        <p v-if="videoStore.uploadState?.state === 'idle'" class="tw_text-lg">
-          You can select the video to upload here.
-        </p>
-        <p v-if="videoStore.uploadState?.state === 'uploading'" class="tw_text-lg">
-          Please don't close this window until the upload is complete.
-        </p>
-        <p v-if="videoStore.uploadState?.state === 'processing'" class="tw_text-lg">
-          The upload is complete and the window can now be safely closed. The video is now being
-          processed. This step may take a few minutes.
-        </p>
-        <p v-if="videoStore.uploadState?.state === 'complete'" class="tw_text-lg">
-          The upload is now completed. You can safely close this window.
-        </p>
-      </div>
-      <UploadVideo
-        :maxSize="2 * 1024 * 1024 * 1024"
-        :formats="['.mp4']"
-        :uploadState="videoStore.uploadState"
-        @fileUpdated="videoData = $event"
-      />
-    </template>
-    <template #actions>
-      <q-btn
-        v-if="videoStore.uploadState.state === 'idle'"
-        outline
-        no-caps
-        label="Cancel"
-        color="dark"
-        @click="clearUploadState"
-      />
-      <q-btn
-        v-if="videoStore.uploadState.state === 'idle'"
-        unelevated
-        no-caps
-        :disabled="!videoData?.name || videoData?.error"
-        label="Upload Video"
-        color="primary"
-        @click="uploadVideo"
-      />
-      <q-btn
-        v-if="
-          videoStore.uploadState.state === 'processing' ||
-          videoStore.uploadState.state === 'complete'
-        "
-        outline
-        no-caps
-        label="Close"
-        class="tw_text-base"
-        color="dark"
-        @click="clearUploadState"
-      />
-      <q-btn
-        v-if="videoStore.uploadState.state === 'complete'"
-        unelevated
-        no-caps
-        label="Go To Video"
-        class="tw_text-base"
-        color="primary"
-        @click="clearUploadState"
-        :to="`/video/${newVideo?.id}`"
-      />
-    </template>
-  </Modal>
+  <UploadModal />
 </template>
 
 <style scoped lang="postcss">

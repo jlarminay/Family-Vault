@@ -32,7 +32,7 @@ onMounted(() => {
           Login
         </p>
         <div class="tw_flex tw_flex-col tw_gap-2">
-          <TestingLoginButton v-if="isOnTestingServer()" />
+          <LoginButtonTesting v-if="isOnTestingServer()" />
           <q-btn
             v-for="provider in [
               { name: 'Google', bgColor: 'tw_bg-[#4285F4]' },
