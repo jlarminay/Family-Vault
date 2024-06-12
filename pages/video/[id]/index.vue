@@ -103,7 +103,7 @@ async function updateLike() {
         <div v-if="$q.screen.gt.sm" class="tw_min-w-[350px] tw_w-[350px] tw_px-2">
           <h3 class="h3">Related Videos</h3>
 
-          <RelatedVideoDisplay v-for="(video, i) in randomVideos" :key="i" :video="video" />
+          <VideoRelated v-for="(video, i) in randomVideos" :key="i" :video="video" />
         </div>
       </div>
     </main>

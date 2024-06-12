@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 
 export const useVideoStore = defineStore('video', {
   state: () => ({
+    showUploadModal: false,
     uploadState: {
       state: 'idle',
       progress: 0,
