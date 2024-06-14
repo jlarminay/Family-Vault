@@ -39,6 +39,7 @@
     "trpc-nuxt": "^0.10.21",
     "validator": "^13.11.0",
     "video.js": "^8.12.0",
+    "vue-markdown-render": "^2.2.1",
     "zod": "^3.22.5"
   },
   "devDependencies": {
