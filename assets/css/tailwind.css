@@ -18,66 +18,15 @@
 
 @layer components {
   .h1 {
-    @apply tw_text-3xl tw_font-medium tw_font-montserrat;
+    @apply tw_text-2xl sm:tw_text-3xl tw_font-medium tw_font-montserrat;
   }
   .h2 {
-    @apply tw_text-2xl tw_font-medium tw_font-montserrat;
+    @apply tw_text-xl sm:tw_text-2xl tw_font-medium tw_font-montserrat;
   }
   .h3 {
-    @apply tw_text-xl tw_font-medium tw_font-montserrat;
+    @apply tw_text-lg sm:tw_text-xl tw_font-medium tw_font-montserrat;
   }
   .h4 {
     @apply tw_text-lg tw_font-medium tw_font-montserrat;
-  }
-}
-
-.q-form {
-  .q-input,
-  .q-field,
-  .q-select {
-    @apply tw_mb-2;
-  }
-
-  .q-field__native[required] ~ .q-field__label:after,
-  label[required]:after {
-    content: ' *';
-    color: red;
-  }
-}
-
-.q-tooltip {
-  @apply tw_bg-dark tw_text-white tw_text-sm tw_font-maven-pro tw_font-normal tw_p-2 tw_rounded-md;
-}
-
-.c-toast-container {
-  @apply tw_z-[9999];
-
-  .c-toast {
-    @apply tw_z-[9999] tw_pointer-events-auto;
-
-    [class^='c-toast--'] {
-      @apply tw_border-2 tw_bg-white tw_rounded-lg tw_px-6 tw_py-4 tw_mb-2 tw_flex tw_items-start tw_gap-2 tw_relative tw_z-[9999] tw_max-w-[400px];
-      @apply tw_cursor-pointer;
-
-      &.c-toast--success {
-        @apply tw_bg-green-50 tw_border-green-400;
-      }
-      &.c-toast--error {
-        @apply tw_bg-red-50 tw_border-red-400;
-      }
-      &.c-toast--info {
-        @apply tw_bg-blue-50 tw_border-blue-400;
-      }
-    }
-  }
-}
-
-.q-dialog {
-  .q-card {
-    .q-card__actions {
-      .q-btn {
-        @apply tw_px-6;
-      }
-    }
   }
 }

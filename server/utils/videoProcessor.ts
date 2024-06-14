@@ -32,9 +32,11 @@ export default class VideoProcessor {
     height: number;
     resolution: string;
     size: number;
+    date: string;
   }> {
     const { stdout, stderr, code } = shell.exec(
-      `ffprobe -v error -show_entries format=duration:stream=width:stream=height -of default=noprint_wrappers=1:nokey=1 -show_format -show_entries format=size ${this.videoPath}`,
+      // `ffprobe -v error -show_entries format=duration:stream=width:stream=height -of default=noprint_wrappers=1:nokey=1 -show_format -show_entries format=size ${this.videoPath}`,
+      `ffprobe -v error -show_format -show_streams -print_format json  ${this.videoPath}`,
       { silent: true },
     );
 
@@ -43,16 +45,24 @@ export default class VideoProcessor {
     }
 
     // parse output
-    const output = stdout.trim().split('\n');
+    const output = JSON.parse(stdout);
 
     // extract data
-    const width = parseInt(output[0]);
-    const height = parseInt(output[1]);
-    const resolution = `${width}x${height}`;
-    const duration = Math.floor(parseFloat(output[2]));
-    const size = parseInt(output[3]);
+    let width = parseInt(output.streams[0].width);
+    let height = parseInt(output.streams[0].height);
+    const duration = Math.floor(parseFloat(output.format.duration));
+    const size = parseInt(output.format.size);
+    const date = output.format.tags.creation_time;
+    const rotate = output.streams[0]?.side_data_list?.[0]?.rotation || null;
 
-    return { duration, width, height, resolution, size };
+    if (rotate) {
+      width = parseInt(output.streams[0].height);
+      height = parseInt(output.streams[0].width);
+    }
+
+    const resolution = `${width}x${height}`;
+
+    return { duration, width, height, resolution, size, date };
   }
 
   async prepareNewVideo(): Promise<any> {
@@ -67,7 +77,7 @@ export default class VideoProcessor {
     {
       finalData.video.name = this.videoPath.split('/').pop();
       // get metadata
-      const { duration, resolution, size } = await this.getMetadata();
+      const { duration, resolution, size, date } = await this.getMetadata();
       finalData.video = {
         name: finalData.video.name,
         type: 'video',
@@ -77,6 +87,7 @@ export default class VideoProcessor {
           resolution: resolution,
           duration: duration,
         },
+        // date: date,
       };
     }
 

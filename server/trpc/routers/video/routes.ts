@@ -1,34 +1,116 @@
 import { protectedProcedure, router } from '@/server/trpc/trpc';
 import { getServerSession } from '#auth';
 import { z } from 'zod';
-import { uploadVideoSchema, processVideoSchema, editVideoSchema } from './schema';
+import { searchSchema, uploadVideoSchema, processVideoSchema, editVideoSchema } from './schema';
 import fs from 'fs';
 import VideoProcessor from '@/server/utils/videoProcessor.js';
 import S3 from '@/server/utils/s3.js';
 
 export const videoRouter = router({
-  getAllPublic: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.video.findMany({
-      where: { published: true },
-      include: { video: true, thumbnail: true },
-      orderBy: { createdAt: 'desc' },
-    });
-  }),
-  getAllLiked: protectedProcedure.query(async ({ ctx }) => {
+  search: protectedProcedure.input(searchSchema).query(async ({ input, ctx }) => {
     const session = await getServerSession(ctx.event);
 
-    return await ctx.prisma.video.findMany({
-      where: { published: true, likes: { some: { userId: session?.id } } },
-      include: { video: true, thumbnail: true },
-    });
-  }),
-  getAllMine: protectedProcedure.query(async ({ ctx }) => {
-    const session = await getServerSession(ctx.event);
+    // search rules
+    const searchRules = input.search
+      ? { OR: [{ title: { contains: input.search } }, { description: { contains: input.search } }] }
+      : {};
 
-    return await ctx.prisma.video.findMany({
-      where: { ownerId: session?.id },
-      include: { video: true, thumbnail: true },
+    // filter rules
+    let filterRules;
+    switch (input.filterBy) {
+      case 'liked':
+        filterRules = {
+          AND: [{ likes: { some: { userId: session?.id } } }],
+        };
+        break;
+      case 'mine':
+        filterRules = { ownerId: session?.id };
+        break;
+      case 'all':
+      default:
+        filterRules = {};
+        break;
+    }
+
+    // sort rules
+    let sortRules;
+    switch (input.sortBy) {
+      case 'title-asc':
+        sortRules = { title: 'asc' };
+        break;
+      case 'title-desc':
+        sortRules = { title: 'desc' };
+        break;
+      case 'date-taken-desc':
+        sortRules = { dateOrder: 'desc' };
+        break;
+      case 'date-added-asc':
+        sortRules = { createdAt: 'asc' };
+        break;
+      case 'date-taken-asc':
+        sortRules = { dateOrder: 'asc' };
+        break;
+      case 'date-added-desc':
+      default:
+        sortRules = { createdAt: 'desc' };
+        break;
+    }
+
+    // sort persons
+    let personsRules =
+      input.persons.length > 0 ? { persons: { some: { id: { in: input.persons } } } } : {};
+
+    // sort collections
+    let collectionsRules =
+      input.collections.length > 0
+        ? { collections: { some: { id: { in: input.collections } } } }
+        : {};
+
+    const videos = await ctx.prisma.video.findMany({
+      where: {
+        AND: [
+          filterRules,
+          searchRules,
+          personsRules,
+          collectionsRules,
+          {
+            OR: [
+              { ownerId: session?.id },
+              { published: 'public' },
+              {
+                AND: [{ published: 'allow-few' }, { allowList: { some: { id: session?.id } } }],
+              },
+            ],
+          },
+        ],
+      },
+      include: {
+        video: true,
+        thumbnail: true,
+        allowList: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        blockList: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        owner: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      // @ts-ignore
+      orderBy: sortRules,
     });
+
+    return videos;
   }),
 
   getRandom: protectedProcedure
@@ -38,8 +120,37 @@ export const videoRouter = router({
       const { limit } = input;
 
       const videos = await ctx.prisma.video.findMany({
-        where: { published: true },
-        include: { video: true, thumbnail: true },
+        where: {
+          OR: [
+            { ownerId: session?.id },
+            { published: 'public' },
+            {
+              AND: [{ published: 'allow-few' }, { allowList: { some: { id: session?.id } } }],
+            },
+          ],
+        },
+        include: {
+          video: true,
+          thumbnail: true,
+          allowList: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          blockList: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          owner: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
       });
       return videos.sort(() => Math.random() - Math.random()).slice(0, limit);
     }),
@@ -48,10 +159,29 @@ export const videoRouter = router({
     .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
       const session = await getServerSession(ctx.event);
-      const { id } = input;
 
       const video = await ctx.prisma.video.findUniqueOrThrow({
-        where: { id },
+        where: {
+          id: input.id,
+          AND: [
+            // allow admin to see any video, but they must have the url
+            // the videos won't show in search results
+            session?.role !== 'admin'
+              ? {
+                  OR: [
+                    { ownerId: session?.id },
+                    { published: 'public' },
+                    {
+                      AND: [
+                        { published: 'allow-few' },
+                        { allowList: { some: { id: session?.id } } },
+                      ],
+                    },
+                  ],
+                }
+              : {},
+          ],
+        },
         include: {
           persons: true,
           collections: true,
@@ -63,12 +193,24 @@ export const videoRouter = router({
               avatar: true,
             },
           },
+          allowList: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          blockList: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
         },
       });
 
       video.dateOrder = video.dateOrder.toISOString().split('T')[0] as any;
 
-      if (!video.published && video.ownerId !== session?.id) {
+      if (!video.published && video.ownerId !== session?.id && session?.role !== 'admin') {
         throw new Error('Video not published');
       }
 
@@ -91,13 +233,18 @@ export const videoRouter = router({
         description: input.description,
         dateDisplay: input.dateDisplay,
         dateOrder: input.dateOrder,
+
         persons: {
           set: input.persons?.map((person) => ({ id: person })) || [],
         },
         collections: {
           set: input.collections?.map((collection) => ({ id: collection })) || [],
         },
+
         published: input.published,
+        allowList: {
+          set: input.allowList?.map((user) => ({ id: user })) || [],
+        },
       },
     });
   }),
@@ -125,7 +272,8 @@ export const videoRouter = router({
     const { key, packets, name } = input;
     const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
 
-    let fileLocation: string = `${targetDir}/${key}_${name}`;
+    let cleanedName = name.replace(/\s+/g, '-').toLowerCase();
+    let fileLocation: string = `${targetDir}/${key}_${cleanedName}`;
     let videoData: any = {};
 
     try {
@@ -162,7 +310,7 @@ export const videoRouter = router({
 
         await new Promise((resolve) => setTimeout(resolve, 1000));
       } catch (e) {
-        console.log('failed to combine packets', key, packets, name, e);
+        console.log('failed to combine packets', key, packets, cleanedName, e);
         return false;
       }
 
@@ -171,7 +319,7 @@ export const videoRouter = router({
         const processing = new VideoProcessor(fileLocation);
         videoData = await processing.prepareNewVideo();
       } catch (e) {
-        console.log('failed to process video', key, packets, name, e);
+        console.log('failed to process video', key, packets, cleanedName, e);
         return false;
       }
 
@@ -206,7 +354,7 @@ export const videoRouter = router({
             thumbnailId: dbThumbnail.id,
             dateDisplay: '',
             dateOrder: new Date(),
-            published: false,
+            published: 'private',
           },
         });
       } catch (e) {

@@ -1,9 +1,8 @@
 import { defineStore } from 'pinia';
-import fs from 'fs';
-import video from '~/prisma/seeds/video';
 
 export const useVideoStore = defineStore('video', {
   state: () => ({
+    showUploadModal: false,
     uploadState: {
       state: 'idle',
       progress: 0,
@@ -13,47 +12,17 @@ export const useVideoStore = defineStore('video', {
   getters: {},
 
   actions: {
-    async getAllPublic() {
+    async search(options: any) {
       const { $trpc } = useNuxtApp();
 
-      let results = await $trpc.video.getAllPublic.query();
-      results = results.map((video: any) => {
+      let results = await $trpc.video.search.query(options);
+      return results.map((video: any) => {
         return {
           ...video,
           // clean thumbnail url
           thumbnail: video.thumbnail || { path: 'https://placehold.co/640x360' },
         };
       });
-
-      return results;
-    },
-    async getAllLiked() {
-      const { $trpc } = useNuxtApp();
-
-      let results = await $trpc.video.getAllLiked.query();
-      results = results.map((video: any) => {
-        return {
-          ...video,
-          // clean thumbnail url
-          thumbnail: video.thumbnail || { path: 'https://placehold.co/640x360' },
-        };
-      });
-
-      return results;
-    },
-    async getAllMine() {
-      const { $trpc } = useNuxtApp();
-
-      let results = await $trpc.video.getAllMine.query();
-      results = results.map((video: any) => {
-        return {
-          ...video,
-          // clean thumbnail url
-          thumbnail: video.thumbnail || { path: 'https://placehold.co/640x360' },
-        };
-      });
-
-      return results;
     },
 
     async getRandom(limit: number, ignore: number | undefined = undefined) {
@@ -81,14 +50,12 @@ export const useVideoStore = defineStore('video', {
       let results = await $trpc.video.getSingle.query({ id });
       return {
         ...results,
-        // clean thumbnail url
-        thumbnail: results.thumbnail || { path: 'https://placehold.co/640x360' },
       };
     },
     async update(videoData: any) {
       const { $trpc } = useNuxtApp();
 
-      let results = await $trpc.video.update.mutate({
+      const newVideoData = {
         id: videoData.id,
         title: videoData.title,
         description: videoData.description,
@@ -96,9 +63,11 @@ export const useVideoStore = defineStore('video', {
         dateOrder: videoData.dateOrder,
         persons: videoData.persons.map((person: any) => person.value),
         collections: videoData.collections.map((collection: any) => collection.value),
-        published: videoData.published === 'Yes' ? true : false,
-      });
-      return results;
+        published: videoData.published,
+        allowList: videoData.allowList ? videoData.allowList.map((user: any) => user.value) : [],
+      };
+
+      return await $trpc.video.update.mutate(newVideoData);
     },
 
     async uploadVideo(video: any) {
@@ -108,7 +77,7 @@ export const useVideoStore = defineStore('video', {
 
       const key =
         Math.random().toString(36).substring(2, 12) + Math.random().toString(36).substring(2, 12);
-      const chunkSize = 2 * 1024 * 1024;
+      const chunkSize = 4 * 1024 * 1024;
       let start = 0;
       let i = 1;
 

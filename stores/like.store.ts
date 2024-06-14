@@ -12,6 +12,12 @@ export const useLikeStore = defineStore('like', {
       let results = await $trpc.like.getForVideo.query({ videoId });
       return results;
     },
+    async getAllMine() {
+      const { $trpc } = useNuxtApp();
+
+      let results = await $trpc.like.getAllMine.query();
+      return results;
+    },
     async update(videoId: number, liked: boolean) {
       const { $trpc } = useNuxtApp();
 

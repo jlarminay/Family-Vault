@@ -1,3 +1,4 @@
+import { sign } from 'node:crypto';
 import { resolve } from 'node:path';
 
 export default defineNuxtConfig({
@@ -11,7 +12,12 @@ export default defineNuxtConfig({
     'dayjs-nuxt',
     '@sidebase/nuxt-auth',
   ],
-  css: ['@/assets/css/tailwind.css'],
+  css: [
+    '@/assets/css/tailwind.css',
+    '@/assets/css/quasar.css',
+    '@/assets/css/overrides.css',
+    '@/assets/css/main.css',
+  ],
   build: {
     transpile: ['trpc-nuxt'],
   },
@@ -54,6 +60,7 @@ export default defineNuxtConfig({
     },
   },
 
+  // @ts-ignore
   auth: {
     origin: process.env.AUTH_ORIGIN,
     provider: {
@@ -63,9 +70,9 @@ export default defineNuxtConfig({
 
   quasar: {
     extras: {
-      fontIcons: ['material-icons-outlined', 'fontawesome-v6'],
+      fontIcons: ['material-icons', 'material-symbols-outlined', 'fontawesome-v6'],
     },
-    iconSet: 'material-symbols-outlined',
+    iconSet: 'material-icons-outlined',
     config: {
       brand: {
         primary: '#833deb',
@@ -76,6 +83,13 @@ export default defineNuxtConfig({
         negative: '#C10015',
         info: '#31CCEC',
         warning: '#F2C037',
+      },
+      breakpoints: {
+        sm: 640,
+        md: 768,
+        lg: 1024,
+        xl: 1280,
+        '2xl': 1536,
       },
     },
   },

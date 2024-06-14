@@ -2,17 +2,20 @@
 definePageMeta({
   middleware: 'authorized-only',
 });
+const { data: authData } = useAuth();
 const route = useRoute();
 const router = useRouter();
+const userStore = useUserStore();
 const videoStore = useVideoStore();
 const personStore = usePersonStore();
 const collectionStore = useCollectionStore();
 
 const form = ref<any>(null);
 const videoId = ref<number>(parseInt(route.params.id as string));
+const video = ref(await videoStore.getSingle(videoId.value));
+const allUsers = ref(await userStore.getAll());
 const allPersons = ref(await personStore.getAll());
 const allCollections = ref(await collectionStore.getAll());
-const video = ref(await videoStore.getSingle(videoId.value));
 const videoEdit = ref<any>({});
 const loading = ref(false);
 
@@ -45,16 +48,25 @@ const cleanedCollections = computed(() => {
       };
     });
 });
+const cleanedAllowList = computed(() => {
+  return allUsers.value.filter((user: any) => {
+    if (!videoEdit.value.allowList) return true;
+    if (user.value === authData?.value?.id) return false;
+    return !videoEdit.value.allowList.some((p: any) => p.value === user.value);
+  });
+});
 
 onMounted(() => {
   let newData = JSON.parse(JSON.stringify(video.value));
   // clean data
-  newData.published = newData.published ? 'Yes' : 'No';
   newData.persons = newData.persons.map((person: any) => {
     return { label: person.name, value: person.id };
   });
   newData.collections = newData.collections.map((collection: any) => {
     return { label: collection.name, value: collection.id };
+  });
+  newData.allowList = newData.allowList.map((user: any) => {
+    return { label: user.name, value: user.id };
   });
   // return
   videoEdit.value = newData;
@@ -80,28 +92,25 @@ async function updateVideo() {
     <title>{{ video.title || 'Video' }} | Larminay Vault</title>
   </Head>
 
-  <div>
-    <SingleNavMenu />
-
-    <main class="tw_px-6 tw_py-4 tw_max-w-[1000px] tw_mx-auto tw_mb-8">
-      <div class="tw_flex tw_gap-4 tw_items-start tw_relative">
+  <NuxtLayout name="app">
+    <main class="tw_px-1 sm:tw_px-6 tw_py-4 tw_max-w-[1000px] tw_mx-auto tw_mb-8">
+      <div class="min-[800px]:tw_flex tw_gap-4 tw_items-start tw_relative">
         <!-- Video Details -->
         <div
-          class="tw_w-[350px] tw_min-w-[350px] tw_border tw_bg-gray-50 tw_rounded tw_p-4 tw_overflow-hidden tw_sticky tw_top-[84px]"
+          class="min-[800px]:tw_w-[350px] min-[800px]:tw_min-w-[350px] tw_mb-6 tw_border tw_bg-gray-50 tw_rounded tw_p-4 tw_overflow-hidden min-[800px]:tw_sticky tw_top-[84px]"
         >
           <h2 class="h2 tw_font-bold tw_mb-4">Video Details</h2>
-          <!-- <img :src="video.thumbnail.path" class="tw_w-full tw_my-2 tw_rounded" /> -->
-          <video controls :poster="video.thumbnail.path" class="tw_w-full tw_mb-2">
+          <video controls :poster="video.thumbnail?.path" class="tw_w-full tw_mb-2">
             <source :src="video.video.path" type="video/mp4" />
           </video>
 
           <div>
             <span class="tw_font-bold">Duration: </span>
-            <span>{{ formatDuration(video.video.metadata.duration) }}</span>
+            <span>{{ formatDuration(video?.video?.metadata?.duration) }}</span>
           </div>
           <div>
             <span class="tw_font-bold">Resolution: </span>
-            <span>{{ video.video.metadata.resolution }}</span>
+            <span>{{ video.video.metadata?.resolution }}</span>
           </div>
           <div>
             <span class="tw_font-bold">Size: </span>
@@ -111,8 +120,6 @@ async function updateVideo() {
             <span class="tw_font-bold">Uploaded Date: </span>
             <span>{{ $dayjs(video.createdAt).format('MMMM D, YYYY') }}</span>
           </div>
-
-          <!-- <pre>{{ video }}</pre> -->
         </div>
 
         <!-- Edit Video Data -->
@@ -168,7 +175,7 @@ async function updateVideo() {
                 ]"
               >
                 <template v-slot:append>
-                  <q-icon name="sym_o_event" class="cursor-pointer">
+                  <q-icon name="o_event" class="cursor-pointer">
                     <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                       <q-date v-model="videoEdit.dateOrder" mask="YYYY-MM-DD">
                         <div class="row items-center justify-end">
@@ -180,6 +187,7 @@ async function updateVideo() {
                 </template>
               </q-input>
               <q-select
+                behavior="menu"
                 outlined
                 no-error-icon
                 v-model="videoEdit.persons"
@@ -209,6 +217,7 @@ async function updateVideo() {
                 </template>
               </q-select>
               <q-select
+                behavior="menu"
                 outlined
                 no-error-icon
                 v-model="videoEdit.collections"
@@ -233,6 +242,7 @@ async function updateVideo() {
             <div class="tw_mt-6">
               <h3 class="h3 tw_font-bold tw_mb-2">Security</h3>
               <q-select
+                behavior="menu"
                 outlined
                 no-error-icon
                 v-model="videoEdit.published"
@@ -240,18 +250,39 @@ async function updateVideo() {
                 emit-value
                 map-options
                 :options="[
-                  { label: 'Video is public', value: 'Yes' },
-                  { label: 'Video is private', value: 'No' },
+                  { label: 'Video is private to me', value: 'private' },
+                  { label: 'Video is public to everyone', value: 'public' },
+                  { label: 'Video is public to only a few', value: 'allow-few' },
                 ]"
                 required
                 :rules="[(val: string) => !!val || 'Required']"
               />
+              <q-select
+                v-if="videoEdit.published === 'allow-few'"
+                behavior="menu"
+                outlined
+                no-error-icon
+                v-model="videoEdit.allowList"
+                label="Who can see the video?"
+                map-options
+                multiple
+                use-chips
+                hint=""
+                :options="cleanedAllowList"
+              >
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="tw_italic tw_opacity-70 tw_text-base tw_text-center">
+                      No options
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
             </div>
 
             <!-- Actions -->
             <div class="tw_flex tw_gap-2 tw_justify-end tw_mt-4">
               <q-btn
-                rounded
                 no-caps
                 unelevated
                 outline
@@ -260,7 +291,6 @@ async function updateVideo() {
                 :to="`/video/${video.id}`"
               />
               <q-btn
-                rounded
                 no-caps
                 unelevated
                 color="primary"
@@ -273,7 +303,7 @@ async function updateVideo() {
         </div>
       </div>
     </main>
-  </div>
+  </NuxtLayout>
 </template>
 
 <style scoped lang="postcss"></style>

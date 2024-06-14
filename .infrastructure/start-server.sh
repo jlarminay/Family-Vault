@@ -8,9 +8,6 @@ set +a
 # Install dependencies
 npm install --no-package-lock --ignore-scripts
 
-# Run custom overrides
-node ./overrides/index.js
-
 # Ensure ffprobe has executable permissions
 chmod +x ./node_modules/@ffprobe-installer/linux-x64/ffprobe
 

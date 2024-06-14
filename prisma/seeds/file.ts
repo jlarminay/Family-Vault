@@ -20,6 +20,8 @@ export default async () => {
     './videos/demo3.mp4',
     './videos/demo4.mp4',
     './videos/demo5.mp4',
+    './videos/demo6.mp4',
+    './videos/demo7.mp4',
     './images/alex-gerogory.webp',
     './images/billson-smith.webp',
     './images/david-michel.webp',
@@ -37,19 +39,16 @@ export default async () => {
     if (type === 'mp4') {
       const processing = new VideoProcessor('./prisma/seeds/' + newData[i]);
       const results = await processing.prepareNewVideo();
-      console.log('results');
 
       // upload to s3
       await s3.upload({
         key: `videos/${results.randomString}_${results.video.name}`,
         filePath: './prisma/seeds/videos/' + results.video.name,
       });
-      console.log('uploaded video', results.randomString, results.video.name);
       await s3.upload({
         key: `videos/${results.randomString}_${results.thumbnail.name}`,
         filePath: `${targetDir}/${results.thumbnail.name}`,
       });
-      console.log('uploaded thumbnail', results.randomString, results.thumbnail.name);
 
       // insert into db
       await prisma.file.create({ data: results.video });

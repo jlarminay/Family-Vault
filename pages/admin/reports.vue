@@ -1,39 +1,38 @@
 <script setup lang="ts">
 definePageMeta({
-  middleware: 'authorized-only',
+  middleware: 'admin-authorized-only',
 });
 
-const reportStore = useReportStore();
-const modal = ref<any>(false);
-const allReports = ref(await reportStore.getAll());
-const selectedReport = ref(null);
+const adminStore = useAdminStore();
+const allReports = ref(await adminStore.reportRead());
+const selectedReport = ref<any>(null);
 const deleteModal = ref(false);
 const loading = ref(false);
 
 async function confirmDelete() {
   loading.value = true;
-  let response = await reportStore.delete(selectedReport.value);
+  let response = await adminStore.reportDelete(selectedReport.value);
   loading.value = false;
+
   if (!response) {
-    // bad toaster
+    toaster({ type: 'error', message: 'Something went wrong.<br/>Please try again later.' });
     return;
   }
-  // good toaster
+  toaster({ type: 'success', message: 'Successfully deleted report.' });
   deleteModal.value = false;
-  allReports.value = await reportStore.getAll();
+  allReports.value = await adminStore.reportRead();
 }
 </script>
 
 <template>
   <Head>
-    <title>Reports | Larminay Vault</title>
+    <title>Reports | Admin | Larminay Vault</title>
   </Head>
 
-  <div>
-    <SingleNavMenu />
+  <NuxtLayout name="app">
+    <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1000px] tw_mx-auto">
+      <AdminSectionHeader title="Reports" />
 
-    <main class="tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto tw_border">
-      <h1 class="h1">Reports</h1>
       <div class="tw_mt-6">
         <q-table
           flat
@@ -60,10 +59,17 @@ async function confirmDelete() {
             </q-td>
           </template>
           <template #body-cell-video="props">
-            <q-td :props="props" class="tw_truncate tw_max-w-[200px]">
-              <NuxtLink class="link" :to="`/video/${props.row.video.id}`">
-                {{ props.row.video.title }}
-              </NuxtLink>
+            <q-td :props="props">
+              <div class="tw_flex tw_items-center tw_justify-start">
+                <q-icon
+                  v-if="props.row.video.published === 'private'"
+                  name="lock"
+                  class="tw_text-primary tw_text-base tw_rounded-full tw_mr-2"
+                />
+                <NuxtLink :to="`/video/${props.row.video.id}`" class="link tw_line-clamp-1">
+                  {{ props.row.video.title }}
+                </NuxtLink>
+              </div>
             </q-td>
           </template>
           <template #body-cell-report="props">
@@ -76,6 +82,7 @@ async function confirmDelete() {
               {{ $dayjs(props.row.createdAt).format('MMM D, YYYY') }}
             </q-td>
           </template>
+
           <template #body-cell-actions="props">
             <q-td :props="props" class="tw_w-0">
               <div class="actions">
@@ -83,7 +90,7 @@ async function confirmDelete() {
                   round
                   flat
                   size="12px"
-                  icon="sym_o_delete_outline"
+                  icon="o_delete_outline"
                   class="tw_text-red-600"
                   @click="
                     deleteModal = true;
@@ -107,10 +114,9 @@ async function confirmDelete() {
       <template #title>Delete Report</template>
       <template #body>Are you sure you want to delete this report?</template>
       <template #actions>
-        <q-btn outline unelevated no-caps rounded label="Cancel" color="dark" v-close-popup />
+        <q-btn outline unelevated no-caps label="Cancel" color="dark" v-close-popup />
         <q-btn
           no-caps
-          rounded
           unelevated
           label="Confirm Delete"
           color="primary"
@@ -119,7 +125,7 @@ async function confirmDelete() {
         />
       </template>
     </Modal>
-  </div>
+  </NuxtLayout>
 </template>
 
 <style scoped lang="postcss">

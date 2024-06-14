@@ -1,45 +1,36 @@
 import { protectedProcedure, router } from '@/server/trpc/trpc';
 import { getServerSession } from '#auth';
-import { createUserSchema, editUserSchema } from './schema';
-import { z } from 'zod';
+import { editOwnUserSchema } from './schema';
 
 export const userRouter = router({
   getAll: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
+      where: {
+        active: true,
+      },
+    });
+  }),
+
+  updateOwn: protectedProcedure.input(editOwnUserSchema).mutation(async ({ ctx, input }) => {
     const session = await getServerSession(ctx.event);
-    return await ctx.prisma.user.findMany();
-  }),
-  getSingle: protectedProcedure
-    .input(z.object({ id: z.number() }))
-    .query(async ({ ctx, input }) => {
-      const { id } = input;
-      return await ctx.prisma.user.findUniqueOrThrow({
-        where: { id },
-      });
-    }),
 
-  create: protectedProcedure.input(createUserSchema).mutation(async ({ ctx, input }) => {
-    const { name, email, provider } = input;
-    return await ctx.prisma.user.create({
-      data: { name, email, provider },
-    });
-  }),
-  update: protectedProcedure.input(editUserSchema).mutation(async ({ ctx, input }) => {
-    const { id, name, email, provider, active } = input;
+    if (session?.id !== input.id) {
+      throw new Error('User can only update their own profile');
+    }
+
     return await ctx.prisma.user.update({
-      where: { id },
-      data: { name, email, provider, active },
+      where: {
+        id: input.id,
+      },
+      data: {
+        name: input.name,
+      },
     });
   }),
-
-  delete: protectedProcedure
-    .input(z.object({ id: z.number() }))
-    .mutation(async ({ ctx, input }) => {
-      const { id } = input;
-      return await ctx.prisma.user.update({
-        where: { id },
-        data: { active: false },
-      });
-    }),
 });
 
 // export type definition of API

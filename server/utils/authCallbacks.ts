@@ -7,7 +7,6 @@ export default {
     const { user, account, profile, email, credentials } = opts;
     try {
       // check if user in db
-      // console.log('provider', account.provider);
       const userInDb = await prisma.user.findUniqueOrThrow({
         where: {
           email: user.email,
@@ -28,7 +27,7 @@ export default {
 
       return true;
     } catch (e) {
-      return false;
+      return '/login?state=error';
     }
   },
   async session(opts: { session: any; token: any; user: any }): Promise<any> {

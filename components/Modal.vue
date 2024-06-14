@@ -20,7 +20,7 @@ defineProps({
         <q-btn
           flat
           round
-          icon="sym_o_close"
+          icon="o_close"
           size="12px"
           v-close-popup
           :class="{ 'tw_pointer-events-none tw_opacity-0': !closeButton }"

@@ -30,47 +30,39 @@ async function updateLike() {
     <title>{{ video.title || 'Video' }} | Larminay Vault</title>
   </Head>
 
-  <div>
-    <SingleNavMenu />
-
-    <main class="tw_px-6 tw_py-4 tw_max-w-[1400px] tw_mx-auto tw_mb-8">
+  <NuxtLayout name="app">
+    <main class="sm:tw_px-6 sm:tw_py-4 tw_max-w-[1400px] tw_mx-auto tw_mb-8">
       <div class="tw_flex tw_gap-4">
         <div class="tw_grow tw_min-w-0">
-          <video controls :poster="video.thumbnail.path" class="tw_w-full">
-            <source :src="video.video.path" type="video/mp4" />
-          </video>
+          <div
+            class="tw_sticky tw_top-[61px] sm:tw_top-0 sm:tw_relative tw_w-full tw_z-50 tw_max-h-[40vh] sm:tw_max-h-[50vh]"
+            :style="`aspect-ratio: ${getAspectRatio(video.video?.metadata?.resolution)}`"
+          >
+            <VideoPlayer
+              :videoUrl="video.video?.path || ''"
+              :posterUrl="video.thumbnail?.path || ''"
+            />
+          </div>
+
+          <!-- description -->
           <div class="tw_p-2">
             <div class="tw_flex tw_gap-4 tw_justify-between tw_items-start">
               <h2 class="h2 tw_font-bold tw_min-w-0 tw_flex-grow tw_break-words">
                 <q-icon
-                  v-if="!video.published"
-                  name="sym_o_lock"
-                  class="tw_text-white tw_bg-red-600 tw_text-xl tw_rounded-full tw_p-1"
+                  v-if="video.published === 'private'"
+                  name="lock"
+                  class="tw_text-primary tw_text-2xl tw_rounded-full tw_p-0.5"
                 />
                 {{ video.title }}
               </h2>
               <div class="tw_flex tw_items-center tw_gap-2">
-                <q-btn
-                  rounded
-                  outline
-                  class="tw_flex tw_flex-nowrap"
-                  :class="{ 'tw_text-red-500': likes.isLiked }"
-                  @click="updateLike()"
-                >
-                  <div class="tw_flex tw_items-center tw_whitespace-nowrap">
-                    <q-icon
-                      :name="likes.isLiked ? 'o_favorite' : 'o_favorite_border'"
-                      :class="{ tada: likes.isLiked }"
-                    />
-                    <span class="tw_text-lg tw_ml-1">{{ likes.count }}</span>
-                  </div>
-                </q-btn>
+                <LikeButton :count="likes.count" :isLiked="likes.isLiked" @clicked="updateLike" />
 
                 <q-btn
                   round
                   outline
-                  size="12px"
-                  icon="sym_o_more_horiz"
+                  :size="$q.screen.lt.sm ? '10px' : '12px'"
+                  icon="o_more_horiz"
                   class="tw_cursor-pointer hover:tw_opacity-70 tw_transition-opacity tw_duration-300"
                 >
                   <q-menu :offset="[0, 4]" anchor="bottom right" self="top right">
@@ -106,51 +98,18 @@ async function updateLike() {
             </div>
           </div>
         </div>
-        <div class="tw_min-w-[300px] tw_w-[300px] tw_px-2">
+
+        <!-- other videos (md) -->
+        <div v-if="$q.screen.gt.sm" class="tw_min-w-[350px] tw_w-[350px] tw_px-2">
           <h3 class="h3">Related Videos</h3>
 
-          <RelatedVideoDisplay v-for="(video, i) in randomVideos" :key="i" :video="video" />
+          <VideoRelated v-for="(video, i) in randomVideos" :key="i" :video="video" />
         </div>
       </div>
     </main>
 
     <ReportModal :videoId="videoId" v-model="VideoReportModal" />
-  </div>
+  </NuxtLayout>
 </template>
 
-<style scoped lang="postcss">
-video[poster] {
-  object-fit: cover;
-}
-
-.tada {
-  animation: tada 1s linear;
-}
-@keyframes tada {
-  from {
-    transform: scale3d(1, 1, 1);
-  }
-
-  10%,
-  20% {
-    transform: scale3d(0.8, 0.8, 0.8) rotate3d(0, 0, 1, -10deg);
-  }
-
-  30%,
-  50%,
-  70%,
-  90% {
-    transform: scale3d(1.2, 1.2, 1.2) rotate3d(0, 0, 1, 10deg);
-  }
-
-  40%,
-  60%,
-  80% {
-    transform: scale3d(1.2, 1.2, 1.2) rotate3d(0, 0, 1, -10deg);
-  }
-
-  to {
-    transform: scale3d(1, 1, 1);
-  }
-}
-</style>
+<style scoped lang="postcss"></style>

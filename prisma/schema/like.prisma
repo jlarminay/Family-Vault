@@ -1,0 +1,12 @@
+model Like {
+  // user can only like video once
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  user      User     @relation(name: "LikeToUser", fields: [userId], references: [id])
+  videoId   Int
+  video     Video    @relation(name: "LikeToVideo", fields: [videoId], references: [id])
+
+  @@unique([userId, videoId])
+}

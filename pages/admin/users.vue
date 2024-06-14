@@ -2,68 +2,54 @@
 import validator from 'validator';
 const { data: authData } = useAuth();
 definePageMeta({
-  middleware: 'authorized-only',
+  middleware: 'admin-authorized-only',
 });
 
 const editForm = ref<any>(null);
-const userStore = useUserStore();
-const allUsers = ref(await userStore.getAll());
+const adminStore = useAdminStore();
+const allUsers = ref(await adminStore.userRead());
 const selectedUser = ref<any>(null);
-const deleteModal = ref(false);
 const editModal = ref(false);
 const loading = ref(false);
 
-async function confirmDelete() {
-  loading.value = true;
-  let response = await userStore.delete(selectedUser.value.id);
-  loading.value = false;
-  if (!response) {
-    toaster({ type: 'error', message: 'Something went wrong.<br/>Please try again later.' });
-    return;
-  }
-  toaster({ type: 'success', message: 'Successfully deleted user.' });
-  deleteModal.value = false;
-  allUsers.value = await userStore.getAll();
-}
 async function saveUser() {
   if (!(await editForm.value.validate())) return;
   loading.value = true;
-  let response = await userStore.createOrUpdate(selectedUser.value);
+  let response;
+  if (!selectedUser.value.id) response = await adminStore.userCreate(selectedUser.value);
+  else response = await adminStore.userUpdate(selectedUser.value);
   loading.value = false;
+
   if (!response) {
     toaster({ type: 'error', message: 'Something went wrong.<br/>Please try again later.' });
     return;
   }
   toaster({ type: 'success', message: 'Successfully updated user.' });
   editModal.value = false;
-  allUsers.value = await userStore.getAll();
+  allUsers.value = await adminStore.userRead();
 }
 </script>
 
 <template>
   <Head>
-    <title>Users | Larminay Vault</title>
+    <title>Users | Admin | Larminay Vault</title>
   </Head>
 
-  <div>
-    <SingleNavMenu />
-
-    <main class="tw_px-6 tw_py-4 tw_max-w-[1000px] tw_mx-auto">
-      <div class="tw_flex tw_justify-between tw_items-center">
-        <h1 class="h1">Users</h1>
+  <NuxtLayout name="app">
+    <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1000px] tw_mx-auto">
+      <AdminSectionHeader title="User">
         <q-btn
           no-caps
-          rounded
           unelevated
           label="New User"
           color="primary"
-          class="tw_mt-4"
           @click="
             selectedUser = {};
             editModal = true;
           "
         />
-      </div>
+      </AdminSectionHeader>
+
       <div class="tw_mt-6">
         <q-table
           flat
@@ -71,6 +57,7 @@ async function saveUser() {
             { name: 'icons', label: '', field: 'icons', align: 'left', sortable: false },
             { name: 'name', label: 'Name', field: 'name', align: 'left', sortable: true },
             { name: 'email', label: 'Email', field: 'email', align: 'left', sortable: true },
+            { name: 'role', label: 'Role', field: 'role', align: 'left', sortable: true },
             {
               name: 'lastLogin',
               label: 'Last Login',
@@ -97,7 +84,7 @@ async function saveUser() {
                   }"
                 />
                 <q-icon
-                  :name="`sym_o_${props.row.active ? 'check_circle' : 'cancel'}`"
+                  :name="`o_${props.row.active ? 'check_circle' : 'cancel'}`"
                   class="tw_text-2xl"
                   :class="{
                     'tw_text-green-600': props.row.active,
@@ -123,6 +110,11 @@ async function saveUser() {
               {{ props.row.email }}
             </q-td>
           </template>
+          <template #body-cell-role="props">
+            <q-td :props="props">
+              {{ props.row.role.charAt(0).toUpperCase() + props.row.role.slice(1) }}
+            </q-td>
+          </template>
           <template #body-cell-lastLogin="props">
             <q-td :props="props">
               {{
@@ -139,7 +131,7 @@ async function saveUser() {
                   round
                   flat
                   size="12px"
-                  icon="sym_o_edit"
+                  icon="o_edit"
                   class="tw_text-blue-600"
                   @click="
                     editModal = true;
@@ -193,6 +185,7 @@ async function saveUser() {
             ]"
           />
           <q-select
+            behavior="menu"
             outlined
             no-error-icon
             v-model="selectedUser.provider"
@@ -207,6 +200,21 @@ async function saveUser() {
             required
             :rules="[(val: string) => !!val || 'Required']"
           />
+          <q-select
+            behavior="menu"
+            outlined
+            no-error-icon
+            v-model="selectedUser.role"
+            label="User Role"
+            emit-value
+            map-options
+            :options="[
+              { label: 'User', value: 'user' },
+              { label: 'Admin', value: 'admin' },
+            ]"
+            required
+            :rules="[(val: string) => !!val || 'Required']"
+          />
           <q-checkbox
             v-if="!!selectedUser.id && selectedUser.id !== authData?.id"
             v-model="selectedUser.active"
@@ -216,10 +224,9 @@ async function saveUser() {
         </q-form>
       </template>
       <template #actions>
-        <q-btn outline unelevated no-caps rounded label="Cancel" color="dark" v-close-popup />
+        <q-btn outline unelevated no-caps label="Cancel" color="dark" v-close-popup />
         <q-btn
           no-caps
-          rounded
           unelevated
           label="Save"
           color="primary"
@@ -228,42 +235,7 @@ async function saveUser() {
         />
       </template>
     </Modal>
-    <Modal v-model="deleteModal">
-      <template #title>Delete User</template>
-      <template #body>Are you sure you want to delete this user?</template>
-      <template #actions>
-        <q-btn outline unelevated no-caps rounded label="Cancel" color="dark" v-close-popup />
-        <q-btn
-          no-caps
-          rounded
-          unelevated
-          label="Confirm Delete"
-          color="primary"
-          :loading="loading"
-          @click="confirmDelete"
-        />
-      </template>
-    </Modal>
-  </div>
+  </NuxtLayout>
 </template>
 
-<style scoped lang="postcss">
-:deep(.q-table) {
-  thead th {
-    @apply tw_text-base tw_font-bold tw_whitespace-nowrap;
-  }
-
-  .q-td {
-    @apply tw_text-base;
-  }
-
-  tbody tr {
-    .actions {
-      @apply tw_opacity-0 tw_transition-opacity tw_duration-300;
-    }
-    &:hover .actions {
-      @apply tw_opacity-100;
-    }
-  }
-}
-</style>
+<style scoped lang="postcss"></style>

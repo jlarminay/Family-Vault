@@ -17,7 +17,7 @@ definePageMeta({
         <p class="tw_mb-4 tw_px-4 tw_pb-2 tw_text-2xl tw_text-white tw_border-b tw_inline-block">
           Larminay Vault
         </p>
-        <h1 class="tw_text-6xl tw_text-white tw_uppercase tw_font-montserrat">
+        <h1 class="tw_text-4xl sm:tw_text-6xl tw_text-white tw_uppercase tw_font-montserrat">
           Exciting news <br />
           coming soon
         </h1>

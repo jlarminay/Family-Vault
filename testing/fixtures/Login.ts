@@ -1,15 +1,15 @@
 /* eslint-disable no-undef */
 import { expect } from '@playwright/test';
 
-exports.Login = class Login {
+export default class Login {
   page: any;
 
   constructor(page: any) {
     this.page = page;
   }
 
-  async login(loginValues: any) {
-    await this.page.goto('/landing');
+  async login(credentials: { email: string; password: string }) {
+    await this.page.goto('/login');
 
     // wait for load
     await this.page.waitForLoadState('domcontentloaded', { timeout: 15000 });
@@ -17,14 +17,21 @@ exports.Login = class Login {
     await this.page.waitForLoadState('networkidle', { timeout: 5000 });
 
     // check page load
-    await this.page.waitForURL('**/landing');
-    await expect(await this.page.innerText('h1')).toContain('Register');
+    await this.page.waitForURL('**/login');
+    await expect(await this.page.locator('p', { hasText: 'Login' })).toBeVisible();
 
     // login
-    await this.page.locator('[test-label="loginButton"]').click();
-    await this.page.locator('input#username').fill(loginValues.email);
-    await this.page.locator('input#password').fill(loginValues.password);
-    await this.page.locator('button[type="submit"][name="action"]').last().click();
-    await this.page.waitForURL('**/home');
+    await this.page.evaluate(
+      (el: any) => {
+        el.style.display = 'block';
+      },
+      await this.page.$('[test-label="loginWithCredentials"]'),
+    );
+    await this.page.locator('.q-btn', { hasText: 'Credentials' }).click();
+    await this.page.locator('[test-label="email"]').fill(credentials.email);
+    await this.page.locator('[test-label="password"]').fill(credentials.password);
+    await this.page.locator('[test-label="submit"]').click();
+    await this.page.waitForURL('**/dashboard');
+    await expect(this.page.locator('h1', { hasText: 'Dashboard' })).toBeVisible();
   }
-};
+}

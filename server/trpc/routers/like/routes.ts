@@ -15,6 +15,15 @@ export const likeRouter = router({
       };
     }),
 
+  getAllMine: protectedProcedure.query(async ({ ctx }) => {
+    const session = await getServerSession(ctx.event);
+
+    return await ctx.prisma.like.findMany({
+      where: { userId: session?.id },
+      include: { video: true },
+    });
+  }),
+
   update: protectedProcedure
     .input(z.object({ videoId: z.number(), liked: z.boolean() }))
     .mutation(async ({ ctx, input }) => {

@@ -41,13 +41,13 @@ async function submitReport() {
           maxlength="256"
           counter
           v-model="reportReason"
-          :rules="[(val) => !!val || 'Please enter a reason']"
+          :rules="[(val: string) => !!val || 'Please enter a reason']"
         />
       </q-form>
     </template>
     <template #actions>
-      <q-btn outline no-caps rounded label="Cancel" color="dark" v-close-popup />
-      <q-btn unelevated no-caps rounded label="Submit Report" color="red" @click="submitReport" />
+      <q-btn outline no-caps label="Cancel" color="dark" v-close-popup />
+      <q-btn unelevated no-caps label="Submit Report" color="red" @click="submitReport" />
     </template>
   </Modal>
 </template>

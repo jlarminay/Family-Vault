@@ -1,0 +1,27 @@
+model Video {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  dateDisplay String?
+  dateOrder   DateTime @db.Date
+  ownerId     Int
+  owner       User     @relation(name: "UserToVideo", fields: [ownerId], references: [id])
+
+  published String @default("private")
+  allowList User[] @relation(name: "UserToVideo1")
+  blockList User[] @relation(name: "UserToVideo2")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  videoId     Int
+  video       File  @relation(name: "VideoVideo", fields: [videoId], references: [id])
+  thumbnailId Int?
+  thumbnail   File? @relation(name: "VideoThumbnail", fields: [thumbnailId], references: [id])
+
+  comments    Comment[]    @relation(name: "CommentToVideo") // can have many comments
+  persons     Person[]     @relation(name: "PersonToVideo") // can contain many people
+  likes       Like[]       @relation(name: "LikeToVideo") // can have multiple likes
+  report      Report[]     @relation(name: "ReportToVideo") // can be reported multiple times
+  collections Collection[] @relation(name: "VideoToCollection")
+}
