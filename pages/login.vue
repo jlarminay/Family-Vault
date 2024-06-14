@@ -53,7 +53,13 @@ onMounted(() => {
             />
             Login with {{ provider.name }}
           </q-btn>
-          <p class="tw_mt-2">
+          <p class="tw_mt-4">
+            By using the app, you agree to the
+            <br />
+            <NuxtLink class="link" to="/legal#terms-and-conditions">Terms and Conditions</NuxtLink>
+            and <NuxtLink class="link" to="/legal#privacy-policy">Privacy Policy</NuxtLink>.
+          </p>
+          <p class="tw_text-sm tw_mt-2">
             Request access from
             <a class="link" href="mailto:j.larminay@gmail.com">j.larminay@gmail.com</a>
           </p>

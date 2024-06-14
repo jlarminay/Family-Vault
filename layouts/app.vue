@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { data: authData } = useAuth();
 const emits = defineEmits(['hideFilterMenu']);
 const props = defineProps({
   showFilterMenu: {
@@ -19,7 +20,7 @@ watch(
 
 <template>
   <q-layout view="hHh LpR fFf">
-    <q-header>
+    <q-header v-if="authData">
       <SingleNavMenu />
     </q-header>
 

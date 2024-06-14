@@ -1,7 +1,7 @@
 <script setup lang="ts">
-definePageMeta({
-  middleware: 'authorized-only',
-});
+// definePageMeta({
+//   middleware: 'authorized-only',
+// });
 </script>
 
 <template>
