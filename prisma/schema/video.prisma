@@ -4,6 +4,7 @@ model Video {
   description String?
   dateDisplay String?
   dateOrder   DateTime @db.Date
+  status      String   @default("finished")
   ownerId     Int
   owner       User     @relation(name: "UserToVideo", fields: [ownerId], references: [id])
 
@@ -14,8 +15,8 @@ model Video {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  videoId     Int
-  video       File  @relation(name: "VideoVideo", fields: [videoId], references: [id])
+  videoId     Int?
+  video       File? @relation(name: "VideoVideo", fields: [videoId], references: [id])
   thumbnailId Int?
   thumbnail   File? @relation(name: "VideoThumbnail", fields: [thumbnailId], references: [id])
 

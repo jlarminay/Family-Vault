@@ -14,7 +14,8 @@ defineProps({
 <template>
   <NuxtLink
     class="tw_inline-block tw_w-full tw_rounded tw_overflow-hidden tw_transition hover:tw_bg-slate-200 tw_p-2"
-    :to="`/video/${video.id}`"
+    :class="{ 'tw_cursor-not-allowed tw_opacity-70': video.status === 'processing' }"
+    :to="video.status === 'processing' ? '' : `/video/${video.id}`"
   >
     <div class="tw_relative tw_rounded">
       <img
@@ -22,6 +23,7 @@ defineProps({
         class="tw_w-full tw_aspect-video tw_object-cover tw_rounded"
       />
       <span
+        v-if="video.status !== 'processing'"
         class="tw_absolute tw_bottom-0 tw_right-0 tw_px-2 tw_p-0.5 tw_bg-black tw_bg-opacity-60 tw_text-white tw_rounded-tl tw_rounded-br"
       >
         {{ formatDuration(video.video?.metadata?.duration) }}

@@ -47,9 +47,6 @@ async function clearUploadState() {
           The upload is complete and the window can now be safely closed. The video is now being
           processed. This step may take a few minutes.
         </p>
-        <p v-if="videoStore.uploadState?.state === 'complete'" class="tw_text-lg">
-          The upload is now completed. You can safely close this window.
-        </p>
       </div>
       <UploadVideo
         :maxSize="2 * 1024 * 1024 * 1024"
@@ -77,26 +74,13 @@ async function clearUploadState() {
         @click="uploadVideo"
       />
       <q-btn
-        v-if="
-          videoStore.uploadState.state === 'processing' ||
-          videoStore.uploadState.state === 'complete'
-        "
+        v-if="videoStore.uploadState.state === 'processing'"
         outline
         no-caps
         label="Close"
         class="tw_text-base"
         color="dark"
         @click="clearUploadState"
-      />
-      <q-btn
-        v-if="videoStore.uploadState.state === 'complete'"
-        unelevated
-        no-caps
-        label="Go To Video"
-        class="tw_text-base"
-        color="primary"
-        @click="clearUploadState"
-        :to="`/video/${newVideo?.id}`"
       />
     </template>
   </Modal>

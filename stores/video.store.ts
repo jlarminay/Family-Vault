@@ -20,7 +20,7 @@ export const useVideoStore = defineStore('video', {
         return {
           ...video,
           // clean thumbnail url
-          thumbnail: video.thumbnail || { path: 'https://placehold.co/640x360' },
+          thumbnail: video.thumbnail || { path: 'https://placehold.co/640x360?text=Processing...' },
         };
       });
     },
@@ -37,7 +37,7 @@ export const useVideoStore = defineStore('video', {
           return {
             ...video,
             // clean thumbnail url
-            thumbnail: video.thumbnail || 'https://placehold.co/640x360',
+            thumbnail: video.thumbnail || 'https://placehold.co/640x360?text=Processing...',
           };
         });
 
@@ -101,7 +101,6 @@ export const useVideoStore = defineStore('video', {
 
       // all api calls are done, wait a second to let let the server process
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      this.uploadState.state = 'processing';
 
       let response = await $trpc.video.processVideo.mutate({
         key,
@@ -109,9 +108,8 @@ export const useVideoStore = defineStore('video', {
         packets: i - 1,
       });
 
-      if (this.uploadState.state !== 'idle') this.uploadState.state = 'complete';
-
-      return response;
+      this.uploadState.state = 'processing';
+      return;
     },
   },
 });
