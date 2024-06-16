@@ -20,7 +20,7 @@ export const useVideoStore = defineStore('video', {
         return {
           ...video,
           // clean thumbnail url
-          thumbnail: video.thumbnail || { path: 'https://placehold.co/640x360' },
+          thumbnail: video.thumbnail || { path: 'https://placehold.co/640x360?text=Processing...' },
         };
       });
     },
@@ -37,7 +37,7 @@ export const useVideoStore = defineStore('video', {
           return {
             ...video,
             // clean thumbnail url
-            thumbnail: video.thumbnail || 'https://placehold.co/640x360',
+            thumbnail: video.thumbnail || 'https://placehold.co/640x360?text=Processing...',
           };
         });
 

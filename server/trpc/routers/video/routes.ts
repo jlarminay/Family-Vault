@@ -252,6 +252,10 @@ export const videoRouter = router({
     const { key, count, packet } = input;
     const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
 
+    if (count === 1) {
+      console.log('uploading video', key, targetDir);
+    }
+
     try {
       // create folder if not exists
       if (!fs.existsSync(targetDir)) {
@@ -271,7 +275,20 @@ export const videoRouter = router({
     const session = await getServerSession(ctx.event);
     const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
 
+    const newVideo = await ctx.prisma.video.create({
+      data: {
+        title: name,
+        description: '',
+        ownerId: session?.id || 0,
+        dateDisplay: '',
+        dateOrder: new Date(),
+        published: 'private',
+        status: 'processing',
+      },
+    });
+
     queue.push({
+      videoId: newVideo.id,
       key,
       packets,
       name,

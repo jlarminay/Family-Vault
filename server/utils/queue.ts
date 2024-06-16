@@ -7,6 +7,7 @@ import fs from 'fs';
 const queue = new Queue(
   async (
     input: {
+      videoId: number;
       key: string;
       packets: number;
       name: string;
@@ -16,11 +17,13 @@ const queue = new Queue(
     },
     cb: any,
   ) => {
-    const { key, packets, name, targetDir, session, prisma } = input;
+    const { videoId, key, packets, name, targetDir, session, prisma } = input;
     let videoData: any = {};
 
     let cleanedName = name.replace(/\s+/g, '-').toLowerCase();
     let fileLocation: string = `${targetDir}/${key}_${cleanedName}`;
+
+    console.log('processing video', key, name);
 
     // convert data back into video file
     try {
@@ -45,18 +48,18 @@ const queue = new Queue(
       fs.writeFileSync(fileLocation, combinedStrings);
 
       await new Promise((resolve) => setTimeout(resolve, 1000));
-    } catch (e) {
-      console.log('failed to combine packets', key, packets, cleanedName, e);
-      return false;
+    } catch (_e) {
+      console.log('failed to combine packets', key, packets, cleanedName);
+      return cb(new Error('failed to combine packets'));
     }
 
     // get metadata
     try {
       const processing = new VideoProcessor(fileLocation);
       videoData = await processing.prepareNewVideo();
-    } catch (e) {
-      console.log('failed to process video', key, packets, cleanedName, e);
-      return false;
+    } catch (_e) {
+      console.log('failed to process video', key, packets, cleanedName);
+      return cb(new Error('failed to process video'));
     }
 
     // upload to s3
@@ -70,9 +73,9 @@ const queue = new Queue(
         key: `videos/${videoData.randomString}_${videoData.thumbnail.name}`,
         filePath: `${targetDir}/${videoData.thumbnail.name}`,
       });
-    } catch (e) {
-      console.log('failed to upload to s3', key, packets, name, e);
-      return false;
+    } catch (_e) {
+      console.log('failed to upload to s3', key, packets, name);
+      return cb(new Error('failed to upload to s3'));
     }
 
     // insert into db
@@ -81,21 +84,17 @@ const queue = new Queue(
       const dbThumbnail = await prisma.file.create({
         data: { ...videoData.thumbnail, name },
       });
-      await prisma.video.create({
+      await prisma.video.update({
+        where: { id: videoId },
         data: {
-          title: name,
-          description: '',
-          ownerId: session?.id || 0,
           videoId: dbVideo.id,
           thumbnailId: dbThumbnail.id,
-          dateDisplay: '',
-          dateOrder: new Date(),
-          published: 'private',
+          status: 'finished',
         },
       });
-    } catch (e) {
-      console.log('failed to insert into db', key, name, e);
-      return false;
+    } catch (_e) {
+      console.log('failed to insert into db', key, name);
+      return cb(new Error('failed to insert into db'));
     }
 
     // delete all old files
@@ -104,12 +103,12 @@ const queue = new Queue(
       filesToDelete.forEach((file) => {
         fs.unlinkSync(`${targetDir}/${file}`);
       });
-    } catch (e) {
-      console.log('failed to delete files', key, packets, name, e);
-      return false;
+    } catch (_e) {
+      console.log('failed to delete files', key, packets, name);
+      return cb(new Error('failed to delete files'));
     }
 
-    cb();
+    return cb();
   },
   {
     concurrent: 1,
@@ -118,5 +117,17 @@ const queue = new Queue(
     retryDelay: 30000,
   },
 );
+
+queue.on('task_finish', (taskId: any, result: any) => {
+  console.log('task finished', taskId, result);
+});
+
+queue.on('task_failed', (taskId: any, err: any, stats: any) => {
+  console.log('task failed', taskId, err, stats);
+});
+
+queue.on('task_progress', (taskId: any, progress: any) => {
+  console.log('task progress', taskId, progress);
+});
 
 export default queue;
