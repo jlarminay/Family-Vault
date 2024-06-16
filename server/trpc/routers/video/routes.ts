@@ -3,8 +3,7 @@ import { getServerSession } from '#auth';
 import { z } from 'zod';
 import { searchSchema, uploadVideoSchema, processVideoSchema, editVideoSchema } from './schema';
 import fs from 'fs';
-import VideoProcessor from '@/server/utils/videoProcessor.js';
-import S3 from '@/server/utils/s3.js';
+import queue from '@/server/utils/queue';
 
 export const videoRouter = router({
   search: protectedProcedure.input(searchSchema).query(async ({ input, ctx }) => {
@@ -253,6 +252,10 @@ export const videoRouter = router({
     const { key, count, packet } = input;
     const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
 
+    if (count === 1) {
+      console.log('uploading video', key, targetDir);
+    }
+
     try {
       // create folder if not exists
       if (!fs.existsSync(targetDir)) {
@@ -268,103 +271,32 @@ export const videoRouter = router({
     }
   }),
   processVideo: protectedProcedure.input(processVideoSchema).mutation(async ({ ctx, input }) => {
-    const session = await getServerSession(ctx.event);
     const { key, packets, name } = input;
+    const session = await getServerSession(ctx.event);
     const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
 
-    let cleanedName = name.replace(/\s+/g, '-').toLowerCase();
-    let fileLocation: string = `${targetDir}/${key}_${cleanedName}`;
-    let videoData: any = {};
+    const newVideo = await ctx.prisma.video.create({
+      data: {
+        title: name,
+        description: '',
+        ownerId: session?.id || 0,
+        dateDisplay: '',
+        dateOrder: new Date(),
+        published: 'private',
+        status: 'processing',
+      },
+    });
 
-    try {
-      // convert data back into video file
-      try {
-        let allBuffers: any = [];
-
-        // check that file is ready to be read
-        for (let i = 1; i <= packets; i++) {
-          const file = `${targetDir}/${key}.${i}.tmp`;
-
-          let ready = false;
-          let retries = 0;
-          let maxRetries = 10;
-          while (!ready && retries < maxRetries) {
-            try {
-              fs.readFileSync(file);
-              ready = true;
-            } catch (e) {
-              retries++;
-              await new Promise((resolve) => setTimeout(resolve, 1000));
-            }
-          }
-          if (!ready) throw new Error('File not ready');
-
-          const string = fs.readFileSync(file).toString();
-          const buffer = Buffer.from(string, 'base64');
-          allBuffers.push(buffer);
-          fs.unlinkSync(file);
-        }
-
-        const combinedStrings = Buffer.concat(allBuffers);
-        fs.writeFileSync(fileLocation, combinedStrings);
-
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      } catch (e) {
-        console.log('failed to combine packets', key, packets, cleanedName, e);
-        return false;
-      }
-
-      // get metadata
-      try {
-        const processing = new VideoProcessor(fileLocation);
-        videoData = await processing.prepareNewVideo();
-      } catch (e) {
-        console.log('failed to process video', key, packets, cleanedName, e);
-        return false;
-      }
-
-      // upload to s3
-      try {
-        const s3 = new S3();
-        await s3.upload({
-          key: `videos/${videoData.randomString}_${videoData.video.name}`,
-          filePath: `${targetDir}/${videoData.video.name}`,
-        });
-        await s3.upload({
-          key: `videos/${videoData.randomString}_${videoData.thumbnail.name}`,
-          filePath: `${targetDir}/${videoData.thumbnail.name}`,
-        });
-      } catch (e) {
-        console.log('failed to upload to s3', key, packets, name, e);
-        return false;
-      }
-
-      // insert into db
-      try {
-        const dbVideo = await ctx.prisma.file.create({ data: { ...videoData.video, name } });
-        const dbThumbnail = await ctx.prisma.file.create({
-          data: { ...videoData.thumbnail, name },
-        });
-        return ctx.prisma.video.create({
-          data: {
-            title: name,
-            description: '',
-            ownerId: session?.id || 0,
-            videoId: dbVideo.id,
-            thumbnailId: dbThumbnail.id,
-            dateDisplay: '',
-            dateOrder: new Date(),
-            published: 'private',
-          },
-        });
-      } catch (e) {
-        console.log('failed to insert into db', key, name, e);
-        return false;
-      }
-    } catch (e) {
-      console.log('failed to process video', key, name, e);
-      return false;
-    }
+    queue.push({
+      videoId: newVideo.id,
+      key,
+      packets,
+      name,
+      targetDir,
+      session,
+      prisma: ctx.prisma,
+    });
+    return false;
   }),
 });
 
