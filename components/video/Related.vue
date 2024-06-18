@@ -13,7 +13,10 @@ defineProps({
     :to="`/video/${video.id}`"
   >
     <div class="tw_min-w-[120px] tw_w-[120px] tw_relative">
-      <img :src="video.thumbnail.path" class="tw_object-cover tw_aspect-video tw_rounded" />
+      <img
+        :src="video.thumbnail.path"
+        class="tw_w-full tw_object-cover tw_aspect-video tw_rounded"
+      />
       <span
         class="tw_absolute tw_bottom-0 tw_right-0 tw_px-2 tw_p-0.5 tw_bg-black tw_bg-opacity-60 tw_text-white tw_rounded-tl tw_rounded-br"
       >

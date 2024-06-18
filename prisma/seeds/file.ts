@@ -9,7 +9,7 @@ const s3 = new S3();
 
 export default async () => {
   // define seeds
-  const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+  const targetDir = useRuntimeConfig().public.workingTmpFolder as string;
   if (fs.existsSync(targetDir)) fs.rmdirSync(targetDir, { recursive: true });
   if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir);
 
@@ -22,18 +22,19 @@ export default async () => {
     './videos/demo5.mp4',
     './videos/demo6.mp4',
     './videos/demo7.mp4',
-    './images/alex-gerogory.webp',
-    './images/billson-smith.webp',
-    './images/david-michel.webp',
-    './images/ippie-jones.webp',
-    './images/jessica-jones.webp',
-    './images/josh-larminay.webp',
+    // './images/alex-gerogory.webp',
+    // './images/billson-smith.webp',
+    // './images/david-michel.webp',
+    // './images/ippie-jones.webp',
+    // './images/jessica-jones.webp',
+    // './images/josh-larminay.webp',
   ];
 
   // create seeds
   for (let i = 0; i < newData.length; i++) {
     // detect what type of file
     const type = newData[i].split('.').pop();
+    const key = Math.random().toString(36).substring(2, 12);
 
     // manage video
     if (type === 'mp4') {
@@ -42,11 +43,11 @@ export default async () => {
 
       // upload to s3
       await s3.upload({
-        key: `videos/${results.randomString}_${results.video.name}`,
-        filePath: './prisma/seeds/videos/' + results.video.name,
+        key: `videos/${results.video.name}`,
+        filePath: `./prisma/seeds/videos/${results.video.name}`,
       });
       await s3.upload({
-        key: `videos/${results.randomString}_${results.thumbnail.name}`,
+        key: `videos/${results.thumbnail.name}`,
         filePath: `${targetDir}/${results.thumbnail.name}`,
       });
 
@@ -54,22 +55,6 @@ export default async () => {
       await prisma.file.create({ data: results.video });
       await prisma.file.create({ data: results.thumbnail });
       count += 2;
-    }
-
-    // manage image
-    if (type === 'webp') {
-      const processing = new ImageProcessor('./prisma/seeds/' + newData[i]);
-      const results = await processing.prepareNewImage();
-
-      // upload image
-      await s3.upload({
-        key: `persons/${results.randomString}_${results.image.name}`,
-        filePath: './prisma/seeds/images/' + results.image.name,
-      });
-
-      // insert into db
-      await prisma.file.create({ data: results.image });
-      count++;
     }
   }
 

@@ -11,7 +11,7 @@ const props = defineProps({
     required: true,
   },
   uploadState: {
-    type: Object,
+    type: String,
     required: true,
   },
 });
@@ -74,6 +74,20 @@ async function onFileChange(e: any) {
     <!-- Display -->
     <div v-if="!!uploadFile.name" class="tw_border-4 tw_rounded-lg tw_px-4 tw_py-2">
       <div class="tw_w-full tw_flex tw_items-center tw_justify-between tw_gap-4 tw_z-[1]">
+        <div v-if="uploadState === 'processing' || uploadState === 'error'">
+          <q-icon
+            v-if="uploadState === 'processing'"
+            name="o_check_circle"
+            size="40px"
+            class="tw_text-green-500"
+          />
+          <q-icon
+            v-if="uploadState === 'error'"
+            name="o_cancel"
+            size="40px"
+            class="tw_text-red-500"
+          />
+        </div>
         <div class="tw_flex-grow tw_min-w-0">
           <p class="tw_text-lg tw_truncate">{{ uploadFile.name }}</p>
           <p class="tw_text-sm" :class="{ 'tw_text-red-500': error !== '' }">
@@ -81,7 +95,7 @@ async function onFileChange(e: any) {
           </p>
         </div>
         <q-btn
-          v-if="uploadState.state === 'idle'"
+          v-if="uploadState === 'idle'"
           icon="o_delete"
           round
           flat
@@ -90,12 +104,11 @@ async function onFileChange(e: any) {
         />
       </div>
       <div
-        v-if="uploadState.state === 'uploading'"
-        class="tw_mt-2 tw_w-full tw_h-[16px] tw_border tw_rounded tw_overflow-hidden"
+        v-if="uploadState === 'uploading'"
+        class="tw_mt-2 tw_w-full tw_h-[16px] tw_rounded tw_overflow-hidden"
       >
         <q-skeleton
-          class="tw_bg-green-400 tw_rounded-none tw_h-full tw_transition-[width]"
-          :style="`width: ${uploadState.progress}%`"
+          class="tw_bg-green-400 tw_rounded-none tw_h-full tw_transition-[width] tw_w-full"
         />
       </div>
     </div>
