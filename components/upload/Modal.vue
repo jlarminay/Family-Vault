@@ -19,7 +19,7 @@ async function uploadVideo() {
   videoStore.uploadState = 'uploading';
   const formData = new FormData();
   formData.append('video', videoData.value.data);
-  const { data, error } = await useFetch('/api/video/upload', {
+  const { data } = await useFetch('/api/video/upload', {
     method: 'POST',
     body: formData,
   });
