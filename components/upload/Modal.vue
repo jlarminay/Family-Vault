@@ -17,18 +17,33 @@ async function uploadVideo() {
   if (!videoData.value || !videoData.value?.name || videoData.value?.error) return;
 
   videoStore.uploadState = 'uploading';
+
+  const xhr = new XMLHttpRequest();
   const formData = new FormData();
   formData.append('video', videoData.value.data);
-  const { data } = await useFetch('/api/video/upload', {
-    method: 'POST',
-    body: formData,
-  });
 
-  if (!data.value) {
-    videoStore.uploadState = 'error';
-    return;
-  }
-  videoStore.uploadState = 'processing';
+  xhr.upload.onprogress = (event) => {
+    if (event.lengthComputable) {
+      videoStore.uploadProgress = (event.loaded / event.total) * 100;
+    }
+  };
+
+  xhr.onload = () => {
+    if (xhr.status === 200) {
+      videoStore.uploadState = 'processing';
+    } else {
+      videoStore.uploadState = 'error';
+    }
+    videoStore.uploadProgress = 0; // Reset progress bar after upload
+  };
+
+  xhr.onerror = () => {
+    console.error('Upload failed');
+    videoStore.uploadProgress = 0; // Reset progress bar after upload
+  };
+
+  xhr.open('POST', '/api/upload');
+  xhr.send(formData);
 }
 </script>
 
@@ -61,6 +76,7 @@ async function uploadVideo() {
         :maxSize="4 * 1024 * 1024 * 1024"
         :formats="['.mp4']"
         :uploadState="videoStore.uploadState"
+        :progress="videoStore.uploadProgress"
         @fileUpdated="videoData = $event"
       />
     </template>

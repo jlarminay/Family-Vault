@@ -4,6 +4,7 @@ export const useVideoStore = defineStore('video', {
   state: () => ({
     showUploadModal: false,
     uploadState: 'idle',
+    uploadProgress: 0,
   }),
 
   getters: {},

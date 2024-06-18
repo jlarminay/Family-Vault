@@ -14,6 +14,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  progress: {
+    type: Number,
+    required: true,
+  },
 });
 
 const error = ref<string>('');
@@ -108,7 +112,8 @@ async function onFileChange(e: any) {
         class="tw_mt-2 tw_w-full tw_h-[16px] tw_rounded tw_overflow-hidden"
       >
         <q-skeleton
-          class="tw_bg-green-400 tw_rounded-none tw_h-full tw_transition-[width] tw_w-full"
+          class="tw_bg-green-400 tw_rounded-none tw_h-full tw_transition-[width] tw_border"
+          :style="`width: ${progress}%`"
         />
       </div>
     </div>
