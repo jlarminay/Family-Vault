@@ -9,7 +9,7 @@ const s3 = new S3();
 
 export default async () => {
   // define seeds
-  const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+  const targetDir = useRuntimeConfig().public.workingTmpFolder as string;
   if (fs.existsSync(targetDir)) fs.rmdirSync(targetDir, { recursive: true });
   if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir);
 

@@ -2,12 +2,13 @@ import formidable from 'formidable';
 import { getServerSession } from '#auth';
 import fs from 'fs';
 import { PrismaClient } from '@prisma/client';
+import video from '~/prisma/seeds/video';
 
 const prisma = new PrismaClient();
 
 export default defineEventHandler(async (ctx) => {
   const session = await getServerSession(ctx);
-  const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+  const targetDir = useRuntimeConfig().public.workingTmpFolder as string;
 
   // create folder if not exists
   if (!fs.existsSync(targetDir)) {
@@ -36,12 +37,14 @@ export default defineEventHandler(async (ctx) => {
       }
 
       const key = Math.random().toString(36).substring(2, 12);
-      const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+      const targetDir = useRuntimeConfig().public.workingTmpFolder as string;
       const videoFile = files.video[0];
 
       const newFilePath = `${targetDir}/${key}_${videoFile.originalFilename}`
         .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-_.\/]/g, '')
         .toLowerCase();
+
       fs.rename(videoFile.filepath, newFilePath, async (err) => {
         if (err) {
           console.error('Error moving file', err);

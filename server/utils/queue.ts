@@ -16,7 +16,7 @@ const queue = new Queue(
     cb: any,
   ) => {
     const { videoId, key, name, targetVideo, prisma } = input;
-    const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+    const targetDir = useRuntimeConfig().public.workingTmpFolder as string;
     let videoData: any = {};
 
     console.log('processing video', key, name);
@@ -26,7 +26,7 @@ const queue = new Queue(
       const processing = new VideoProcessor(targetVideo);
       videoData = await processing.prepareNewVideo();
     } catch (_e) {
-      console.log('failed to process video', key, name);
+      console.log('failed to process video', key, targetVideo);
       return cb(new Error('failed to process video'));
     }
 
@@ -67,7 +67,8 @@ const queue = new Queue(
 
     // delete all old files
     try {
-      fs.unlinkSync(targetVideo);
+      fs.unlinkSync(`${targetDir}/${videoData.video.name}`);
+      fs.unlinkSync(`${targetDir}/${videoData.thumbnail.name}`);
     } catch (_e) {
       console.log('failed to delete files', key, name);
       return cb(new Error('failed to delete files'));
