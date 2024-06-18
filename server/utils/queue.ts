@@ -49,10 +49,12 @@ const queue = new Queue(
     // insert into db
     try {
       const dbVideo = await prisma.file.create({ data: { ...videoData.video, name } });
+      console.log(dbVideo);
       const dbThumbnail = await prisma.file.create({
         data: { ...videoData.thumbnail, name },
       });
-      await prisma.video.update({
+      console.log(dbThumbnail);
+      const updateVideo = await prisma.video.update({
         where: { id: videoId },
         data: {
           videoId: dbVideo.id,
@@ -60,8 +62,10 @@ const queue = new Queue(
           status: 'finished',
         },
       });
-    } catch (_e) {
+      console.log(updateVideo);
+    } catch (e) {
       console.log('failed to insert into db', key, name);
+      console.log(e);
       return cb(new Error('failed to insert into db'));
     }
 

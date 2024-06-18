@@ -41,9 +41,9 @@ export default defineEventHandler(async (ctx) => {
       const videoFile = files.video[0];
 
       const newFilePath = `${targetDir}/${key}_${videoFile.originalFilename}`
+        .toLowerCase()
         .replace(/\s+/g, '-')
-        .replace(/[^a-z0-9-_.\/]/g, '')
-        .toLowerCase();
+        .replace(/[^a-z0-9-_.\/]/g, '');
 
       fs.rename(videoFile.filepath, newFilePath, async (err) => {
         if (err) {
