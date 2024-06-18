@@ -68,7 +68,6 @@ export default class VideoProcessor {
   async prepareNewVideo(): Promise<any> {
     const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
     let finalData = {
-      randomString: Math.random().toString(16).slice(2),
       video: {} as any,
       thumbnail: {} as any,
     };
@@ -81,7 +80,7 @@ export default class VideoProcessor {
       finalData.video = {
         name: finalData.video.name,
         type: 'video',
-        path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${process.env.ENVIRONMENT}/videos/${finalData.randomString}_${finalData.video.name}`,
+        path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${process.env.ENVIRONMENT}/videos/${finalData.video.name}`,
         size: size,
         metadata: {
           resolution: resolution,
@@ -106,7 +105,7 @@ export default class VideoProcessor {
       finalData.thumbnail = {
         name: finalData.thumbnail.name,
         type: 'image',
-        path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${process.env.ENVIRONMENT}/videos/${finalData.randomString}_${finalData.thumbnail.name}`,
+        path: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${process.env.ENVIRONMENT}/videos/${finalData.thumbnail.name}`,
         size: statSync(resolve(`${targetDir}/${finalData.thumbnail.name}`)).size,
         metadata: {
           resolution: `${dimensions.width}x${dimensions.height}`,

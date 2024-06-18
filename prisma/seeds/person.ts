@@ -9,38 +9,31 @@ export default async () => {
       name: 'Alex Gerogory',
       birthday: new Date('1982-11-25'),
       gender: 'Female',
-      imageId: 15,
     },
     {
       name: 'Billson Smith',
       birthday: new Date('1972-02-13'),
       gender: 'Other',
-      imageId: 16,
     },
     {
       name: 'David Michel',
       birthday: new Date('1992-05-23'),
       gender: 'Male',
-      imageId: 17,
     },
     {
       name: 'Ippie Jones',
       birthday: new Date('2008-06-14'),
       gender: 'Male',
-      imageId: 18,
     },
     {
       name: 'Jessica Jones',
       birthday: new Date('2020-08-07'),
       gender: 'Female',
-      imageId: 19,
     },
     {
       name: 'Josh Larminay',
       birthday: new Date('1994-08-09'),
       gender: 'Male',
-      imageId: 20,
-      userId: 3,
     },
   ];
 
@@ -54,8 +47,6 @@ export default async () => {
         name: currentData.name,
         birthday: currentData.birthday,
         gender: currentData.gender,
-        imageId: currentData.imageId || null,
-        userId: currentData.userId || null,
       },
     });
   }
