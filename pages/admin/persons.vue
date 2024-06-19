@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import dayjs from 'dayjs';
 definePageMeta({
   middleware: 'admin-authorized-only',
 });
@@ -68,6 +69,13 @@ async function savePerson() {
           :columns="[
             { name: 'name', label: 'Name', field: 'name', align: 'left', sortable: true },
             {
+              name: 'birthday',
+              label: 'Birthday',
+              field: 'birthday',
+              align: 'left',
+              sortable: true,
+            },
+            {
               name: 'videos',
               label: 'Videos',
               field: 'videos',
@@ -83,6 +91,11 @@ async function savePerson() {
           <template #body-cell-name="props">
             <q-td :props="props" class="tw_w-[250px]">
               {{ props.row.name }}
+            </q-td>
+          </template>
+          <template #body-cell-birthday="props">
+            <q-td :props="props" class="tw_w-[250px]">
+              {{ props.row.birthday ? dayjs(props.row.birthday).format('MMM D, YYYY') : '-' }}
             </q-td>
           </template>
           <template #body-cell-videos="props">
@@ -145,6 +158,25 @@ async function savePerson() {
               (val: string) => val.length <= 64 || 'Max 64 characters',
             ]"
           />
+          <q-input
+            outlined
+            no-error-icon
+            v-model="selectedPerson.birthday"
+            label="Birthday"
+            mask="####-##-##"
+          >
+            <template v-slot:append>
+              <q-icon name="o_event" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-date v-model="selectedPerson.birthday" mask="YYYY-MM-DD">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
         </q-form>
       </template>
       <template #actions>
