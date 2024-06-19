@@ -31,7 +31,7 @@ watch(
     // clean filter
     filters.value.search = ((route.query.search as string) || '').toLowerCase();
     // send filter
-    allVideos.value = await videoStore.search(filters.value);
+    await search();
   },
   { deep: true, immediate: true },
 );
@@ -57,6 +57,9 @@ const cleanedCollections = computed(() => {
   return showAllCollections.value ? sorted : sorted.slice(0, 4);
 });
 
+async function search() {
+  allVideos.value = await videoStore.search(filters.value);
+}
 function clearFilters() {
   filters.value = {
     search: '',
@@ -214,7 +217,8 @@ function clearFilters() {
         </div>
 
         <!-- buttons -->
-        <div class="tw_flex tw_justify-end">
+        <div class="tw_flex tw_justify-end tw_gap-1">
+          <q-btn outline color="dark" label="Refresh" size="sm" @click="search" />
           <q-btn outline color="dark" label="Clear Filters" size="sm" @click="clearFilters" />
         </div>
       </q-form>

@@ -6,6 +6,7 @@ const search = ref<string>('');
 const videoData = ref<any>(null);
 const uploadState = ref<string>('idle');
 const uploadProgress = ref<number>(0);
+const maxUploadSize = 10 * 1024 * 1024 * 1024; // 10 GB
 
 watch(
   () => route.query.search,
@@ -75,7 +76,7 @@ async function uploadVideo() {
         </p>
       </div>
       <UploadVideo
-        :maxSize="4 * 1024 * 1024 * 1024"
+        :maxSize="maxUploadSize"
         :formats="['.mp4']"
         :uploadState="uploadState"
         :progress="uploadProgress"

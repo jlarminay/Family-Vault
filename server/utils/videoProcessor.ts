@@ -15,7 +15,7 @@ export default class VideoProcessor {
     const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
 
     const { stdout, stderr, code } = shell.exec(
-      `ffmpeg -i "${this.videoPath}" -ss ${time} -vframes 1 "${targetDir}/${filename}"`,
+      `ffmpeg -y -i "${this.videoPath}" -ss ${time} -vframes 1 "${targetDir}/${filename}"`,
       { silent: true },
     );
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import dayjs from 'dayjs';
 const emit = defineEmits(['fileUpdated']);
 const props = defineProps({
   maxSize: {
@@ -20,6 +21,9 @@ const props = defineProps({
   },
 });
 
+const timer = ref<any>(null);
+const startTime = ref<number>(0);
+const elapsedTime = ref<number>(0);
 const error = ref<string>('');
 const uploadFile = ref<any>({
   data: '',
@@ -39,6 +43,23 @@ const cleanedFormats = computed(() => {
       .join(', ')
   );
 });
+
+watch(
+  () => props.uploadState,
+  (newValue, oldValue) => {
+    console.log('Upload state changed', oldValue, newValue);
+    if (oldValue === 'idle' && newValue === 'uploading') {
+      startTime.value = dayjs().unix();
+      timer.value = setInterval(() => {
+        elapsedTime.value = dayjs().unix() - startTime.value;
+      }, 500);
+    } else {
+      startTime.value = 0;
+      clearInterval(timer.value);
+    }
+  },
+  { immediate: true },
+);
 
 async function clearFile() {
   // Clear the input field
@@ -70,6 +91,17 @@ async function onFileChange(e: any) {
     error.value = 'File size too large';
   }
   emit('fileUpdated', uploadFile.value);
+}
+function cleanTimeDisplay(time: number): string {
+  if (time < 60) return `${Math.floor(time)}s`;
+  return `${Math.floor(time / 60)}m ${Math.floor(time % 60)}s`;
+}
+function estimatedTimeRemaining(): string {
+  if (props.progress === 0) {
+    return ''; // To handle division by zero
+  }
+  const est = (elapsedTime.value / props.progress) * (100 - props.progress);
+  return cleanTimeDisplay(est);
 }
 </script>
 
@@ -107,14 +139,20 @@ async function onFileChange(e: any) {
           @click="clearFile"
         />
       </div>
-      <div
-        v-if="uploadState === 'uploading'"
-        class="tw_mt-2 tw_w-full tw_h-[16px] tw_rounded tw_overflow-hidden tw_border-2"
-      >
-        <q-skeleton
-          class="tw_bg-green-400 tw_rounded-none tw_h-full tw_transition-[width]"
-          :style="`width: ${progress}%`"
-        />
+      <div v-if="uploadState === 'uploading'" class="tw_flex tw_justify-center tw_gap-2 tw_mt-2">
+        <div class="tw_w-full tw_h-[16px] tw_rounded tw_overflow-hidden tw_border-2">
+          <q-skeleton
+            class="tw_bg-green-400 tw_rounded-none tw_h-full tw_transition-[width]"
+            :style="`width: ${progress}%`"
+          />
+        </div>
+        <p
+          class="tw_flex tw_justify-end tw_gap-1 tw_text-sm tw_leading-none tw_text-gray-500 tw_whitespace-nowrap"
+        >
+          {{ cleanTimeDisplay(elapsedTime) }}
+          <span class="tw_px-0.5">•</span>
+          {{ Math.floor(progress) }}%
+        </p>
       </div>
     </div>
 

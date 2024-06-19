@@ -46,8 +46,18 @@ export default async () => {
       });
 
       // insert into db
-      await prisma.file.create({ data: results.video });
-      await prisma.file.create({ data: results.thumbnail });
+      await prisma.file.create({
+        data: {
+          ...results.video,
+          size: results.video.size.toString(),
+        },
+      });
+      await prisma.file.create({
+        data: {
+          ...results.thumbnail,
+          size: results.thumbnail.size.toString(),
+        },
+      });
       count += 2;
     }
   }
