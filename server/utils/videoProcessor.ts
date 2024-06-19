@@ -12,7 +12,7 @@ export default class VideoProcessor {
 
   async getThumbnailAt(opts: { time: string; filename: string }): Promise<boolean> {
     const { time, filename } = opts;
-    const targetDir = useRuntimeConfig().public.workingTmpFolder as string;
+    const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
 
     const { stdout, stderr, code } = shell.exec(
       `ffmpeg -i "${this.videoPath}" -ss ${time} -vframes 1 "${targetDir}/${filename}"`,
@@ -66,7 +66,7 @@ export default class VideoProcessor {
   }
 
   async prepareNewVideo(): Promise<any> {
-    const targetDir = useRuntimeConfig().public.workingTmpFolder as string;
+    const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
     let finalData = {
       video: {} as any,
       thumbnail: {} as any,

@@ -109,10 +109,10 @@ async function onFileChange(e: any) {
       </div>
       <div
         v-if="uploadState === 'uploading'"
-        class="tw_mt-2 tw_w-full tw_h-[16px] tw_rounded tw_overflow-hidden"
+        class="tw_mt-2 tw_w-full tw_h-[16px] tw_rounded tw_overflow-hidden tw_border-2"
       >
         <q-skeleton
-          class="tw_bg-green-400 tw_rounded-none tw_h-full tw_transition-[width] tw_border"
+          class="tw_bg-green-400 tw_rounded-none tw_h-full tw_transition-[width]"
           :style="`width: ${progress}%`"
         />
       </div>
