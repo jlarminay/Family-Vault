@@ -22,3 +22,4 @@ npm run build
 pm2 delete all || true  # Ignore error if no process exists
 pm2 flush
 pm2 start .output/server/index.mjs --name "app"
+pm2 start npm --name "monitor" -- run video-monitor
