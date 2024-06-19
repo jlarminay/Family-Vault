@@ -35,9 +35,9 @@ async function main() {
   try {
     const processing = new VideoProcessor(targetVideo);
     videoData = await processing.prepareNewVideo();
-  } catch (_e) {
+  } catch (e) {
     log(`failed to process video ${key} ${targetVideo}`);
-    log(JSON.stringify(_e));
+    log(JSON.stringify(e));
     return;
   }
 
@@ -52,13 +52,16 @@ async function main() {
       key: `videos/${videoData.thumbnail.name}`,
       filePath: `${targetDir}/${videoData.thumbnail.name}`,
     });
-  } catch (_e) {
+  } catch (e) {
     log(`failed to upload to s3 ${key} ${name}`);
+    log(JSON.stringify(e));
     return;
   }
 
   // insert into db
   try {
+    log(JSON.stringify({ ...videoData.video, name }));
+
     const dbVideo = await prisma.file.create({ data: { ...videoData.video, name } });
     log(JSON.stringify(dbVideo));
 
@@ -76,8 +79,9 @@ async function main() {
       },
     });
     log(JSON.stringify(updateVideo));
-  } catch (_e) {
+  } catch (e) {
     log(`failed to insert into db ${key} ${name}`);
+    log(JSON.stringify(e));
     return;
   }
 
@@ -85,8 +89,9 @@ async function main() {
   try {
     fs.unlinkSync(`${targetDir}/${videoData.video.name}`);
     fs.unlinkSync(`${targetDir}/${videoData.thumbnail.name}`);
-  } catch (_e) {
+  } catch (e) {
     log(`failed to delete files ${key} ${name}`);
+    log(JSON.stringify(e));
     return;
   }
 }
