@@ -63,12 +63,17 @@ export default defineEventHandler(async (ctx) => {
           },
         });
 
-        queue.push({
-          videoId: newVideo.id,
-          key,
-          name: videoFile.originalFilename,
-          targetVideo: newFilePath,
-        });
+        // create json file of metadata
+        const jsonFilePath = newFilePath.replace(/\.[^/.]+$/, '.json');
+        fs.writeFileSync(
+          jsonFilePath,
+          JSON.stringify({
+            videoId: newVideo.id,
+            key: key,
+            name: videoFile.originalFilename,
+            targetVideo: newFilePath,
+          }),
+        );
 
         resolve({ success: true, filePath: newFilePath });
       });
