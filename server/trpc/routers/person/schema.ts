@@ -5,9 +5,3 @@ export const createUserSchema = z.object({
   gender: z.string(z.enum(['Male', 'Female', 'Other'])),
   birthday: z.coerce.date().optional().nullable(),
 });
-
-export const uploadImageSchema = z.object({
-  personId: z.number(),
-  data: z.any(),
-  name: z.string(),
-});

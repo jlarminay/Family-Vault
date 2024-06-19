@@ -1,5 +1,6 @@
 import { adminProcedure, router } from '@/server/trpc/trpc';
 import { z } from 'zod';
+import dayjs from 'dayjs';
 
 export const adminRouter = router({
   // video (R)
@@ -128,11 +129,17 @@ export const adminRouter = router({
   // person (CRUD)
   ...{
     personCreate: adminProcedure
-      .input(z.object({ name: z.string() }))
+      .input(
+        z.object({
+          name: z.string(),
+          birthday: z.string().optional().nullable(),
+        }),
+      )
       .mutation(async ({ ctx, input }) => {
         return await ctx.prisma.person.create({
           data: {
             name: input.name,
+            birthday: input.birthday ? dayjs(input.birthday).toISOString() : null,
           },
         });
       }),
@@ -140,12 +147,19 @@ export const adminRouter = router({
       return await ctx.prisma.person.findMany({ include: { videos: true } });
     }),
     personUpdate: adminProcedure
-      .input(z.object({ id: z.number(), name: z.string() }))
+      .input(
+        z.object({
+          id: z.number(),
+          name: z.string(),
+          birthday: z.string().optional().nullable(),
+        }),
+      )
       .mutation(async ({ ctx, input }) => {
         return await ctx.prisma.person.update({
           where: { id: input.id },
           data: {
             name: input.name,
+            birthday: input.birthday ? dayjs(input.birthday).toISOString() : null,
           },
         });
       }),

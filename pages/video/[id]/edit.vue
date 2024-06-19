@@ -202,9 +202,13 @@ async function updateVideo() {
                   <q-item v-bind="scope.itemProps">
                     <q-item-section>
                       <q-item-label>{{ scope.opt.label }}</q-item-label>
-                      <q-item-label caption>{{
-                        $dayjs(scope.opt.birthday).format('MMM D, YYYY')
-                      }}</q-item-label>
+                      <q-item-label caption>
+                        {{
+                          scope.opt.birthday
+                            ? $dayjs(scope.opt.birthday).format('MMM D, YYYY')
+                            : '-'
+                        }}
+                      </q-item-label>
                     </q-item-section>
                   </q-item>
                 </template>
