@@ -1,9 +1,7 @@
 import { protectedProcedure, router } from '@/server/trpc/trpc';
 import { getServerSession } from '#auth';
 import { z } from 'zod';
-import { searchSchema, uploadVideoSchema, processVideoSchema, editVideoSchema } from './schema';
-import fs from 'fs';
-import queue from '@/server/utils/queue';
+import { searchSchema, editVideoSchema } from './schema';
 
 export const videoRouter = router({
   search: protectedProcedure.input(searchSchema).query(async ({ input, ctx }) => {

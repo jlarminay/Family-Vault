@@ -14,7 +14,8 @@
     "db:deploy": "prisma migrate deploy",
     "db:seed": "prisma migrate reset -f",
     "db:migrate": "prisma migrate dev --name",
-    "test": "playwright test"
+    "test": "playwright test",
+    "video-monitor": "node --loader ts-node/esm videoProcessor/index.ts"
   },
   "prisma": {
     "seed": "node --loader ts-node/esm prisma/seeds/index.ts"
@@ -38,6 +39,7 @@
     "node-fetch": "^3.3.2",
     "pinia": "^2.1.7",
     "plyr": "^3.7.8",
+    "pm2": "^5.4.1",
     "quasar": "^2.14.7",
     "shelljs": "^0.8.5",
     "trpc-nuxt": "^0.10.21",
