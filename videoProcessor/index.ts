@@ -63,10 +63,20 @@ async function main() {
 
     // insert into db
     try {
-      const dbVideo = await prisma.file.create({ data: { ...videoData.video, name: data.name } });
+      const dbVideo = await prisma.file.create({
+        data: {
+          ...videoData.video,
+          name: data.name,
+          size: videoData.video.size.toString(),
+        },
+      });
 
       const dbThumbnail = await prisma.file.create({
-        data: { ...videoData.thumbnail, name: data.name },
+        data: {
+          ...videoData.thumbnail,
+          name: data.name,
+          size: videoData.thumbnail.size.toString(),
+        },
       });
 
       await prisma.video.update({
@@ -94,6 +104,8 @@ async function main() {
       await waitForReset();
       continue;
     }
+
+    console.log(`finished processing video ${data.key} ${data.name}`);
 
     // wait 10 seconds
     await waitForReset();

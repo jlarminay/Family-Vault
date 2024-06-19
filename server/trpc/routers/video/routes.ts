@@ -64,8 +64,16 @@ export const videoRouter = router({
         // search field
         if (
           input.search &&
-          !video.title.toLowerCase().includes(input.search.toLowerCase()) &&
-          !video.description?.toLowerCase().includes(input.search.toLowerCase())
+          !(
+            video.title.toLowerCase().includes(input.search.toLowerCase()) ||
+            video.description?.toLowerCase().includes(input.search.toLowerCase()) ||
+            video.persons.some((person) =>
+              person.name.toLowerCase().includes(input.search.toLowerCase()),
+            ) ||
+            video.collections.some((collection) =>
+              collection.name.toLowerCase().includes(input.search.toLowerCase()),
+            )
+          )
         ) {
           return false;
         }

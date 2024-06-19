@@ -17,8 +17,8 @@ export default defineEventHandler(async (ctx) => {
   const form = formidable({
     multiples: true,
     uploadDir: targetDir,
-    maxFileSize: 4 * 1024 * 1024 * 1024, // 4GB
-    maxTotalFileSize: 4 * 1024 * 1024 * 1024, // 4GB
+    maxFileSize: 10 * 1024 * 1024 * 1024, // 10GB
+    maxTotalFileSize: 10 * 1024 * 1024 * 1024, // 10GB
   });
 
   return new Promise(async (resolve, reject) => {
@@ -62,6 +62,7 @@ export default defineEventHandler(async (ctx) => {
             status: 'processing',
           },
         });
+        prisma.$disconnect();
 
         // create json file of metadata
         const jsonFilePath = newFilePath.replace(/\.[^/.]+$/, '.json');
