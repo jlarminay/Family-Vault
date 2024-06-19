@@ -6,7 +6,6 @@ import VueMarkdown from 'vue-markdown-render';
 import copyright from '@/legal/copyright.md?raw';
 import privacyPolicy from '@/legal/privacy_policy.md?raw';
 import termsAndConditions from '@/legal/terms_and_conditions.md?raw';
-import projectInformation from '@/legal/project_information.md?raw';
 
 const { data: authData } = useAuth();
 const currentPage = ref<any>('copyright');
@@ -37,9 +36,9 @@ function changePage(page: string) {
 
   <NuxtLayout name="app">
     <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1000px] tw_mx-auto">
-      <h1 class="h1">Legal</h1>
-      <div class="tw_flex tw_gap-4 tw_mt-6">
-        <div class="tw_w-[250px] tw_min-w-[250px] tw_flex tw_flex-col tw_gap-2">
+      <h1 v-if="!!authData" class="h1">Legal</h1>
+      <div class="tw_flex tw_flex-col sm:tw_flex-row tw_gap-4 tw_mt-6">
+        <div class="tw_w-full sm:tw_w-[250px] sm:tw_min-w-[250px] tw_flex tw_flex-col tw_gap-2">
           <q-btn
             v-if="!authData"
             flat
@@ -53,10 +52,6 @@ function changePage(page: string) {
           />
           <q-btn
             v-for="option in [
-              {
-                title: 'Project Information',
-                code: 'project-information',
-              },
               {
                 title: 'Copyright',
                 code: 'copyright',
@@ -88,9 +83,7 @@ function changePage(page: string) {
                 ? copyright
                 : currentPage === 'terms-and-conditions'
                   ? termsAndConditions
-                  : currentPage === 'privacy-policy'
-                    ? privacyPolicy
-                    : projectInformation
+                  : privacyPolicy
             "
           />
         </div>

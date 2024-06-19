@@ -9,83 +9,36 @@ export const videoRouter = router({
   search: protectedProcedure.input(searchSchema).query(async ({ input, ctx }) => {
     const session = await getServerSession(ctx.event);
 
-    // search rules
-    const searchRules = input.search
-      ? { OR: [{ title: { contains: input.search } }, { description: { contains: input.search } }] }
-      : {};
-
-    // filter rules
-    let filterRules;
-    switch (input.filterBy) {
-      case 'liked':
-        filterRules = {
-          AND: [{ likes: { some: { userId: session?.id } } }],
-        };
-        break;
-      case 'mine':
-        filterRules = { ownerId: session?.id };
-        break;
-      case 'all':
-      default:
-        filterRules = {};
-        break;
-    }
-
-    // sort rules
-    let sortRules;
-    switch (input.sortBy) {
-      case 'title-asc':
-        sortRules = { title: 'asc' };
-        break;
-      case 'title-desc':
-        sortRules = { title: 'desc' };
-        break;
-      case 'date-taken-desc':
-        sortRules = { dateOrder: 'desc' };
-        break;
-      case 'date-added-asc':
-        sortRules = { createdAt: 'asc' };
-        break;
-      case 'date-taken-asc':
-        sortRules = { dateOrder: 'asc' };
-        break;
-      case 'date-added-desc':
-      default:
-        sortRules = { createdAt: 'desc' };
-        break;
-    }
-
-    // sort persons
-    let personsRules =
-      input.persons.length > 0 ? { persons: { some: { id: { in: input.persons } } } } : {};
-
-    // sort collections
-    let collectionsRules =
-      input.collections.length > 0
-        ? { collections: { some: { id: { in: input.collections } } } }
-        : {};
-
     const videos = await ctx.prisma.video.findMany({
       where: {
-        AND: [
-          filterRules,
-          searchRules,
-          personsRules,
-          collectionsRules,
+        OR: [
+          { ownerId: session?.id },
+          { published: 'public' },
           {
-            OR: [
-              { ownerId: session?.id },
-              { published: 'public' },
-              {
-                AND: [{ published: 'allow-few' }, { allowList: { some: { id: session?.id } } }],
-              },
-            ],
+            AND: [{ published: 'allow-few' }, { allowList: { some: { id: session?.id } } }],
           },
         ],
       },
       include: {
         video: true,
         thumbnail: true,
+        likes: {
+          select: {
+            userId: true,
+          },
+        },
+        persons: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        collections: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         allowList: {
           select: {
             id: true,
@@ -105,11 +58,67 @@ export const videoRouter = router({
           },
         },
       },
-      // @ts-ignore
-      orderBy: sortRules,
     });
 
-    return videos;
+    // filter and sort videos
+    return videos
+      .filter((video) => {
+        // search field
+        if (
+          input.search &&
+          !video.title.includes(input.search) &&
+          !video.description?.includes(input.search)
+        ) {
+          return false;
+        }
+
+        // filter by type
+        if (
+          input.filterBy === 'liked' &&
+          !video.likes.some((like) => like.userId === session?.id)
+        ) {
+          return false;
+        }
+        if (input.filterBy === 'mine' && video.ownerId !== session?.id) {
+          return false;
+        }
+
+        // filter by persons
+        if (
+          input.persons.length > 0 &&
+          !input.persons.every((id) => video.persons.some((p) => p.id === id))
+        ) {
+          return false;
+        }
+
+        // filter by collections
+        if (
+          input.collections.length > 0 &&
+          !input.collections.every((id) => video.collections.some((c) => c.id === id))
+        ) {
+          return false;
+        }
+
+        return true;
+      })
+      .sort((a, b) => {
+        if (input.sortBy === 'title-asc') {
+          return a.title.localeCompare(b.title);
+        }
+        if (input.sortBy === 'title-desc') {
+          return b.title.localeCompare(a.title);
+        }
+        if (input.sortBy === 'date-taken-desc') {
+          return new Date(b.dateOrder).getTime() - new Date(a.dateOrder).getTime();
+        }
+        if (input.sortBy === 'date-taken-asc') {
+          return new Date(a.dateOrder).getTime() - new Date(b.dateOrder).getTime();
+        }
+        if (input.sortBy === 'date-added-asc') {
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        }
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
   }),
 
   getRandom: protectedProcedure

@@ -1,7 +1,6 @@
 import { protectedProcedure, router } from '@/server/trpc/trpc';
 import { z } from 'zod';
-import { createUserSchema, uploadImageSchema } from './schema';
-import S3 from '@/server/utils/s3.js';
+import { createUserSchema } from './schema';
 
 export const personRouter = router({
   getAll: protectedProcedure.query(async ({ ctx }) => {
@@ -23,7 +22,7 @@ export const personRouter = router({
         include: {
           image: true,
           videos: {
-            where: { published: true },
+            where: { published: 'public' },
             include: { video: true, thumbnail: true },
           },
         },

@@ -4,6 +4,8 @@ const route = useRoute();
 const videoStore = useVideoStore();
 const search = ref<string>('');
 const videoData = ref<any>(null);
+const uploadState = ref<string>('idle');
+const uploadProgress = ref<number>(0);
 
 watch(
   () => route.query.search,
@@ -16,7 +18,7 @@ watch(
 async function uploadVideo() {
   if (!videoData.value || !videoData.value?.name || videoData.value?.error) return;
 
-  videoStore.uploadState = 'uploading';
+  uploadState.value = 'uploading';
 
   const xhr = new XMLHttpRequest();
   const formData = new FormData();
@@ -24,25 +26,25 @@ async function uploadVideo() {
 
   xhr.upload.onprogress = (event) => {
     if (event.lengthComputable) {
-      videoStore.uploadProgress = (event.loaded / event.total) * 100;
+      uploadProgress.value = (event.loaded / event.total) * 100;
     }
   };
 
   xhr.onload = () => {
     if (xhr.status === 200) {
-      videoStore.uploadState = 'processing';
+      uploadState.value = 'processing';
     } else {
-      videoStore.uploadState = 'error';
+      uploadState.value = 'error';
     }
-    videoStore.uploadProgress = 0; // Reset progress bar after upload
+    uploadProgress.value = 0; // Reset progress bar after upload
   };
 
   xhr.onerror = () => {
     console.error('Upload failed');
-    videoStore.uploadProgress = 0; // Reset progress bar after upload
+    uploadProgress.value = 0; // Reset progress bar after upload
   };
 
-  xhr.open('POST', '/api/upload');
+  xhr.open('POST', '/api/video/upload');
   xhr.send(formData);
 }
 </script>
@@ -58,16 +60,16 @@ async function uploadVideo() {
     <template #title>Upload Video</template>
     <template #body>
       <div class="tw_mb-2">
-        <p v-if="videoStore.uploadState === 'error'" class="tw_text-lg tw_text-red-500 tw_mb-2">
+        <p v-if="uploadState === 'error'" class="tw_text-lg tw_text-red-500 tw_mb-2">
           An error occurred while uploading the video. Please try again.
         </p>
-        <p v-if="videoStore.uploadState === 'idle'" class="tw_text-lg">
+        <p v-if="uploadState === 'idle'" class="tw_text-lg">
           You can select the video to upload here.
         </p>
-        <p v-if="videoStore.uploadState === 'uploading'" class="tw_text-lg">
+        <p v-if="uploadState === 'uploading'" class="tw_text-lg">
           Please don't close this window until the upload is complete.
         </p>
-        <p v-if="videoStore.uploadState === 'processing'" class="tw_text-lg">
+        <p v-if="uploadState === 'processing'" class="tw_text-lg">
           The upload is complete and the window can now be safely closed. The video is now being
           processed. This step may take a few minutes.
         </p>
@@ -75,33 +77,33 @@ async function uploadVideo() {
       <UploadVideo
         :maxSize="4 * 1024 * 1024 * 1024"
         :formats="['.mp4']"
-        :uploadState="videoStore.uploadState"
-        :progress="videoStore.uploadProgress"
+        :uploadState="uploadState"
+        :progress="uploadProgress"
         @fileUpdated="videoData = $event"
       />
     </template>
     <template #actions>
       <q-btn
-        v-if="videoStore.uploadState === 'idle' || videoStore.uploadState === 'error'"
+        v-if="uploadState === 'idle' || uploadState === 'error'"
         outline
         no-caps
         label="Cancel"
         color="dark"
         @click="
-          videoStore.uploadState = 'idle';
+          uploadState = 'idle';
           videoStore.showUploadModal = false;
         "
       />
       <q-btn
-        v-if="videoStore.uploadState === 'error'"
+        v-if="uploadState === 'error'"
         unelevated
         no-caps
         label="Try Again"
         color="primary"
-        @click="videoStore.uploadState = 'idle'"
+        @click="uploadState = 'idle'"
       />
       <q-btn
-        v-if="videoStore.uploadState === 'idle'"
+        v-if="uploadState === 'idle'"
         unelevated
         no-caps
         :disabled="!videoData?.name || videoData?.error"
@@ -110,14 +112,14 @@ async function uploadVideo() {
         @click="uploadVideo"
       />
       <q-btn
-        v-if="videoStore.uploadState === 'processing'"
+        v-if="uploadState === 'processing'"
         outline
         no-caps
         label="Close"
         class="tw_text-base"
         color="dark"
         @click="
-          videoStore.uploadState = 'idle';
+          uploadState = 'idle';
           videoStore.showUploadModal = false;
         "
       />

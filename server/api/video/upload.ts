@@ -1,8 +1,7 @@
 import formidable from 'formidable';
 import { getServerSession } from '#auth';
-import fs from 'fs';
 import { PrismaClient } from '@prisma/client';
-import video from '~/prisma/seeds/video';
+import fs from 'fs';
 
 const prisma = new PrismaClient();
 
@@ -69,7 +68,6 @@ export default defineEventHandler(async (ctx) => {
           key,
           name: videoFile.originalFilename,
           targetVideo: newFilePath,
-          prisma: prisma,
         });
 
         resolve({ success: true, filePath: newFilePath });

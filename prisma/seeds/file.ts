@@ -9,8 +9,8 @@ const s3 = new S3();
 
 export default async () => {
   // define seeds
-  const targetDir = useRuntimeConfig().public.workingTmpFolder as string;
-  if (fs.existsSync(targetDir)) fs.rmdirSync(targetDir, { recursive: true });
+  const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+  if (fs.existsSync(targetDir)) fs.rmSync(targetDir, { recursive: true });
   if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir);
 
   let count = 0;
@@ -22,12 +22,6 @@ export default async () => {
     './videos/demo5.mp4',
     './videos/demo6.mp4',
     './videos/demo7.mp4',
-    // './images/alex-gerogory.webp',
-    // './images/billson-smith.webp',
-    // './images/david-michel.webp',
-    // './images/ippie-jones.webp',
-    // './images/jessica-jones.webp',
-    // './images/josh-larminay.webp',
   ];
 
   // create seeds
