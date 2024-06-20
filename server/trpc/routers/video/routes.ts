@@ -247,6 +247,7 @@ export const videoRouter = router({
         description: input.description,
         dateDisplay: input.dateDisplay,
         dateOrder: input.dateOrder,
+        originalFormat: input.originalFormat,
 
         persons: {
           set: input.persons?.map((person) => ({ id: person })) || [],
