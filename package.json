@@ -15,7 +15,7 @@
     "db:seed": "prisma migrate reset -f",
     "db:migrate": "prisma migrate dev --name",
     "test": "playwright test",
-    "video-monitor": "node --loader ts-node/esm videoProcessor/index.ts"
+    "video-processor": "node --loader ts-node/esm tools/videoProcessor.ts"
   },
   "prisma": {
     "seed": "node --loader ts-node/esm prisma/seeds/index.ts"
