@@ -186,6 +186,15 @@ async function updateVideo() {
                   </q-icon>
                 </template>
               </q-input>
+              <q-input
+                outlined
+                no-error-icon
+                v-model="videoEdit.originalFormat"
+                label="Original Format"
+                maxlength="64"
+                counter
+                :rules="[(val: string) => val.length <= 64 || 'Max 64 characters']"
+              />
               <q-select
                 behavior="menu"
                 outlined

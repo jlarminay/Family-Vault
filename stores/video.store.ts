@@ -57,6 +57,7 @@ export const useVideoStore = defineStore('video', {
         description: videoData.description,
         dateDisplay: videoData.dateDisplay,
         dateOrder: videoData.dateOrder,
+        originalFormat: videoData.originalFormat,
         persons: videoData.persons.map((person: any) => person.value),
         collections: videoData.collections.map((collection: any) => collection.value),
         published: videoData.published,

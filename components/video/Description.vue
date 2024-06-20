@@ -43,6 +43,14 @@ const showMore = ref<boolean>(false);
           <span>{{ video.dateOrder }}</span>
         </div>
         <div class="tw_flex tw_gap-2">
+          <span class="tw_font-bold">File Name: </span>
+          <span>{{ video.video.name }}</span>
+        </div>
+        <div class="tw_flex tw_gap-2">
+          <span class="tw_font-bold">Original Format: </span>
+          <span>{{ video.originalFormat || '-' }}</span>
+        </div>
+        <div class="tw_flex tw_gap-2">
           <span class="tw_font-bold">Video Resolution: </span>
           <span>
             {{ video.video.metadata.resolution }} ({{

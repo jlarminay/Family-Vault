@@ -98,6 +98,17 @@ function handleSearch() {
               </q-item>
 
               <q-separator />
+              <q-item
+                clickable
+                v-close-popup
+                target="_blank"
+                href="https://docs.google.com/spreadsheets/d/1TB0_ssx_UOSBc9LfsJ9-4adoUFbv_W5lTji6wWOQu3Q/edit?usp=sharing"
+              >
+                <q-item-section avatar>
+                  <q-icon name="o_checklist" />
+                </q-item-section>
+                <q-item-section>Progress</q-item-section>
+              </q-item>
               <q-item clickable v-close-popup to="/legal">
                 <q-item-section avatar>
                   <q-icon name="o_policy" />

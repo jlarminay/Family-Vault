@@ -79,14 +79,30 @@ async function main() {
         },
       });
 
-      await prisma.video.update({
-        where: { id: data.videoId },
-        data: {
-          videoId: dbVideo.id,
-          thumbnailId: dbThumbnail.id,
-          status: 'finished',
-        },
-      });
+      if (data.videoId === 0) {
+        // video does not exist in db, insert it
+        await prisma.video.create({
+          data: {
+            title: data.name,
+            description: '',
+            ownerId: 1,
+            dateDisplay: '',
+            dateOrder: new Date(),
+            published: 'private',
+            status: 'finished',
+          },
+        });
+      } else {
+        // video already exists in db, update it
+        await prisma.video.update({
+          where: { id: data.videoId },
+          data: {
+            videoId: dbVideo.id,
+            thumbnailId: dbThumbnail.id,
+            status: 'finished',
+          },
+        });
+      }
     } catch (e) {
       console.log(`failed to insert into db ${data.key} ${data.name}`);
       console.log(e);

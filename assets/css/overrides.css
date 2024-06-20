@@ -2,6 +2,23 @@
 /* Plyr */
 .plyr {
   @apply tw_h-full tw_w-full;
+
+  .plyr__progress {
+    @apply tw_w-full;
+
+    input,
+    progress {
+      padding-right: 10px !important;
+    }
+  }
+
+  .plyr__time--duration {
+    padding-right: 10px;
+
+    &::before {
+      margin-left: 10px;
+    }
+  }
 }
 :root {
   --plyr-color-main: #833deb;
