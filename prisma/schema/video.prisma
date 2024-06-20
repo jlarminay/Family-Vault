@@ -1,13 +1,14 @@
 model Video {
-  id             Int      @id @default(autoincrement())
-  title          String
-  description    String?
-  dateDisplay    String?
-  originalFormat String?
-  dateOrder      DateTime @db.Date
-  status         String   @default("finished")
-  ownerId        Int
-  owner          User     @relation(name: "UserToVideo", fields: [ownerId], references: [id])
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  people      String?
+  tags        String?
+  dateDisplay String?
+  dateOrder   DateTime @db.Date
+  status      String   @default("finished")
+  ownerId     Int
+  owner       User     @relation(name: "UserToVideo", fields: [ownerId], references: [id])
 
   published String @default("private")
   allowList User[] @relation(name: "UserToVideo1")
@@ -21,9 +22,7 @@ model Video {
   thumbnailId Int?
   thumbnail   File? @relation(name: "VideoThumbnail", fields: [thumbnailId], references: [id])
 
-  comments    Comment[]    @relation(name: "CommentToVideo") // can have many comments
-  persons     Person[]     @relation(name: "PersonToVideo") // can contain many people
-  likes       Like[]       @relation(name: "LikeToVideo") // can have multiple likes
-  report      Report[]     @relation(name: "ReportToVideo") // can be reported multiple times
-  collections Collection[] @relation(name: "VideoToCollection")
+  comments Comment[] @relation(name: "CommentToVideo") // can have many comments
+  likes    Like[]    @relation(name: "LikeToVideo") // can have multiple likes
+  report   Report[]  @relation(name: "ReportToVideo") // can be reported multiple times
 }

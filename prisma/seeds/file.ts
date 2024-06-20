@@ -27,39 +27,33 @@ export default async () => {
   // create seeds
   for (let i = 0; i < newData.length; i++) {
     // detect what type of file
-    const type = newData[i].split('.').pop();
-    const key = Math.random().toString(36).substring(2, 12);
+    const processing = new VideoProcessor('./prisma/seeds/' + newData[i]);
+    const results = await processing.prepareNewVideo();
 
-    // manage video
-    if (type === 'mp4') {
-      const processing = new VideoProcessor('./prisma/seeds/' + newData[i]);
-      const results = await processing.prepareNewVideo();
+    // upload to s3
+    await s3.upload({
+      key: `videos/${results.video.name}`,
+      filePath: `./prisma/seeds/videos/${results.video.name}`,
+    });
+    await s3.upload({
+      key: `videos/${results.thumbnail.name}`,
+      filePath: `${targetDir}/${results.thumbnail.name}`,
+    });
 
-      // upload to s3
-      await s3.upload({
-        key: `videos/${results.video.name}`,
-        filePath: `./prisma/seeds/videos/${results.video.name}`,
-      });
-      await s3.upload({
-        key: `videos/${results.thumbnail.name}`,
-        filePath: `${targetDir}/${results.thumbnail.name}`,
-      });
-
-      // insert into db
-      await prisma.file.create({
-        data: {
-          ...results.video,
-          size: results.video.size.toString(),
-        },
-      });
-      await prisma.file.create({
-        data: {
-          ...results.thumbnail,
-          size: results.thumbnail.size.toString(),
-        },
-      });
-      count += 2;
-    }
+    // insert into db
+    await prisma.file.create({
+      data: {
+        ...results.video,
+        size: results.video.size.toString(),
+      },
+    });
+    await prisma.file.create({
+      data: {
+        ...results.thumbnail,
+        size: results.thumbnail.size.toString(),
+      },
+    });
+    count += 2;
   }
 
   console.log('Insert file: ', count);

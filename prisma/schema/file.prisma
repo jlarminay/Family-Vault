@@ -9,5 +9,4 @@ model File {
   updatedAt DateTime @updatedAt
   video     Video[]  @relation(name: "VideoVideo")
   thumbnail Video[]  @relation(name: "VideoThumbnail")
-  person    Person[] @relation(name: "FileToPerson")
 }

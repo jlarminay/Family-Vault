@@ -15,8 +15,6 @@ export const searchSchema = z.object({
       'duration-asc',
     ]),
   ),
-  persons: z.array(z.number()),
-  collections: z.array(z.number()),
 });
 
 export const editVideoSchema = z.object({
@@ -26,8 +24,7 @@ export const editVideoSchema = z.object({
   dateDisplay: z.string().max(64).nullable().optional(),
   dateOrder: z.coerce.date(),
   originalFormat: z.string().max(64).nullable().optional(),
-  persons: z.array(z.number()).nullable().optional(),
-  collections: z.array(z.number()).nullable().optional(),
   published: z.string(z.enum(['public', 'private', 'allow-few', 'deny-few'])),
   allowList: z.array(z.number()).nullable().optional(),
+  blockList: z.array(z.number()).nullable().optional(),
 });

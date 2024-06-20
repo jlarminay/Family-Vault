@@ -35,17 +35,6 @@ export default {
 
     const user = await prisma.user.findUniqueOrThrow({
       where: { email: session.user.email },
-      include: {
-        person: {
-          select: {
-            id: true,
-            name: true,
-            gender: true,
-            image: true,
-            birthday: true,
-          },
-        },
-      },
     });
 
     return user;

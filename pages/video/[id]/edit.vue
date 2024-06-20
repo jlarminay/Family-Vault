@@ -7,47 +7,14 @@ const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
 const videoStore = useVideoStore();
-const personStore = usePersonStore();
-const collectionStore = useCollectionStore();
 
 const form = ref<any>(null);
 const videoId = ref<number>(parseInt(route.params.id as string));
 const video = ref(await videoStore.getSingle(videoId.value));
 const allUsers = ref(await userStore.getAll());
-const allPersons = ref(await personStore.getAll());
-const allCollections = ref(await collectionStore.getAll());
 const videoEdit = ref<any>({});
 const loading = ref(false);
 
-const cleanedPersons = computed(() => {
-  return allPersons.value
-    .filter((person: any) => {
-      // return true;
-      if (!videoEdit.value.persons) return true;
-      return !videoEdit.value.persons.some((p: any) => p.value === person.id);
-    })
-    .map((person: any) => {
-      return {
-        label: person.name,
-        birthday: person.birthday ? person.birthday.split('T')[0] : '',
-        value: person.id,
-      };
-    });
-});
-const cleanedCollections = computed(() => {
-  return allCollections.value
-    .filter((collection: any) => {
-      // return true;
-      if (!videoEdit.value.collections) return true;
-      return !videoEdit.value.collections.some((p: any) => p.value === collection.id);
-    })
-    .map((collection: any) => {
-      return {
-        label: collection.name,
-        value: collection.id,
-      };
-    });
-});
 const cleanedAllowList = computed(() => {
   return allUsers.value.filter((user: any) => {
     if (!videoEdit.value.allowList) return true;
@@ -110,7 +77,11 @@ async function updateVideo() {
           </div>
           <div>
             <span class="tw_font-bold">Resolution: </span>
-            <span>{{ video.video.metadata?.resolution }}</span>
+            <span>
+              {{ video.video.metadata?.resolution }} ({{
+                getAspectRatio(video.video.metadata.resolution)
+              }})
+            </span>
           </div>
           <div>
             <span class="tw_font-bold">Size: </span>
@@ -148,6 +119,16 @@ async function updateVideo() {
                 no-error-icon
                 v-model="videoEdit.description"
                 label="Description"
+                maxlength="1024"
+                autogrow
+                counter
+                :rules="[(val: string) => val.length <= 1024 || 'Max 1024 characters']"
+              />
+              <q-input
+                outlined
+                no-error-icon
+                v-model="videoEdit.people"
+                label="Who's in the video?"
                 maxlength="1024"
                 autogrow
                 counter
@@ -195,60 +176,16 @@ async function updateVideo() {
                 counter
                 :rules="[(val: string) => val.length <= 64 || 'Max 64 characters']"
               />
-              <q-select
-                behavior="menu"
+              <q-input
                 outlined
                 no-error-icon
-                v-model="videoEdit.persons"
-                label="Video Members"
-                map-options
-                multiple
-                use-chips
-                hint=""
-                :options="cleanedPersons"
-              >
-                <template v-slot:option="scope">
-                  <q-item v-bind="scope.itemProps">
-                    <q-item-section>
-                      <q-item-label>{{ scope.opt.label }}</q-item-label>
-                      <q-item-label caption>
-                        {{
-                          scope.opt.birthday
-                            ? $dayjs(scope.opt.birthday).format('MMM D, YYYY')
-                            : '-'
-                        }}
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </template>
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="tw_italic tw_opacity-70 tw_text-base tw_text-center">
-                      No options
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-              <q-select
-                behavior="menu"
-                outlined
-                no-error-icon
-                v-model="videoEdit.collections"
-                label="Video Collections"
-                map-options
-                multiple
-                use-chips
-                hint=""
-                :options="cleanedCollections"
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="tw_italic tw_opacity-70 tw_text-base tw_text-center">
-                      No options
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
+                v-model="videoEdit.tags"
+                label="Tags"
+                maxlength="1024"
+                autogrow
+                counter
+                :rules="[(val: string) => val.length <= 1024 || 'Max 1024 characters']"
+              />
             </div>
 
             <!-- Security -->

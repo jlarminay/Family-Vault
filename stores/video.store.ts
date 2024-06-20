@@ -55,11 +55,10 @@ export const useVideoStore = defineStore('video', {
         id: videoData.id,
         title: videoData.title,
         description: videoData.description,
+        people: videoData.people,
+        tags: videoData.tags,
         dateDisplay: videoData.dateDisplay,
         dateOrder: videoData.dateOrder,
-        originalFormat: videoData.originalFormat,
-        persons: videoData.persons.map((person: any) => person.value),
-        collections: videoData.collections.map((collection: any) => collection.value),
         published: videoData.published,
         allowList: videoData.allowList ? videoData.allowList.map((user: any) => user.value) : [],
       };
