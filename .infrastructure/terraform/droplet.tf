@@ -9,7 +9,7 @@ resource "time_sleep" "wait_20_seconds" {
 resource "digitalocean_droplet" "this" {
   name        = "${local.common_name}-droplet"
   region      = "tor1"
-  size        = var.environment == "production" ? "s-2vcpu-4gb" : "s-1vcpu-2gb" // https://slugs.do-api.dev/
+  size        = var.environment == "production" ? "s-2vcpu-4gb" : "s-2vcpu-4gb" // https://slugs.do-api.dev/
   image       = "ubuntu-22-04-x64"
   monitoring  = true
   resize_disk = false
