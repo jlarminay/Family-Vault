@@ -40,12 +40,11 @@ defineProps({
       />
     </div>
     <div class="tw_mt-2">
-      <p class="tw_text-lg sm:tw_text-base tw_leading-tight tw_line-clamp-2 tw_font-bold">
-        {{ video.title }}
-      </p>
       <p class="tw_text-gray-500 tw_text-sm sm:tw_text-xs tw_truncate">
-        <!-- {{ $dayjs(video.createdAt).format('MMM D, YYYY') }} -->
         {{ video.dateDisplay }}
+      </p>
+      <p class="tw_text-lg sm:tw_text-base tw_leading-nonet tw_line-clamp-2 tw_font-bold">
+        {{ video.title }}
       </p>
       <p class="tw_text-gray-500 tw_text-base sm:tw_text-sm tw_line-clamp-2">
         {{ video.description || '-' }}
