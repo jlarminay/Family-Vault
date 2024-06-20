@@ -7,7 +7,7 @@ export const adminRouter = router({
   ...{
     videoRead: adminProcedure.query(async ({ ctx }) => {
       return await ctx.prisma.video.findMany({
-        include: { persons: true, owner: true },
+        include: { owner: true },
       });
     }),
   },
@@ -16,51 +16,9 @@ export const adminRouter = router({
   ...{
     filesRead: adminProcedure.query(async ({ ctx }) => {
       return await ctx.prisma.file.findMany({
-        include: { video: true, thumbnail: true, person: true },
+        include: { video: true, thumbnail: true },
       });
     }),
-  },
-
-  // collection (CRUD)
-  ...{
-    collectionCreate: adminProcedure
-      .input(
-        z.object({
-          name: z.string().max(64),
-        }),
-      )
-      .mutation(async ({ ctx, input }) => {
-        return await ctx.prisma.collection.create({
-          data: {
-            name: input.name,
-          },
-        });
-      }),
-    collectionRead: adminProcedure.query(async ({ ctx }) => {
-      return await ctx.prisma.collection.findMany({ include: { videos: true } });
-    }),
-    collectionUpdate: adminProcedure
-      .input(
-        z.object({
-          id: z.number(),
-          name: z.string().max(64),
-        }),
-      )
-      .mutation(async ({ ctx, input }) => {
-        return await ctx.prisma.collection.update({
-          where: { id: input.id },
-          data: {
-            name: input.name,
-          },
-        });
-      }),
-    collectionDelete: adminProcedure
-      .input(z.object({ id: z.number() }))
-      .mutation(async ({ ctx, input }) => {
-        return await ctx.prisma.collection.delete({
-          where: { id: input.id },
-        });
-      }),
   },
 
   // user (CRU)
@@ -121,52 +79,6 @@ export const adminRouter = router({
       .input(z.object({ id: z.number() }))
       .mutation(async ({ ctx, input }) => {
         return await ctx.prisma.report.delete({
-          where: { id: input.id },
-        });
-      }),
-  },
-
-  // person (CRUD)
-  ...{
-    personCreate: adminProcedure
-      .input(
-        z.object({
-          name: z.string(),
-          birthday: z.string().optional().nullable(),
-        }),
-      )
-      .mutation(async ({ ctx, input }) => {
-        return await ctx.prisma.person.create({
-          data: {
-            name: input.name,
-            birthday: input.birthday ? dayjs(input.birthday).toISOString() : null,
-          },
-        });
-      }),
-    personRead: adminProcedure.query(async ({ ctx }) => {
-      return await ctx.prisma.person.findMany({ include: { videos: true } });
-    }),
-    personUpdate: adminProcedure
-      .input(
-        z.object({
-          id: z.number(),
-          name: z.string(),
-          birthday: z.string().optional().nullable(),
-        }),
-      )
-      .mutation(async ({ ctx, input }) => {
-        return await ctx.prisma.person.update({
-          where: { id: input.id },
-          data: {
-            name: input.name,
-            birthday: input.birthday ? dayjs(input.birthday).toISOString() : null,
-          },
-        });
-      }),
-    personDelete: adminProcedure
-      .input(z.object({ id: z.number() }))
-      .mutation(async ({ ctx, input }) => {
-        return await ctx.prisma.person.delete({
           where: { id: input.id },
         });
       }),

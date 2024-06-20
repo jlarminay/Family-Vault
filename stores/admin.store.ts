@@ -22,27 +22,6 @@ export const useAdminStore = defineStore('admin', {
       },
     },
 
-    // collection (CRUD)
-    ...{
-      async collectionCreate(collection: any) {
-        const { $trpc } = useNuxtApp();
-        return await $trpc.admin.collectionCreate.mutate(collection);
-      },
-      async collectionRead() {
-        const { $trpc } = useNuxtApp();
-        return await $trpc.admin.collectionRead.query();
-      },
-      async collectionUpdate(collection: any) {
-        const { $trpc } = useNuxtApp();
-        return await $trpc.admin.collectionUpdate.mutate(collection);
-      },
-
-      async collectionDelete(id: number) {
-        const { $trpc } = useNuxtApp();
-        return await $trpc.admin.collectionDelete.mutate({ id });
-      },
-    },
-
     // user (CRU)
     ...{
       async userCreate(user: any) {
@@ -68,26 +47,6 @@ export const useAdminStore = defineStore('admin', {
       async reportDelete(id: number) {
         const { $trpc } = useNuxtApp();
         return await $trpc.admin.reportDelete.mutate({ id });
-      },
-    },
-
-    // person (CRUD)
-    ...{
-      async personCreate(person: any) {
-        const { $trpc } = useNuxtApp();
-        return await $trpc.admin.personCreate.mutate(person);
-      },
-      async personRead() {
-        const { $trpc } = useNuxtApp();
-        return await $trpc.admin.personRead.query();
-      },
-      async personUpdate(person: any) {
-        const { $trpc } = useNuxtApp();
-        return await $trpc.admin.personUpdate.mutate(person);
-      },
-      async personDelete(id: number) {
-        const { $trpc } = useNuxtApp();
-        return await $trpc.admin.personDelete.mutate({ id });
       },
     },
   },

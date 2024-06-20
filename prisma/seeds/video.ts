@@ -25,7 +25,6 @@ export default async () => {
       videoId: 3,
       thumbnailId: 4,
       published: 'public',
-      persons: [{ id: 2 }, { id: 5 }],
     },
     {
       title: 'Other User Unpublished',
@@ -48,7 +47,6 @@ export default async () => {
       videoId: 7,
       thumbnailId: 8,
       published: 'public',
-      persons: [{ id: 1 }, { id: 2 }, { id: 3 }],
     },
     {
       title: '4:3 video format',
@@ -71,7 +69,6 @@ export default async () => {
       videoId: 11,
       thumbnailId: 12,
       published: 'public',
-      persons: [{ id: 1 }, { id: 4 }, { id: 5 }],
     },
     {
       title: 'My video is not published!',
@@ -99,9 +96,6 @@ export default async () => {
         thumbnailId: newData[i].thumbnailId,
         ownerId: newData[i].ownerId,
         published: newData[i].published,
-        persons: {
-          connect: newData[i].persons ? newData[i].persons : undefined,
-        },
       },
     });
   }

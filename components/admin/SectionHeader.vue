@@ -20,8 +20,6 @@ defineProps({
       <div class="tw_flex tw_flex-wrap tw_gap-2">
         <q-btn no-caps outline to="/admin" label="Dashboard" />
         <q-btn no-caps outline to="/admin/users" label="Users" />
-        <q-btn no-caps outline to="/admin/persons" label="Persons" />
-        <q-btn no-caps outline to="/admin/collections" label="Collections" />
         <q-btn no-caps outline to="/admin/videos" label="Videos" />
         <q-btn no-caps outline to="/admin/reports" label="Reports" />
         <q-btn no-caps outline to="/admin/settings" label="Settings" />

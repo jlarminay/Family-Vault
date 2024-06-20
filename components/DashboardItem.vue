@@ -1,10 +1,15 @@
 <script setup lang="ts">
+import dayjs from 'dayjs';
 defineProps({
   video: {
     type: Object,
     required: true,
   },
   liked: {
+    type: Boolean,
+    default: false,
+  },
+  expandedView: {
     type: Boolean,
     default: false,
   },
@@ -41,13 +46,27 @@ defineProps({
     </div>
     <div class="tw_mt-2">
       <p class="tw_text-gray-500 tw_text-sm sm:tw_text-xs tw_truncate">
+        <b v-if="expandedView">Display:</b>
         {{ video.dateDisplay }}
+      </p>
+      <p v-if="expandedView" class="tw_text-gray-500 tw_text-sm sm:tw_text-xs tw_truncate">
+        <b>Order:</b>
+        {{ dayjs(video.dateOrder).format('YYYY-MM-DD') }}
       </p>
       <p class="tw_text-lg sm:tw_text-base !tw_leading-tight tw_line-clamp-2 tw_font-bold">
         {{ video.title }}
       </p>
       <p class="tw_text-gray-500 tw_text-base sm:tw_text-sm tw_line-clamp-2">
+        <b v-if="expandedView">Desc:</b>
         {{ video.description || '-' }}
+      </p>
+      <p v-if="expandedView" class="tw_text-gray-500 tw_text-base sm:tw_text-sm tw_line-clamp-2">
+        <b>People:</b>
+        {{ video.people || '-' }}
+      </p>
+      <p v-if="expandedView" class="tw_text-gray-500 tw_text-base sm:tw_text-sm tw_line-clamp-2">
+        <b>Tags:</b>
+        {{ video.tags || '-' }}
       </p>
     </div>
   </NuxtLink>

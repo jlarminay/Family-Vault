@@ -4,13 +4,8 @@ definePageMeta({
   middleware: 'admin-authorized-only',
 });
 
-const editForm = ref<any>(null);
 const adminStore = useAdminStore();
 const allVideos = ref(await adminStore.videoRead());
-const selectedCollection = ref<any>(null);
-const deleteModal = ref(false);
-const editModal = ref(false);
-const loading = ref(false);
 </script>
 
 <template>

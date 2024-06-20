@@ -19,24 +19,16 @@ const showMore = ref<boolean>(false);
       <!-- More information -->
       <div v-if="showMore" class="tw_mt-6">
         <div class="tw_flex tw_gap-2">
-          <div class="tw_font-bold">Collections:</div>
-          <div class="tw_flex tw_gap-2 tw_flex-wrap">
-            <NuxtLink v-for="(collection, i) in video.collections" :key="i">
-              {{ collection.name }}
-            </NuxtLink>
-            <span v-if="video.collections.length === 0" class="tw_opacity-70 tw_italic">
-              None
-            </span>
-          </div>
+          <span class="tw_font-bold">People: </span>
+          <span :class="{ 'tw_opacity-70 tw_italic': !video.people }">
+            {{ video.people || 'None' }}
+          </span>
         </div>
         <div class="tw_flex tw_gap-2">
-          <div class="tw_font-bold">Includes:</div>
-          <div class="tw_flex tw_gap-2 tw_flex-wrap">
-            <NuxtLink v-for="(person, i) in video.persons" :key="i">
-              {{ person.name }}
-            </NuxtLink>
-            <span v-if="video.persons.length === 0" class="tw_opacity-70 tw_italic"> None </span>
-          </div>
+          <span class="tw_font-bold">Tags: </span>
+          <span :class="{ 'tw_opacity-70 tw_italic': !video.tags }">
+            {{ video.tags || 'None' }}
+          </span>
         </div>
         <div class="tw_flex tw_gap-2">
           <span class="tw_font-bold">Order Date: </span>
@@ -45,10 +37,6 @@ const showMore = ref<boolean>(false);
         <div class="tw_flex tw_gap-2">
           <span class="tw_font-bold">File Name: </span>
           <span>{{ video.video.name }}</span>
-        </div>
-        <div class="tw_flex tw_gap-2">
-          <span class="tw_font-bold">Original Format: </span>
-          <span>{{ video.originalFormat || '-' }}</span>
         </div>
         <div class="tw_flex tw_gap-2">
           <span class="tw_font-bold">Video Resolution: </span>
