@@ -1,59 +1,67 @@
-import formidable from 'formidable';
+import multer from 'multer';
 import { getServerSession } from '#auth';
 import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
+import path from 'path';
 
 const prisma = new PrismaClient();
 
+// Multer storage configuration
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const targetDir = useRuntimeConfig().public.workingTmpFolder as string;
+    // create folder if not exists
+    if (!fs.existsSync(targetDir)) {
+      fs.mkdirSync(targetDir, { recursive: true });
+    }
+    cb(null, targetDir);
+  },
+  filename: (req, file, cb) => {
+    const key = Math.random().toString(36).substring(2, 12);
+    const fileName = `${key}_${file.originalname
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-_.\/]/g, '')}`;
+    cb(null, fileName);
+  },
+});
+
+// Multer upload options
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024 * 1024, // 10GB
+    files: 1, // Only allow one file at a time
+  },
+});
+
 export default defineEventHandler(async (ctx) => {
   const session = await getServerSession(ctx);
-  const targetDir = useRuntimeConfig().public.workingTmpFolder as string;
 
-  // create folder if not exists
-  if (!fs.existsSync(targetDir)) {
-    fs.mkdirSync(targetDir);
-  }
+  const request = ctx.node.req as any;
+  const response = ctx.node.res as any;
 
-  const form = formidable({
-    multiples: true,
-    uploadDir: targetDir,
-    maxFileSize: 10 * 1024 * 1024 * 1024, // 10GB
-    maxTotalFileSize: 10 * 1024 * 1024 * 1024, // 10GB
-  });
-
-  return new Promise(async (resolve, reject) => {
-    form.parse(ctx.req, (err, fields, files: any) => {
+  return new Promise((resolve, reject) => {
+    upload.single('video')(request, response, async (err) => {
       if (err) {
-        console.error('Error parsing form', err);
-        reject({ error: err.message });
+        console.error('Error uploading file', err);
+        reject({ error: 'Error uploading file' });
         return;
       }
 
-      if (!files.video || files.video.length === 0) {
+      if (!request.file) {
         console.error('No video file uploaded');
         reject({ error: 'No video file uploaded' });
         return;
       }
 
-      const key = Math.random().toString(36).substring(2, 12);
-      const targetDir = useRuntimeConfig().public.workingTmpFolder as string;
-      const videoFile = files.video[0];
+      const newFilePath = request.file.path;
+      const originalFilename = request.file.originalname;
 
-      const newFilePath = `${targetDir}/${key}_${videoFile.originalFilename}`
-        .toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/[^a-z0-9-_.\/]/g, '');
-
-      fs.rename(videoFile.filepath, newFilePath, async (err) => {
-        if (err) {
-          console.error('Error moving file', err);
-          reject({ error: err.message });
-          return;
-        }
-
+      try {
         const newVideo = await prisma.video.create({
           data: {
-            title: videoFile.originalFilename,
+            title: originalFilename,
             description: '',
             ownerId: session?.id || 0,
             dateDisplay: '',
@@ -62,7 +70,6 @@ export default defineEventHandler(async (ctx) => {
             status: 'processing',
           },
         });
-        prisma.$disconnect();
 
         // create json file of metadata
         const jsonFilePath = newFilePath.replace(/\.[^/.]+$/, '.json');
@@ -70,14 +77,18 @@ export default defineEventHandler(async (ctx) => {
           jsonFilePath,
           JSON.stringify({
             videoId: newVideo.id,
-            key: key,
-            name: videoFile.originalFilename,
-            targetVideo: newFilePath,
+            name: originalFilename,
+            targetVideo: newFilePath.replace('\\', '/'),
           }),
         );
 
         resolve({ success: true, filePath: newFilePath });
-      });
+      } catch (error) {
+        console.error('Error creating video record', error);
+        reject({ error: 'Error creating video record' });
+      } finally {
+        prisma.$disconnect();
+      }
     });
   });
 });
