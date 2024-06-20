@@ -68,10 +68,10 @@ async function search() {
                       // { label: 'Alphabetical (Z-A)', value: 'title-desc' },
                       { label: 'Date Added (Newest)', value: 'date-added-desc' },
                       { label: 'Date Added (Oldest)', value: 'date-added-asc' },
-                      { label: 'Date Taken (Newest)', value: 'date-taken-asc' },
-                      { label: 'Date Taken (Oldest)', value: 'date-taken-desc' },
-                      { label: 'Duration (Shortest)', value: 'duration-asc' },
+                      { label: 'Date Taken (Newest)', value: 'date-taken-desc' },
+                      { label: 'Date Taken (Oldest)', value: 'date-taken-asc' },
                       { label: 'Duration (Longest)', value: 'duration-desc' },
+                      { label: 'Duration (Shortest)', value: 'duration-asc' },
                     ]"
                     :key="option.value"
                     dense
