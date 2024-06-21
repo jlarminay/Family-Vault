@@ -6,6 +6,8 @@ import { searchSchema, editVideoSchema } from './schema';
 export const videoRouter = router({
   search: protectedProcedure.input(searchSchema).query(async ({ input, ctx }) => {
     const session = await getServerSession(ctx.event);
+    const page = input.page || 1;
+    const limit = 10;
 
     const videos = await ctx.prisma.video.findMany({
       where: {
@@ -47,7 +49,7 @@ export const videoRouter = router({
     });
 
     // filter and sort videos
-    return videos
+    const cleanedVideos = videos
       .filter((video) => {
         // search field
         if (input.search) {
@@ -81,6 +83,13 @@ export const videoRouter = router({
 
         return true;
       })
+      .map((video) => {
+        return {
+          ...video,
+          // clean thumbnail url
+          thumbnail: video.thumbnail || { path: 'https://placehold.co/640x360?text=Processing...' },
+        };
+      })
       .sort((a: any, b: any) => {
         if (input.sortBy === 'title-asc') {
           return a.title.localeCompare(b.title);
@@ -107,6 +116,11 @@ export const videoRouter = router({
           return a.video?.metadata?.duration - b.video?.metadata?.duration;
         }
       });
+
+    return {
+      count: cleanedVideos.length,
+      videos: cleanedVideos.slice((page - 1) * limit, page * limit),
+    };
   }),
 
   getRelated: protectedProcedure

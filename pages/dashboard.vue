@@ -7,11 +7,13 @@ const route = useRoute();
 
 const videoStore = useVideoStore();
 const likeStore = useLikeStore();
+const allVideosCount = ref(0);
 const allVideos = ref<any>([]);
 const allLikes = ref(await likeStore.getAllMine());
 const loading = ref(false);
 const expandedView = ref(false);
 
+const page = ref(1);
 const filters = ref({
   search: '',
   sortBy: 'date-added-desc',
@@ -22,17 +24,31 @@ watch(
   () => [filters, route.query.search],
   async () => {
     // clean filter
+    page.value = 1;
     filters.value.search = ((route.query.search as string) || '').toLowerCase();
     // send filter
+    allVideos.value = [];
     await search();
   },
   { deep: true, immediate: true },
 );
 
 async function search() {
+  // scroll to top
   loading.value = true;
-  allVideos.value = await videoStore.search(filters.value);
+  const result = await videoStore.search({
+    ...filters.value,
+    page: page.value,
+  });
+  allVideosCount.value = result.count;
+  allVideos.value = [...allVideos.value, ...result.videos];
   loading.value = false;
+}
+async function loadMore() {
+  page.value++;
+  loading.value = true;
+  await new Promise((resolve) => setTimeout(resolve, 500)); // wait for delay
+  await search();
 }
 </script>
 
@@ -46,7 +62,7 @@ async function search() {
       <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1400px] tw_mx-auto">
         <div class="tw_flex tw_justify-between sm:tw_justify-start tw_items-center tw_gap-4">
           <h1 class="h1">
-            Dashboard <span class="tw_text-lg">({{ allVideos.length }})</span>
+            Dashboard <span class="tw_text-lg">({{ allVideosCount }})</span>
           </h1>
           <div class="tw_mr-3">
             <q-btn
@@ -97,9 +113,10 @@ async function search() {
             />
           </div>
         </div>
+
         <div class="tw_flex tw_gap-0 tw_justify-start tw_flex-wrap tw_items-start tw_@container">
           <div
-            v-if="allVideos.length === 0"
+            v-if="allVideos.length === 0 && !loading"
             class="tw_text-lg tw_mt-4 tw_text-center tw_italic tw_opacity-70 tw_w-full"
           >
             <span v-if="filters.filterBy === 'all'">No Videos Found</span>
@@ -114,6 +131,16 @@ async function search() {
             class="tw_w-full @lg:tw_w-1/2 @xl:tw_w-1/2 @3xl:tw_w-1/3 @5xl:tw_w-1/4 @7xl:tw_w-1/5"
           />
         </div>
+
+        <div v-if="loading" class="tw_flex tw_justify-center">
+          <q-spinner-dots color="primary" size="40px" />
+        </div>
+
+        <q-infinite-scroll
+          @load="loadMore"
+          :offset="100"
+          :disable="loading || allVideos.length >= allVideosCount"
+        />
       </main>
     </template>
   </NuxtLayout>

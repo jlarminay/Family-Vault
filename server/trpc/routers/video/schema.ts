@@ -15,6 +15,7 @@ export const searchSchema = z.object({
       'duration-asc',
     ]),
   ),
+  page: z.number(),
 });
 
 export const editVideoSchema = z.object({
