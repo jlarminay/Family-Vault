@@ -66,8 +66,8 @@ defineProps({
         {{ video.people || '-' }}
       </p>
       <p v-if="expandedView" class="tw_text-gray-500 tw_text-base sm:tw_text-sm tw_line-clamp-2">
-        <b>Tags:</b>
-        {{ video.tags || '-' }}
+        <b>File:</b>
+        {{ video.video.name }}
       </p>
     </div>
   </NuxtLink>
