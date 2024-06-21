@@ -10,7 +10,6 @@ const commentStore = useCommentStore();
 
 const videoId = ref<number>(parseInt(route.params.id as string));
 const video = ref(await videoStore.getSingle(videoId.value));
-const randomVideos = ref(await videoStore.getRandom(6, videoId.value));
 const comments = ref(await commentStore.getForVideo(videoId.value));
 const likes = ref(await likeStore.getForVideo(videoId.value));
 
@@ -22,6 +21,9 @@ async function commentPosted() {
 async function updateLike() {
   await likeStore.update(videoId.value, !likes.value.isLiked);
   likes.value = await likeStore.getForVideo(videoId.value);
+}
+async function incrementViewCount() {
+  await videoStore.incrementViewCount(videoId.value);
 }
 </script>
 
@@ -41,6 +43,7 @@ async function updateLike() {
             <VideoPlayer
               :videoUrl="video.video?.path || ''"
               :posterUrl="video.thumbnail?.path || ''"
+              @initialPlay="incrementViewCount"
             />
           </div>
 
@@ -83,9 +86,16 @@ async function updateLike() {
                 </q-btn>
               </div>
             </div>
-            <p class="tw_text-gray-500">{{ video.dateDisplay }}</p>
+            <p class="tw_text-gray-500">
+              {{ video.dateDisplay }}
+              <!-- • {{ formatViews(video.views, 'lg') }} views -->
+            </p>
 
             <VideoDescription :video="video" />
+
+            <div v-if="$q.screen.lt.md" class="tw_mt-8 tw_border-t tw_pt-4">
+              <VideoRelated :videoId="videoId" type="hor" />
+            </div>
 
             <div class="tw_mt-8 tw_border-t tw_pt-4">
               <h3 class="h3">{{ comments.length }} Comments</h3>
@@ -101,9 +111,7 @@ async function updateLike() {
 
         <!-- other videos (md) -->
         <div v-if="$q.screen.gt.sm" class="tw_min-w-[350px] tw_w-[350px] tw_px-2">
-          <h3 class="h3">Related Videos</h3>
-
-          <VideoRelated v-for="(video, i) in randomVideos" :key="i" :video="video" />
+          <VideoRelated :videoId="videoId" type="ver" />
         </div>
       </div>
     </main>

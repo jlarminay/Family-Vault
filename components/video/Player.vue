@@ -2,6 +2,7 @@
 import Plyr from 'plyr';
 import 'plyr/dist/plyr.css';
 
+const emits = defineEmits(['initialPlay']);
 const props = defineProps({
   options: {
     type: Object,
@@ -18,6 +19,7 @@ const props = defineProps({
 });
 
 const player = ref<any>(null);
+const initialPlay = ref<boolean>(false);
 
 onMounted(() => {
   player.value = new Plyr('#videoPlayer', {
@@ -82,6 +84,14 @@ onMounted(() => {
               <span class="label--not-pressed plyr__tooltip" role="tooltip">Enter fullscreen</span>
           </button>
       </div>`,
+  });
+
+  // add console for play button
+  player.value.on('play', () => {
+    if (!initialPlay.value) {
+      initialPlay.value = true;
+      emits('initialPlay');
+    }
   });
 
   document.addEventListener('click', (event) => {

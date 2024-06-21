@@ -44,11 +44,11 @@ async function search() {
   <NuxtLayout name="app">
     <template #default>
       <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1400px] tw_mx-auto">
-        <div class="tw_flex tw_justify-start tw_items-center tw_gap-4">
+        <div class="tw_flex tw_justify-between sm:tw_justify-start tw_items-center tw_gap-4">
           <h1 class="h1">
             Dashboard <span class="tw_text-lg">({{ allVideos.length }})</span>
           </h1>
-          <div>
+          <div class="tw_mr-3">
             <q-btn
               v-if="authData?.role === 'admin'"
               round
@@ -86,6 +86,15 @@ async function search() {
                 </q-list>
               </q-menu>
             </q-btn>
+            <q-btn
+              round
+              flat
+              class="!tw_p-0"
+              icon="o_favorite_border"
+              :color="filters.filterBy === 'liked' ? 'primary' : 'dark'"
+              :loading="loading"
+              @click="filters.filterBy = filters.filterBy === 'liked' ? 'all' : 'liked'"
+            />
           </div>
         </div>
         <div class="tw_flex tw_gap-0 tw_justify-start tw_flex-wrap tw_items-start tw_@container">
@@ -93,7 +102,8 @@ async function search() {
             v-if="allVideos.length === 0"
             class="tw_text-lg tw_mt-4 tw_text-center tw_italic tw_opacity-70 tw_w-full"
           >
-            No Videos Found
+            <span v-if="filters.filterBy === 'all'">No Videos Found</span>
+            <span v-else>No Liked Videos</span>
           </div>
           <DashboardItem
             v-for="(video, i) in allVideos"

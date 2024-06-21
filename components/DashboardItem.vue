@@ -48,6 +48,7 @@ defineProps({
       <p class="tw_text-gray-500 tw_text-sm sm:tw_text-xs tw_truncate">
         <b v-if="expandedView">Display:</b>
         {{ video.dateDisplay }}
+        <!-- • {{ formatViews(video.views, 'sm') }} views -->
       </p>
       <p v-if="expandedView" class="tw_text-gray-500 tw_text-sm sm:tw_text-xs tw_truncate">
         <b>Order:</b>
