@@ -26,12 +26,6 @@ const cleanedAllowList = computed(() => {
 onMounted(() => {
   let newData = JSON.parse(JSON.stringify(video.value));
   // clean data
-  newData.persons = newData.persons.map((person: any) => {
-    return { label: person.name, value: person.id };
-  });
-  newData.collections = newData.collections.map((collection: any) => {
-    return { label: collection.name, value: collection.id };
-  });
   newData.allowList = newData.allowList.map((user: any) => {
     return { label: user.name, value: user.id };
   });
