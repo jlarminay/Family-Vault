@@ -11,14 +11,7 @@ export const useVideoStore = defineStore('video', {
     async search(options: any) {
       const { $trpc } = useNuxtApp();
 
-      let results = await $trpc.video.search.query(options);
-      return results.map((video: any) => {
-        return {
-          ...video,
-          // clean thumbnail url
-          thumbnail: video.thumbnail || { path: 'https://placehold.co/640x360?text=Processing...' },
-        };
-      });
+      return await $trpc.video.search.query(options);
     },
 
     async getRelated(currentId: number, limit: number) {
