@@ -66,6 +66,14 @@ async function updateVideo() {
           </video>
 
           <div>
+            <span class="tw_font-bold">File: </span>
+            <span>{{ video?.video?.name }}</span>
+          </div>
+          <div>
+            <span class="tw_font-bold">Views: </span>
+            <span>{{ formatViews(video?.views, 'lg') }}</span>
+          </div>
+          <div>
             <span class="tw_font-bold">Duration: </span>
             <span>{{ formatDuration(video?.video?.metadata?.duration) }}</span>
           </div>
@@ -161,25 +169,6 @@ async function updateVideo() {
                   </q-icon>
                 </template>
               </q-input>
-              <q-input
-                outlined
-                no-error-icon
-                v-model="videoEdit.originalFormat"
-                label="Original Format"
-                maxlength="64"
-                counter
-                :rules="[(val: string) => !val || val.length <= 64 || 'Max 64 characters']"
-              />
-              <q-input
-                outlined
-                no-error-icon
-                v-model="videoEdit.tags"
-                label="Tags"
-                maxlength="1024"
-                autogrow
-                counter
-                :rules="[(val: string) => !val || val.length <= 1024 || 'Max 1024 characters']"
-              />
             </div>
 
             <!-- Security -->

@@ -35,24 +35,16 @@ const showMore = ref<boolean>(false);
             </NuxtLink>
           </div>
         </div>
-        <div class="tw_flex tw_gap-2">
-          <span class="tw_font-bold">Tags: </span>
-          <div v-if="!video.tags" class="tw_opacity-70 tw_italic">None</div>
-          <div v-else>
-            <NuxtLink
-              v-for="tag in video.tags.split(',')"
-              :key="tag"
-              class="link"
-              :to="`/dashboard?search=${tag.trim()}`"
-            >
-              {{ tag.trim() }}
-            </NuxtLink>
-          </div>
-        </div>
         <div v-if="showMore">
           <div class="tw_flex tw_gap-2">
             <span class="tw_font-bold">Order Date: </span>
             <span>{{ video.dateOrder }}</span>
+          </div>
+          <div class="tw_flex tw_gap-2">
+            <span class="tw_font-bold">Collection: </span>
+            <NuxtLink class="link" :to="`/dashboard?search=file:${video.video.name.split('.')[0]}`">
+              {{ video.video.name.split('.')[0] }}
+            </NuxtLink>
           </div>
           <div class="tw_flex tw_gap-2">
             <span class="tw_font-bold">File Name: </span>

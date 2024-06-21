@@ -50,16 +50,25 @@ export const videoRouter = router({
     return videos
       .filter((video) => {
         // search field
-        if (
-          input.search &&
-          !(
-            video.title.toLowerCase().includes(input.search.toLowerCase()) ||
-            video.description?.toLowerCase().includes(input.search.toLowerCase()) ||
-            video.people?.toLowerCase().includes(input.search.toLowerCase()) ||
-            video.tags?.toLowerCase().includes(input.search.toLowerCase())
-          )
-        ) {
-          return false;
+        if (input.search) {
+          // check if search is for file name
+          if (input.search.startsWith('file:')) {
+            const search = input.search.split('file:')[1].trim();
+            if (video.video?.name.toLowerCase().includes(search.toLowerCase())) {
+              return true;
+            }
+            return false;
+          }
+          // check if search is for anything else
+          else if (
+            !(
+              video.title.toLowerCase().includes(input.search.toLowerCase()) ||
+              video.description?.toLowerCase().includes(input.search.toLowerCase()) ||
+              video.people?.toLowerCase().includes(input.search.toLowerCase())
+            )
+          ) {
+            return false;
+          }
         }
 
         // filter by likes
