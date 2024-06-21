@@ -47,7 +47,7 @@ async function search() {
 async function loadMore() {
   page.value++;
   loading.value = true;
-  await new Promise((resolve) => setTimeout(resolve, 500)); // wait for delay
+  await new Promise((resolve) => setTimeout(resolve, 200)); // wait for delay
   await search();
 }
 </script>
