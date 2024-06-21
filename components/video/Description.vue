@@ -42,7 +42,10 @@ const showMore = ref<boolean>(false);
           </div>
           <div class="tw_flex tw_gap-2">
             <span class="tw_font-bold">Collection: </span>
-            <NuxtLink class="link" :to="`/dashboard?search=file:${video.video.name.split('.')[0]}`">
+            <NuxtLink
+              class="link"
+              :to="`/dashboard?search=file:${video.video.name.split('.')[0]}.`"
+            >
               {{ video.video.name.split('.')[0] }}
             </NuxtLink>
           </div>
