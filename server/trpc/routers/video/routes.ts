@@ -62,6 +62,14 @@ export const videoRouter = router({
           return false;
         }
 
+        // filter by likes
+        if (
+          input.filterBy === 'liked' &&
+          !video.likes.some((like) => like.userId === session?.id)
+        ) {
+          return false;
+        }
+
         return true;
       })
       .sort((a: any, b: any) => {
@@ -92,19 +100,29 @@ export const videoRouter = router({
       });
   }),
 
-  getRandom: protectedProcedure
-    .input(z.object({ limit: z.number() }))
+  getRelated: protectedProcedure
+    .input(z.object({ currentId: z.number(), limit: z.number() }))
     .query(async ({ ctx, input }) => {
       const session = await getServerSession(ctx.event);
       const { limit } = input;
 
-      const videos = await ctx.prisma.video.findMany({
+      const currentVideo = await ctx.prisma.video.findUniqueOrThrow({
         where: {
-          OR: [
-            { ownerId: session?.id },
-            { published: 'public' },
+          id: input.currentId,
+        },
+      });
+      const allVideos = await ctx.prisma.video.findMany({
+        where: {
+          AND: [
+            { id: { not: input.currentId } }, // exclude current video
             {
-              AND: [{ published: 'allow-few' }, { allowList: { some: { id: session?.id } } }],
+              OR: [
+                { ownerId: session?.id },
+                { published: 'public' },
+                {
+                  AND: [{ published: 'allow-few' }, { allowList: { some: { id: session?.id } } }],
+                },
+              ],
             },
           ],
         },
@@ -131,7 +149,10 @@ export const videoRouter = router({
           },
         },
       });
-      return videos.sort(() => Math.random() - Math.random()).slice(0, limit);
+
+      // somehow filter based on if the video is related to the current video
+
+      return allVideos.sort(() => Math.random() - Math.random()).slice(0, limit);
     }),
 
   getSingle: protectedProcedure
@@ -194,6 +215,19 @@ export const videoRouter = router({
       return video;
     }),
 
+  incrementViewCount: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.video.update({
+        where: { id: input.id },
+        data: {
+          views: {
+            increment: 1,
+          },
+        },
+      });
+    }),
+
   update: protectedProcedure.input(editVideoSchema).mutation(async ({ ctx, input }) => {
     const session = await getServerSession(ctx.event);
 
@@ -208,6 +242,8 @@ export const videoRouter = router({
       data: {
         title: input.title,
         description: input.description,
+        people: input.people,
+        tags: input.tags,
         dateDisplay: input.dateDisplay,
         dateOrder: input.dateOrder,
         published: input.published,

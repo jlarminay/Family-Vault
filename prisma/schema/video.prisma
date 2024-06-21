@@ -4,6 +4,7 @@ model Video {
   description String?
   people      String?
   tags        String?
+  views       Int      @default(0)
   dateDisplay String?
   dateOrder   DateTime @db.Date
   status      String   @default("finished")

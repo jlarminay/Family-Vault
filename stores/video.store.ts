@@ -21,22 +21,10 @@ export const useVideoStore = defineStore('video', {
       });
     },
 
-    async getRandom(limit: number, ignore: number | undefined = undefined) {
+    async getRelated(currentId: number, limit: number) {
       const { $trpc } = useNuxtApp();
 
-      let results = await $trpc.video.getRandom.query({ limit });
-      results = results
-        .filter((video: any) => {
-          return video.id !== ignore;
-        })
-        .map((video: any) => {
-          return {
-            ...video,
-            // clean thumbnail url
-            thumbnail: video.thumbnail || 'https://placehold.co/640x360?text=Processing...',
-          };
-        });
-
+      let results = await $trpc.video.getRelated.query({ currentId, limit });
       return results;
     },
 
@@ -48,6 +36,12 @@ export const useVideoStore = defineStore('video', {
         ...results,
       };
     },
+
+    async incrementViewCount(id: number) {
+      const { $trpc } = useNuxtApp();
+      return await $trpc.video.incrementViewCount.mutate({ id });
+    },
+
     async update(videoData: any) {
       const { $trpc } = useNuxtApp();
 
