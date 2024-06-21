@@ -116,7 +116,7 @@ async function updateVideo() {
                 maxlength="1024"
                 autogrow
                 counter
-                :rules="[(val: string) => val.length <= 1024 || 'Max 1024 characters']"
+                :rules="[(val: string) => !val || val.length <= 1024 || 'Max 1024 characters']"
               />
               <q-input
                 outlined
@@ -126,7 +126,7 @@ async function updateVideo() {
                 maxlength="1024"
                 autogrow
                 counter
-                :rules="[(val: string) => val.length <= 1024 || 'Max 1024 characters']"
+                :rules="[(val: string) => !val || val.length <= 1024 || 'Max 1024 characters']"
               />
               <q-input
                 outlined
@@ -135,7 +135,7 @@ async function updateVideo() {
                 label="Date Taken (Display)"
                 maxlength="64"
                 counter
-                :rules="[(val: string) => val.length <= 64 || 'Max 64 characters']"
+                :rules="[(val: string) => !val || val.length <= 64 || 'Max 64 characters']"
               />
               <q-input
                 outlined
@@ -168,7 +168,7 @@ async function updateVideo() {
                 label="Original Format"
                 maxlength="64"
                 counter
-                :rules="[(val: string) => val.length <= 64 || 'Max 64 characters']"
+                :rules="[(val: string) => !val || val.length <= 64 || 'Max 64 characters']"
               />
               <q-input
                 outlined
@@ -178,7 +178,7 @@ async function updateVideo() {
                 maxlength="1024"
                 autogrow
                 counter
-                :rules="[(val: string) => val.length <= 1024 || 'Max 1024 characters']"
+                :rules="[(val: string) => !val || val.length <= 1024 || 'Max 1024 characters']"
               />
             </div>
 

@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import S3 from '../../server/utils/s3.js';
+import VideoProcessor from '../../server/utils/videoProcessor.js';
 import fs from 'fs';
 
 const prisma = new PrismaClient();
