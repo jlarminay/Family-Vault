@@ -118,6 +118,7 @@ export const videoRouter = router({
       });
 
     return {
+      page: page,
       count: cleanedVideos.length,
       videos: cleanedVideos.slice((page - 1) * limit, page * limit),
     };

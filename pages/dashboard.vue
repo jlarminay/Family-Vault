@@ -40,6 +40,7 @@ async function search() {
     ...filters.value,
     page: page.value,
   });
+  if (result.page === 1) allVideos.value = [];
   allVideosCount.value = result.count;
   allVideos.value = [...allVideos.value, ...result.videos];
   loading.value = false;
@@ -47,7 +48,6 @@ async function search() {
 async function loadMore() {
   page.value++;
   loading.value = true;
-  await new Promise((resolve) => setTimeout(resolve, 500)); // wait for delay
   await search();
 }
 </script>
