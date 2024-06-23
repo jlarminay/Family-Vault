@@ -64,7 +64,7 @@ export default defineEventHandler(async (ctx) => {
             description: '',
             ownerId: session?.id || 0,
             dateDisplay: '',
-            dateOrder: new Date(),
+            dateOrder: new Date('1900-01-1'),
             published: 'private',
             status: 'processing',
           },

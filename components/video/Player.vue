@@ -106,7 +106,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <video id="videoPlayer" :poster="posterUrl">
+  <video id="videoPlayer" playsinline controls :poster="posterUrl">
     <source :src="videoUrl" type="video/mp4" />
   </video>
 </template>

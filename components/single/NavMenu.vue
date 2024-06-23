@@ -54,6 +54,19 @@ function handleSearch() {
           @keyup.enter="handleSearch()"
         >
           <template v-slot:append>
+            <q-btn
+              v-if="search !== ''"
+              round
+              dense
+              flat
+              icon="o_close"
+              @click="
+                search = '';
+                handleSearch();
+              "
+            />
+          </template>
+          <template v-slot:prepend>
             <q-btn round dense flat icon="o_search" @click="handleSearch" />
           </template>
         </q-input>
@@ -108,6 +121,12 @@ function handleSearch() {
                   <q-icon name="o_checklist" />
                 </q-item-section>
                 <q-item-section>Progress</q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup to="/stats">
+                <q-item-section avatar>
+                  <q-icon name="o_query_stats" />
+                </q-item-section>
+                <q-item-section>Stats</q-item-section>
               </q-item>
               <q-item clickable v-close-popup to="/legal">
                 <q-item-section avatar>
