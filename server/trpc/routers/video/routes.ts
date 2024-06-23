@@ -61,8 +61,8 @@ export const videoRouter = router({
             }
           }
           // check for people
-          else if (input.search.startsWith('people:')) {
-            const search = input.search.split('people:')[1].trim();
+          else if (input.search.startsWith('person:')) {
+            const search = input.search.split('person:')[1].trim();
             if (!video.people?.toLowerCase().includes(search.toLowerCase())) {
               return false;
             }

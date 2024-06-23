@@ -29,7 +29,7 @@ const showMore = ref<boolean>(false);
               v-for="person in video.people.split(',')"
               :key="person"
               class="link"
-              :to="`/dashboard?search=${person.trim()}`"
+              :to="`/dashboard?search=person:${person.trim()}`"
             >
               {{ person.trim() }}
             </NuxtLink>
