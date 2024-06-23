@@ -56,10 +56,16 @@ export const videoRouter = router({
           // check if search is for file name
           if (input.search.startsWith('file:')) {
             const search = input.search.split('file:')[1].trim();
-            if (video.video?.name.toLowerCase().includes(search.toLowerCase())) {
-              return true;
+            if (!video.video?.name.toLowerCase().includes(search.toLowerCase())) {
+              return false;
             }
-            return false;
+          }
+          // check for people
+          else if (input.search.startsWith('people:')) {
+            const search = input.search.split('people:')[1].trim();
+            if (!video.people?.toLowerCase().includes(search.toLowerCase())) {
+              return false;
+            }
           }
           // check if search is for anything else
           else if (

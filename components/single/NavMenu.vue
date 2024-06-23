@@ -54,6 +54,19 @@ function handleSearch() {
           @keyup.enter="handleSearch()"
         >
           <template v-slot:append>
+            <q-btn
+              v-if="search !== ''"
+              round
+              dense
+              flat
+              icon="o_close"
+              @click="
+                search = '';
+                handleSearch();
+              "
+            />
+          </template>
+          <template v-slot:prepend>
             <q-btn round dense flat icon="o_search" @click="handleSearch" />
           </template>
         </q-input>
