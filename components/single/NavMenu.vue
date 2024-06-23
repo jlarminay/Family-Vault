@@ -109,6 +109,12 @@ function handleSearch() {
                 </q-item-section>
                 <q-item-section>Progress</q-item-section>
               </q-item>
+              <q-item clickable v-close-popup to="/stats">
+                <q-item-section avatar>
+                  <q-icon name="o_query_stats" />
+                </q-item-section>
+                <q-item-section>Stats</q-item-section>
+              </q-item>
               <q-item clickable v-close-popup to="/legal">
                 <q-item-section avatar>
                   <q-icon name="o_policy" />

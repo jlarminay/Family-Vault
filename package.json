@@ -30,6 +30,7 @@
     "@tailwindcss/container-queries": "^0.1.1",
     "@trpc/client": "^10.44.1",
     "@trpc/server": "^10.44.1",
+    "chart.js": "^4.4.3",
     "image-size": "^1.1.1",
     "multer": "^1.4.5-lts.1",
     "node-fetch": "^3.3.2",
@@ -40,7 +41,9 @@
     "shelljs": "^0.8.5",
     "trpc-nuxt": "^0.10.21",
     "validator": "^13.11.0",
+    "vue-chartjs": "^5.3.1",
     "vue-markdown-render": "^2.2.1",
+    "vuewordcloud": "^19.0.0",
     "zod": "^3.22.5"
   },
   "devDependencies": {

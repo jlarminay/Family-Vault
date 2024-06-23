@@ -7,6 +7,7 @@ import { commentRouter } from './comment/routes';
 import { likeRouter } from './like/routes';
 import { reportRouter } from './report/routes';
 import { userRouter } from './user/routes';
+import { statsRouter } from './stats/routes';
 
 export const appRouter = router({
   admin: adminRouter,
@@ -16,6 +17,7 @@ export const appRouter = router({
   like: likeRouter,
   report: reportRouter,
   user: userRouter,
+  stats: statsRouter,
 });
 
 // export type definition of API
