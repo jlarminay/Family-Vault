@@ -66,9 +66,7 @@ function color(scope: any) {
         class="tw_w-full sm:!tw_w-[80%]"
       >
         <template v-slot="scope">
-          <span :style="`color:${color(scope)}`">
-            {{ scope.text }}
-          </span>
+          <span :style="`color:${color(scope)}`">{{ scope.text }}</span>
         </template>
       </VueWordCloud>
     </div>

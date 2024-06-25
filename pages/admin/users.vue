@@ -58,6 +58,7 @@ async function saveUser() {
             { name: 'name', label: 'Name', field: 'name', align: 'left', sortable: true },
             { name: 'email', label: 'Email', field: 'email', align: 'left', sortable: true },
             { name: 'role', label: 'Role', field: 'role', align: 'left', sortable: true },
+            { name: 'views', label: 'Views', field: 'views', align: 'left', sortable: true },
             {
               name: 'lastLogin',
               label: 'Last Login',
@@ -114,6 +115,9 @@ async function saveUser() {
             <q-td :props="props">
               {{ props.row.role.charAt(0).toUpperCase() + props.row.role.slice(1) }}
             </q-td>
+          </template>
+          <template #body-cell-views="props">
+            <q-td :props="props">{{ props.row.views }} views</q-td>
           </template>
           <template #body-cell-lastLogin="props">
             <q-td :props="props">

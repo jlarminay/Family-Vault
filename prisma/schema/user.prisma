@@ -6,6 +6,7 @@ model User {
   role           String    @default("user")
   avatar         String?
   lastLogin      DateTime?
+  views          Int       @default(0)
   active         Boolean   @default(true)
   comments       Comment[] @relation(name: "CommentToUser") // can have many comments
   uploadedVideos Video[]   @relation(name: "UserToVideo") // can upload many videos
@@ -13,4 +14,5 @@ model User {
   report         Report[]  @relation(name: "ReportToUser") // can report many videos
   allowedVideos  Video[]   @relation(name: "UserToVideo1")
   blockedVideos  Video[]   @relation(name: "UserToVideo2")
+  History        History[]
 }

@@ -26,4 +26,5 @@ model Video {
   comments Comment[] @relation(name: "CommentToVideo") // can have many comments
   likes    Like[]    @relation(name: "LikeToVideo") // can have multiple likes
   report   Report[]  @relation(name: "ReportToVideo") // can be reported multiple times
+  History  History[]
 }

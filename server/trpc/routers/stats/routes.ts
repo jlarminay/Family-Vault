@@ -41,7 +41,6 @@ export const statsRouter = router({
         });
       }
 
-      console.log(parseInt(dayjs(dateOrder).format('YYYY')));
       if (parseInt(dayjs(dateOrder).format('YYYY')) > 1900) {
         const year = dayjs(dateOrder).format('YYYY');
         if (!results.years[year]) {
