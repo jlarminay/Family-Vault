@@ -19,39 +19,16 @@ const stats = ref(await statsStore.getAll());
       <div class="tw_mt-4">
         <div class="tw_flex tw_items-start tw_flex-col sm:tw_flex-row tw_gap-4">
           <div
-            class="tw_w-full sm:tw_min-w-[250px] sm:tw_w-[250px] tw_flex tw_flex-col tw_gap-2 tw_border tw_rounded tw_px-4 tw_py-2"
+            class="tw_w-full sm:tw_min-w-[250px] sm:tw_w-[250px] tw_border tw_rounded tw_px-4 tw_py-2"
           >
-            <div>
-              <p class="tw_text-base tw_text-gray-500">Total Videos</p>
-              <p class="tw_text-xl">
-                {{ stats.videos.count }}
-              </p>
-            </div>
-            <div>
-              <p class="tw_text-base tw_text-gray-500">Total View Count</p>
-              <p class="tw_text-xl">
-                {{ stats.videos.views }}
-              </p>
-            </div>
-            <div>
-              <p class="tw_text-base tw_text-gray-500">Average Video Length</p>
-              <p class="tw_text-xl">
-                {{ formatDuration(Math.floor(stats.videos.average), 'string') }}
-              </p>
-            </div>
-            <div>
-              <p class="tw_text-base tw_text-gray-500">Total System Length</p>
-              <p class="tw_text-xl">
-                {{ formatDuration(Math.floor(stats.videos.total), 'string') }}
-              </p>
-            </div>
+            <StatsSummary v-if="stats" :stats="stats" />
           </div>
           <div class="tw_border tw_rounded tw_px-4 tw_py-2 tw_w-full tw_aspect-video">
             <StatsLine v-if="stats" :stats="stats.years" class="tw_w-full" />
           </div>
         </div>
-        <div class="tw_border tw_rounded tw_flex tw_justify-center tw_mt-4">
-          <StatsWordCloud v-if="stats" :stats="stats.people" class="!tw_w-[80%]" />
+        <div class="tw_border tw_rounded tw_mt-4 tw_px-4 tw_py-2">
+          <StatsWordCloud v-if="stats" :stats="stats.people" />
         </div>
       </div>
     </main>

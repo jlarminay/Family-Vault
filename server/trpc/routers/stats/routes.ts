@@ -33,20 +33,23 @@ export const statsRouter = router({
           person = person.trim();
           if (person === '') return;
           if (!results.people[person]) {
-            results.people[person] = 0;
+            results.people[person] = { clips: 0, duration: 0 };
           }
 
-          results.people[person]++;
+          results.people[person].clips++;
+          results.people[person].duration += metadata.duration;
         });
       }
 
-      if (dayjs(dateOrder) !== dayjs('1900-01-01')) {
+      console.log(parseInt(dayjs(dateOrder).format('YYYY')));
+      if (parseInt(dayjs(dateOrder).format('YYYY')) > 1900) {
         const year = dayjs(dateOrder).format('YYYY');
         if (!results.years[year]) {
-          results.years[year] = 0;
+          results.years[year] = { clips: 0, duration: 0 };
         }
 
-        results.years[year]++;
+        results.years[year].clips++;
+        results.years[year].duration += metadata.duration;
       }
     });
 
