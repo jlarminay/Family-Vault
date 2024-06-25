@@ -91,16 +91,7 @@ export default async () => {
   for (let i = 0; i < newData.length; i++) {
     // insert to db
     await prisma.video.create({
-      data: {
-        title: newData[i].title,
-        description: newData[i].description,
-        dateDisplay: newData[i].dateDisplay,
-        dateOrder: newData[i].dateOrder,
-        videoId: newData[i].videoId,
-        thumbnailId: newData[i].thumbnailId,
-        ownerId: newData[i].ownerId,
-        published: newData[i].published,
-      },
+      data: newData[i],
     });
   }
   console.log('Insert video: ', newData.length);

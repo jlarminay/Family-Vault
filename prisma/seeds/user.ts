@@ -11,6 +11,7 @@ export default async () => {
       provider: 'credentials',
       avatar: 'https://placehold.co/500/833deb/fff?text=Test+Account',
       role: 'user',
+      views: 10,
     },
     {
       email: 'test-admin@email.com',

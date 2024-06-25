@@ -248,12 +248,34 @@ export const videoRouter = router({
   incrementViewCount: protectedProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.video.update({
+      const session = await getServerSession(ctx.event);
+      if (!session) throw new Error('Unauthorized');
+
+      // add view to video
+      await ctx.prisma.video.update({
         where: { id: input.id },
         data: {
           views: {
             increment: 1,
           },
+        },
+      });
+
+      // add view to user
+      await ctx.prisma.user.update({
+        where: { id: session.id },
+        data: {
+          views: {
+            increment: 1,
+          },
+        },
+      });
+
+      // add to history
+      await ctx.prisma.history.create({
+        data: {
+          userId: session.id,
+          videoId: input.id,
         },
       });
     }),
