@@ -10,19 +10,7 @@ const showMore = ref<boolean>(false);
 
 <template>
   <div class="tw_mt-2">
-    <div
-      v-if="video.published !== 'public'"
-      class="tw_border-2 tw_rounded tw_border-orange-200 tw_bg-orange-50 tw_px-4 tw_py-2 tw_flex tw_justify-start tw_items-center tw_gap-4"
-    >
-      <q-icon name="lock" class="tw_text-primary tw_text-2xl" />
-      <p v-if="video.published === 'private'" class="tw_text-lg tw_leading-tight">
-        This video is marked as private. Only you can see it.
-      </p>
-      <p v-if="video.published === 'allow-few'" class="tw_text-lg tw_leading-tight">
-        This video is marked as private. Only a few people can see it including:
-        {{ video.allowList.map((u: any) => u.name).join(', ') }}.
-      </p>
-    </div>
+    <VideoLockWarning v-if="video.published !== 'public'" :video="video" />
 
     <div
       class="tw_text-base tw_font-maven-pro tw_font-normal tw_leading-tight tw_mt-3"
