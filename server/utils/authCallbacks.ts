@@ -41,7 +41,12 @@ export default {
     const hasPrivateVideos = await prisma.video.count({
       where: {
         OR: [
-          { AND: [{ ownerId: user.id }, { published: 'private' || 'allow-few' }] },
+          {
+            AND: [
+              { ownerId: user.id },
+              { OR: [{ published: 'private' }, { published: 'allow-few' }] },
+            ],
+          },
           { allowList: { some: { id: user.id } } },
         ],
       },
