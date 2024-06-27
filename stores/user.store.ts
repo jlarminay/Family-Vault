@@ -17,6 +17,11 @@ export const useUserStore = defineStore('user', {
       });
     },
 
+    async getHistory() {
+      const { $trpc } = useNuxtApp();
+      return await $trpc.user.getHistory.query();
+    },
+
     async updateOwn(id: number, name: string) {
       const { $trpc } = useNuxtApp();
       return await $trpc.user.updateOwn.mutate({ id, name });

@@ -111,6 +111,15 @@ async function loadMore() {
               :loading="loading"
               @click="filters.filterBy = filters.filterBy === 'liked' ? 'all' : 'liked'"
             />
+            <q-btn
+              round
+              flat
+              class="!tw_p-0"
+              icon="o_lock"
+              :color="filters.filterBy === 'private' ? 'primary' : 'dark'"
+              :loading="loading"
+              @click="filters.filterBy = filters.filterBy === 'private' ? 'all' : 'private'"
+            />
           </div>
         </div>
 

@@ -86,6 +86,10 @@ export const videoRouter = router({
         ) {
           return false;
         }
+        // filter by private
+        if (input.filterBy === 'private' && video.published === 'public') {
+          return false;
+        }
 
         return true;
       })

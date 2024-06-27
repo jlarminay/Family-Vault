@@ -49,13 +49,10 @@ async function incrementViewCount() {
 
           <!-- description -->
           <div class="tw_p-2">
+            <VideoContentWarning v-if="false" :type="''" />
+
             <div class="tw_flex tw_gap-4 tw_justify-between tw_items-start">
               <h2 class="h2 tw_font-bold tw_min-w-0 tw_flex-grow tw_break-words">
-                <q-icon
-                  v-if="video.published === 'private'"
-                  name="lock"
-                  class="tw_text-primary tw_text-2xl tw_rounded-full tw_p-0.5"
-                />
                 {{ video.title }}
               </h2>
               <div class="tw_flex tw_items-center tw_gap-2">
