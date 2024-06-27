@@ -37,7 +37,7 @@ export const statsRouter = router({
           }
 
           results.people[person].clips++;
-          results.people[person].duration += metadata.duration;
+          results.people[person].duration += metadata.duration / 60; // convert to minutes
         });
       }
 
@@ -48,7 +48,7 @@ export const statsRouter = router({
         }
 
         results.years[year].clips++;
-        results.years[year].duration += metadata.duration;
+        results.years[year].duration += metadata.duration / 60; // convert to minutes
       }
     });
 

@@ -37,6 +37,21 @@ export default {
       where: { email: session.user.email },
     });
 
-    return user;
+    // return if user has any videos or if user is on any allow list
+    const hasPrivateVideos = await prisma.video.count({
+      where: {
+        OR: [
+          { AND: [{ ownerId: user.id }, { published: 'private' || 'allow-few' }] },
+          { allowList: { some: { id: user.id } } },
+        ],
+      },
+    });
+
+    console.log('hasPrivateVideos', hasPrivateVideos);
+
+    return {
+      ...user,
+      hasPrivateVideos: hasPrivateVideos > 0,
+    };
   },
 };

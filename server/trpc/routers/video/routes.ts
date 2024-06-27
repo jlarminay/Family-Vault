@@ -96,6 +96,8 @@ export const videoRouter = router({
       .map((video) => {
         return {
           ...video,
+          // clean date before returning
+          dateOrder: video.dateOrder.toISOString().split('T')[0] as any,
           // clean thumbnail url
           thumbnail: video.thumbnail || { path: 'https://placehold.co/640x360?text=Processing...' },
         };
@@ -240,6 +242,7 @@ export const videoRouter = router({
         },
       });
 
+      // clean date before returning
       video.dateOrder = video.dateOrder.toISOString().split('T')[0] as any;
 
       if (!video.published && video.ownerId !== session?.id && session?.role !== 'admin') {
@@ -291,6 +294,11 @@ export const videoRouter = router({
     const video = await ctx.prisma.video.findUnique({ where: { id: input.id } });
     if (video && video.ownerId !== session?.id) {
       throw new Error('Forbidden');
+    }
+
+    // clear list if public or private
+    if (input.published === 'public' || input.published === 'private') {
+      input.allowList = [];
     }
 
     return await ctx.prisma.video.update({

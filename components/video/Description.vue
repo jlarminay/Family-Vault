@@ -50,10 +50,6 @@ const showMore = ref<boolean>(false);
           </div>
         </div>
         <div v-if="showMore">
-          <div class="tw_flex tw_gap-2">
-            <span class="tw_font-bold">Order Date: </span>
-            <span>{{ video.dateOrder }}</span>
-          </div>
           <div class="tw_flex tw_gap-x-2 tw_flex-wrap">
             <span class="tw_font-bold">Collection: </span>
             <NuxtLink
@@ -62,6 +58,10 @@ const showMore = ref<boolean>(false);
             >
               {{ video.video.name.split('.')[0] }}
             </NuxtLink>
+          </div>
+          <div class="tw_flex tw_gap-2">
+            <span class="tw_font-bold">Order Date: </span>
+            <span>{{ video.dateOrder }}</span>
           </div>
           <div class="tw_flex tw_gap-2">
             <span class="tw_font-bold">File Name: </span>

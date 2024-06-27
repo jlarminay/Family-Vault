@@ -112,6 +112,7 @@ async function loadMore() {
               @click="filters.filterBy = filters.filterBy === 'liked' ? 'all' : 'liked'"
             />
             <q-btn
+              v-if="authData?.hasPrivateVideos"
               round
               flat
               class="!tw_p-0"
@@ -129,6 +130,7 @@ async function loadMore() {
             class="tw_text-lg tw_mt-4 tw_text-center tw_italic tw_opacity-70 tw_w-full"
           >
             <span v-if="filters.filterBy === 'all'">No Videos Found</span>
+            <span v-if="filters.filterBy === 'private'">No Private Videos</span>
             <span v-else>No Liked Videos</span>
           </div>
           <DashboardItem
