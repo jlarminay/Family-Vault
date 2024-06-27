@@ -15,6 +15,28 @@ export const userRouter = router({
     });
   }),
 
+  getHistory: protectedProcedure.query(async ({ ctx }) => {
+    const session = await getServerSession(ctx.event);
+
+    return await ctx.prisma.history.findMany({
+      where: {
+        userId: session?.id,
+      },
+      include: {
+        video: {
+          include: {
+            thumbnail: true,
+            video: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 12,
+    });
+  }),
+
   updateOwn: protectedProcedure.input(editOwnUserSchema).mutation(async ({ ctx, input }) => {
     const session = await getServerSession(ctx.event);
 

@@ -33,16 +33,26 @@ defineProps({
       >
         {{ formatDuration(video.video?.metadata?.duration) }}
       </span>
-      <q-icon
-        v-if="video.published === 'private'"
-        name="lock"
-        class="tw_absolute tw_top-1 tw_left-1 tw_text-primary tw_text-2xl tw_rounded-full tw_p-0.5"
-      />
-      <q-icon
-        v-if="liked"
-        name="o_favorite"
-        class="tw_absolute tw_top-1 tw_right-1 tw_text-red-600 tw_text-xl tw_rounded-full tw_p-0.5"
-      />
+      <div v-if="video.published !== 'public'" class="tw_absolute tw_top-1 tw_left-1">
+        <q-icon
+          name="lock"
+          class="tw_absolute tw_text-white tw_blur-[2px] tw_opacity-30 tw_text-2xl tw_rounded-full tw_p-0.5"
+        />
+        <q-icon
+          name="lock"
+          class="tw_absolute tw_text-primary tw_text-2xl tw_rounded-full tw_p-0.5"
+        />
+      </div>
+      <div v-if="liked" class="tw_absolute tw_top-1 tw_right-1">
+        <q-icon
+          name="o_favorite"
+          class="tw_absolute tw_right-0 tw_text-white tw_blur-[2px] tw_opacity-30 tw_text-2xl tw_rounded-full tw_p-0.5"
+        />
+        <q-icon
+          name="o_favorite"
+          class="tw_absolute tw_right-0 tw_text-red-600 tw_text-2xl tw_rounded-full tw_p-0.5"
+        />
+      </div>
     </div>
     <div class="tw_mt-2">
       <p class="tw_text-gray-500 tw_text-sm sm:tw_text-xs tw_truncate">
@@ -52,7 +62,7 @@ defineProps({
       </p>
       <p v-if="expandedView" class="tw_text-gray-500 tw_text-sm sm:tw_text-xs tw_truncate">
         <b>Order:</b>
-        {{ dayjs(video.dateOrder).format('YYYY-MM-DD') }}
+        {{ video.dateOrder }}
       </p>
       <p class="tw_text-lg sm:tw_text-base !tw_leading-tight tw_line-clamp-2 tw_font-bold">
         {{ video.title }}

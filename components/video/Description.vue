@@ -9,9 +9,23 @@ const showMore = ref<boolean>(false);
 </script>
 
 <template>
-  <div class="tw_mt-4">
+  <div class="tw_mt-2">
     <div
-      class="tw_text-base tw_font-maven-pro tw_font-normal tw_leading-tight"
+      v-if="video.published !== 'public'"
+      class="tw_border-2 tw_rounded tw_border-orange-200 tw_bg-orange-50 tw_px-4 tw_py-2 tw_flex tw_justify-start tw_items-center tw_gap-4"
+    >
+      <q-icon name="lock" class="tw_text-primary tw_text-2xl" />
+      <p v-if="video.published === 'private'" class="tw_text-lg tw_leading-tight">
+        This video is marked as private. Only you can see it.
+      </p>
+      <p v-if="video.published === 'allow-few'" class="tw_text-lg tw_leading-tight">
+        This video is marked as private. Only a few people can see it including:
+        {{ video.allowList.map((u: any) => u.name).join(', ') }}.
+      </p>
+    </div>
+
+    <div
+      class="tw_text-base tw_font-maven-pro tw_font-normal tw_leading-tight tw_mt-3"
       :class="{ 'tw_line-clamp-3': !showMore }"
     >
       <!-- Description -->
@@ -24,7 +38,7 @@ const showMore = ref<boolean>(false);
         <div class="tw_flex tw_gap-2">
           <span class="tw_font-bold">People: </span>
           <div v-if="!video.people" class="tw_opacity-70 tw_italic">None</div>
-          <div v-else class="tw_flex tw_gap-2">
+          <div v-else class="tw_flex tw_gap-x-2 tw_flex-wrap">
             <NuxtLink
               v-for="person in video.people.split(',')"
               :key="person"
@@ -36,11 +50,7 @@ const showMore = ref<boolean>(false);
           </div>
         </div>
         <div v-if="showMore">
-          <div class="tw_flex tw_gap-2">
-            <span class="tw_font-bold">Order Date: </span>
-            <span>{{ video.dateOrder }}</span>
-          </div>
-          <div class="tw_flex tw_gap-2">
+          <div class="tw_flex tw_gap-x-2 tw_flex-wrap">
             <span class="tw_font-bold">Collection: </span>
             <NuxtLink
               class="link"
@@ -48,6 +58,10 @@ const showMore = ref<boolean>(false);
             >
               {{ video.video.name.split('.')[0] }}
             </NuxtLink>
+          </div>
+          <div class="tw_flex tw_gap-2">
+            <span class="tw_font-bold">Order Date: </span>
+            <span>{{ video.dateOrder }}</span>
           </div>
           <div class="tw_flex tw_gap-2">
             <span class="tw_font-bold">File Name: </span>
@@ -59,6 +73,12 @@ const showMore = ref<boolean>(false);
               {{ video.video.metadata.resolution }} ({{
                 getAspectRatio(video.video.metadata.resolution)
               }})
+            </span>
+          </div>
+          <div class="tw_flex tw_gap-2">
+            <span class="tw_font-bold">Original Format: </span>
+            <span>
+              {{ video.originalFormat || '-' }}
             </span>
           </div>
           <div class="tw_flex tw_gap-2">

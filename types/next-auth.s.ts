@@ -15,6 +15,8 @@ declare module 'next-auth' {
     provider: string;
     /** The user's role */
     role: 'admin' | 'user';
+    /** If the user has access to private videos */
+    hasPrivateVideos: boolean;
     /** The user's profile data (optional) */
     person: {
       id: number;
