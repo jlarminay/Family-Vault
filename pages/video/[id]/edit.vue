@@ -169,6 +169,14 @@ async function updateVideo() {
                   </q-icon>
                 </template>
               </q-input>
+              <q-select
+                behavior="menu"
+                outlined
+                no-error-icon
+                v-model="videoEdit.originalFormat"
+                label="Original Video Format"
+                :options="['VHS', 'VHS-C', 'Video 8', 'Super 8', '8mm', 'Phone', 'Other']"
+              />
             </div>
 
             <!-- Security -->

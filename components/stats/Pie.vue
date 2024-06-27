@@ -1,21 +1,12 @@
 <script setup lang="ts">
-import { Bar } from 'vue-chartjs';
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-} from 'chart.js';
-ChartJS.register(Title, Tooltip, BarElement, CategoryScale, LinearScale, PointElement, LineElement);
+import { Pie } from 'vue-chartjs';
+import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js';
+ChartJS.register(ArcElement, Tooltip);
 
 const emits = defineEmits(['clips', 'duration']);
 const props = defineProps<{
   stats: {
-    year: Record<string, { clips: number; duration: number }>;
+    formats: Record<string, { clips: number; duration: number }>;
   };
   displayType: 'clips' | 'duration';
 }>();
@@ -75,29 +66,11 @@ const colors = computed(() => {
       />
     </div>
 
-    <Bar
+    <Pie
       :chartOptions="{
         responsive: true,
         maintainAspectRatio: true,
         resizeDelay: 200,
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
-        },
-        interaction: {
-          intersect: false,
-          mode: 'index',
-        },
-        plugins: {
-          tooltip: {
-            callbacks: {
-              footer: (tooltipItems: any) => {
-                return `SUM: ${tooltipItems}`;
-              },
-            },
-          },
-        },
       }"
       :data="{
         labels: labels,
@@ -108,7 +81,6 @@ const colors = computed(() => {
           },
         ],
       }"
-      class="tw_w-full"
     />
   </div>
 </template>

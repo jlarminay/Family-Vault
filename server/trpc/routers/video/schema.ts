@@ -26,7 +26,10 @@ export const editVideoSchema = z.object({
   tags: z.string().max(1024).nullable().optional(),
   dateDisplay: z.string().max(64).nullable().optional(),
   dateOrder: z.coerce.date(),
-  originalFormat: z.string().max(64).nullable().optional(),
+  originalFormat: z
+    .string(z.enum(['VHS', 'VHS-C', 'Video 8', 'Super 8', '8mm', 'Phone', 'Other']))
+    .nullable()
+    .optional(),
   published: z.string(z.enum(['public', 'private', 'allow-few', 'deny-few'])),
   allowList: z.array(z.number()).nullable().optional(),
   blockList: z.array(z.number()).nullable().optional(),

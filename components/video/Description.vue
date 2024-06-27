@@ -76,6 +76,12 @@ const showMore = ref<boolean>(false);
             </span>
           </div>
           <div class="tw_flex tw_gap-2">
+            <span class="tw_font-bold">Original Format: </span>
+            <span>
+              {{ video.originalFormat || '-' }}
+            </span>
+          </div>
+          <div class="tw_flex tw_gap-2">
             <span class="tw_font-bold">Video Size: </span>
             <span>{{ formatSize(video.video.size) }}</span>
           </div>

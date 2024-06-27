@@ -1,15 +1,16 @@
 model Video {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String?
-  people      String?
-  tags        String?
-  views       Int      @default(0)
-  dateDisplay String?
-  dateOrder   DateTime @db.Date
-  status      String   @default("finished")
-  ownerId     Int
-  owner       User     @relation(name: "UserToVideo", fields: [ownerId], references: [id])
+  id             Int      @id @default(autoincrement())
+  title          String
+  description    String?
+  people         String?
+  tags           String?
+  views          Int      @default(0)
+  dateDisplay    String?
+  dateOrder      DateTime @db.Date
+  originalFormat String?
+  status         String   @default("finished")
+  ownerId        Int
+  owner          User     @relation(name: "UserToVideo", fields: [ownerId], references: [id])
 
   published String @default("private")
   allowList User[] @relation(name: "UserToVideo1")

@@ -310,6 +310,7 @@ export const videoRouter = router({
         tags: input.tags,
         dateDisplay: input.dateDisplay,
         dateOrder: input.dateOrder,
+        originalFormat: input.originalFormat,
         published: input.published,
         allowList: {
           set: input.allowList?.map((user) => ({ id: user })) || [],

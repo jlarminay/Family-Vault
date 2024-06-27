@@ -2,17 +2,18 @@
 // @ts-ignore
 import VueWordCloud from 'vuewordcloud';
 
+const emits = defineEmits(['clips', 'duration']);
 const props = defineProps<{
   stats: {
-    people: Record<string, number>;
+    people: Record<string, { clips: number; duration: number }>;
   };
+  displayType: 'clips' | 'duration';
 }>();
 
-const displayDuration = ref(false);
 const words = computed(() => {
   if (!props.stats) return [];
   return Object.entries(props.stats).map(([text, counts]) => {
-    return displayDuration.value ? [text, counts.duration] : [text, counts.clips];
+    return props.displayType === 'duration' ? [text, counts.duration] : [text, counts.clips];
   });
 });
 function color(scope: any) {
@@ -36,26 +37,27 @@ function color(scope: any) {
       <q-chip
         label="Number of clips"
         :class="{
-          'tw_bg-primary tw_text-white': !displayDuration,
-          'tw_bg-gray-500 tw_text-white': displayDuration,
+          'tw_bg-primary tw_text-white': props.displayType === 'clips',
+          'tw_bg-gray-500 tw_text-white': props.displayType !== 'clips',
         }"
         flat
         ripple
         clickable
-        @click="displayDuration = false"
+        @click="emits('clips')"
       />
       <q-chip
         label="Length of clips"
         :class="{
-          'tw_bg-primary tw_text-white': displayDuration,
-          'tw_bg-gray-500 tw_text-white': !displayDuration,
+          'tw_bg-primary tw_text-white': props.displayType === 'duration',
+          'tw_bg-gray-500 tw_text-white': props.displayType !== 'duration',
         }"
         flat
         ripple
         clickable
-        @click="displayDuration = true"
+        @click="emits('duration')"
       />
     </div>
+
     <div class="tw_flex tw_justify-center">
       <VueWordCloud
         style="height: 480px; width: 100%"

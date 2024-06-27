@@ -47,8 +47,6 @@ export default {
       },
     });
 
-    console.log('hasPrivateVideos', hasPrivateVideos);
-
     return {
       ...user,
       hasPrivateVideos: hasPrivateVideos > 0,
