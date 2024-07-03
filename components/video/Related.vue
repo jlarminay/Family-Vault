@@ -1,11 +1,11 @@
 <script setup lang="ts">
-const videoStore = useVideoStore();
+const itemStore = useItemStore();
 const props = defineProps<{
   videoId: number;
   type: 'ver' | 'hor';
 }>();
 
-const relatedVideos = ref(await videoStore.getRelated(props.videoId, 10));
+const relatedVideos = ref(await itemStore.getRelated(props.videoId, 10));
 </script>
 
 <template>

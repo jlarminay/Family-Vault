@@ -4,12 +4,12 @@ definePageMeta({
 });
 const { data: authData } = useAuth();
 const route = useRoute();
-const videoStore = useVideoStore();
+const itemStore = useItemStore();
 const likeStore = useLikeStore();
 const commentStore = useCommentStore();
 
 const videoId = ref<number>(parseInt(route.params.id as string));
-const video = ref(await videoStore.getSingle(videoId.value));
+const video = ref(await itemStore.getSingle(videoId.value));
 const comments = ref(await commentStore.getForVideo(videoId.value));
 const likes = ref(await likeStore.getForVideo(videoId.value));
 
@@ -23,7 +23,7 @@ async function updateLike() {
   likes.value = await likeStore.getForVideo(videoId.value);
 }
 async function incrementViewCount() {
-  await videoStore.incrementViewCount(videoId.value);
+  await itemStore.incrementViewCount(videoId.value);
 }
 </script>
 

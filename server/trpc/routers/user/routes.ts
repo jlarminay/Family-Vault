@@ -23,10 +23,9 @@ export const userRouter = router({
         userId: session?.id,
       },
       include: {
-        video: {
+        item: {
           include: {
-            thumbnail: true,
-            video: true,
+            file: true,
           },
         },
       },

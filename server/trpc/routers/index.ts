@@ -2,7 +2,7 @@ import { router } from '@/server/trpc/trpc';
 
 import { adminRouter } from './admin/routes';
 import { settingRouter } from './setting/routes';
-import { videoRouter } from './video/routes';
+import { itemRouter } from './item/routes';
 import { commentRouter } from './comment/routes';
 import { likeRouter } from './like/routes';
 import { reportRouter } from './report/routes';
@@ -12,7 +12,7 @@ import { statsRouter } from './stats/routes';
 export const appRouter = router({
   admin: adminRouter,
   setting: settingRouter,
-  video: videoRouter,
+  item: itemRouter,
   comment: commentRouter,
   like: likeRouter,
   report: reportRouter,

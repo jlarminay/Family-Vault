@@ -2,7 +2,7 @@
 const { data: authData } = useAuth();
 const route = useRoute();
 
-const videoStore = useVideoStore();
+const itemStore = useItemStore();
 const search = ref<string>('');
 const showSearchInput = ref(false);
 
@@ -102,7 +102,7 @@ function handleSearch() {
                 v-if="authData?.role === 'admin'"
                 clickable
                 v-close-popup
-                @click="videoStore.showUploadModal = true"
+                @click="itemStore.showUploadModal = true"
               >
                 <q-item-section avatar>
                   <q-icon name="o_cloud_upload" />

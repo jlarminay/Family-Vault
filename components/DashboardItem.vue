@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
-defineProps({
-  video: {
+const props = defineProps({
+  item: {
     type: Object,
     required: true,
   },
@@ -14,26 +14,45 @@ defineProps({
     default: false,
   },
 });
+
+const file = computed(() => {
+  if (props.item.file.length === 0) {
+    return { path: 'https://placehold.co/640x360?text=Processing...' };
+  }
+
+  if (props.item.type === 'video') {
+    const video = props.item.file.find((f: any) => f.type === 'video');
+    const image = props.item.file.find((f: any) => f.type === 'image');
+    return {
+      ...video,
+      path: image.path,
+    };
+  }
+
+  return props.item.file[0];
+});
 </script>
 
 <template>
   <NuxtLink
     class="tw_inline-block tw_w-full tw_rounded tw_overflow-hidden tw_transition hover:tw_bg-slate-200 tw_p-2"
-    :class="{ 'tw_cursor-not-allowed tw_opacity-70': video.status === 'processing' }"
-    :to="video.status === 'processing' ? '' : `/video/${video.id}`"
+    :class="{ 'tw_cursor-not-allowed tw_opacity-70': item.status === 'processing' }"
+    :to="
+      item.status === 'processing'
+        ? ''
+        : { path: $route.path, query: { ...$route.query, id: item.id } }
+    "
+    replace
   >
     <div class="tw_relative tw_rounded">
-      <img
-        :src="video.thumbnail.path"
-        class="tw_w-full tw_aspect-video tw_object-cover tw_rounded"
-      />
+      <img :src="file.path" class="tw_w-full tw_aspect-video tw_object-cover tw_rounded" />
       <span
-        v-if="video.status !== 'processing'"
+        v-if="item.status !== 'processing' && item.type === 'video'"
         class="tw_absolute tw_bottom-0 tw_right-0 tw_px-2 tw_p-0.5 tw_bg-black tw_bg-opacity-60 tw_text-white tw_rounded-tl tw_rounded-br"
       >
-        {{ formatDuration(video.video?.metadata?.duration) }}
+        {{ formatDuration(file.metadata?.duration) }}
       </span>
-      <div v-if="video.published !== 'public'" class="tw_absolute tw_top-1 tw_left-1">
+      <div v-if="item.published !== 'public'" class="tw_absolute tw_top-1 tw_left-1">
         <q-icon
           name="lock"
           class="tw_absolute tw_text-white tw_blur-[2px] tw_opacity-30 tw_text-2xl tw_rounded-full tw_p-0.5"
@@ -54,30 +73,19 @@ defineProps({
         />
       </div>
     </div>
-    <div class="tw_mt-2">
-      <p class="tw_text-gray-500 tw_text-sm sm:tw_text-xs tw_truncate">
-        <b v-if="expandedView">Display:</b>
-        {{ video.dateDisplay }}
-        <!-- • {{ formatViews(video.views, 'sm') }} views -->
-      </p>
-      <p v-if="expandedView" class="tw_text-gray-500 tw_text-sm sm:tw_text-xs tw_truncate">
-        <b>Order:</b>
-        {{ video.dateOrder }}
-      </p>
-      <p class="tw_text-lg sm:tw_text-base !tw_leading-tight tw_line-clamp-2 tw_font-bold">
-        {{ video.title }}
-      </p>
-      <p class="tw_text-gray-500 tw_text-base sm:tw_text-sm tw_line-clamp-2">
-        <b v-if="expandedView">Desc:</b>
-        {{ video.description || '-' }}
-      </p>
-      <p v-if="expandedView" class="tw_text-gray-500 tw_text-base sm:tw_text-sm tw_line-clamp-2">
-        <b>People:</b>
-        {{ video.people || '-' }}
-      </p>
-      <p v-if="expandedView" class="tw_text-gray-500 tw_text-base sm:tw_text-sm tw_line-clamp-2">
-        <b>File:</b>
-        {{ video.video.name }}
+    <div v-if="expandedView" class="tw_mt-2 tw_text-gray-500">
+      <p
+        v-for="(desc, i) in [
+          { label: 'Display:', value: item.dateDisplay },
+          { label: 'Order:', value: item.dateOrder },
+          { label: 'Desc:', value: item.description },
+          { label: 'People:', value: item.people },
+        ]"
+        :key="i"
+        class="tw_text-sm tw_truncate"
+      >
+        <b>{{ desc.label }}</b>
+        {{ desc.value }}
       </p>
     </div>
   </NuxtLink>

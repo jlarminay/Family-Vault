@@ -1,9 +1,11 @@
 model Report {
-  id        Int      @id @default(autoincrement())
-  report    String
+  id     Int    @id @default(autoincrement())
+  report String
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+  itemId Int
+  item   Item @relation(fields: [itemId], references: [id])
+
   createdAt DateTime @default(now())
-  userId    Int
-  user      User     @relation(name: "ReportToUser", fields: [userId], references: [id])
-  videoId   Int
-  video     Video    @relation(name: "ReportToVideo", fields: [videoId], references: [id])
 }

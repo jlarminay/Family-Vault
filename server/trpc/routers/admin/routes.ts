@@ -3,10 +3,10 @@ import { z } from 'zod';
 import dayjs from 'dayjs';
 
 export const adminRouter = router({
-  // video (R)
+  // item (R)
   ...{
-    videoRead: adminProcedure.query(async ({ ctx }) => {
-      return await ctx.prisma.video.findMany({
+    itemRead: adminProcedure.query(async ({ ctx }) => {
+      return await ctx.prisma.item.findMany({
         include: { owner: true },
       });
     }),
@@ -16,7 +16,7 @@ export const adminRouter = router({
   ...{
     filesRead: adminProcedure.query(async ({ ctx }) => {
       return await ctx.prisma.file.findMany({
-        include: { video: true, thumbnail: true },
+        include: { item: true },
       });
     }),
   },
@@ -73,7 +73,7 @@ export const adminRouter = router({
   // report (RD)
   ...{
     reportRead: adminProcedure.query(async ({ ctx }) => {
-      return await ctx.prisma.report.findMany({ include: { user: true, video: true } });
+      return await ctx.prisma.report.findMany({ include: { user: true, item: true } });
     }),
     reportDelete: adminProcedure
       .input(z.object({ id: z.number() }))

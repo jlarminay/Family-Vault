@@ -5,10 +5,10 @@ definePageMeta({
 const { data: authData } = useAuth();
 const route = useRoute();
 
-const videoStore = useVideoStore();
+const itemStore = useItemStore();
 const likeStore = useLikeStore();
-const allVideosCount = ref(0);
-const allVideos = ref<any>([]);
+const allItemsCount = ref(0);
+const allItems = ref<any>([]);
 const allLikes = ref(await likeStore.getAllMine());
 const loading = ref(false);
 const expandedView = ref(false);
@@ -21,28 +21,35 @@ const filters = ref({
 });
 
 watch(
-  () => [filters, route.query.search],
-  async () => {
-    // clean filter
-    page.value = 1;
-    filters.value.search = ((route.query.search as string) || '').toLowerCase();
-    // send filter
-    allVideos.value = [];
-    await search();
+  () => [filters.value.sortBy, filters.value.filterBy, route.query.search],
+  async (newValue, oldValue) => {
+    if (
+      !oldValue ||
+      newValue[0] !== oldValue[0] ||
+      newValue[1] !== oldValue[1] ||
+      newValue[2] !== oldValue[2]
+    ) {
+      // clean filter
+      page.value = 1;
+      filters.value.search = ((route.query.search as string) || '').toLowerCase();
+      // send filter
+      allItems.value = [];
+      await search();
+    }
   },
-  { deep: true, immediate: true },
+  { immediate: true },
 );
 
 async function search() {
   // scroll to top
   loading.value = true;
-  const result = await videoStore.search({
+  const result = await itemStore.search({
     ...filters.value,
     page: page.value,
   });
-  if (result.page === 1) allVideos.value = [];
-  allVideosCount.value = result.count;
-  allVideos.value = [...allVideos.value, ...result.videos];
+  if (result.page === 1) allItems.value = [];
+  allItemsCount.value = result.count;
+  allItems.value = [...allItems.value, ...result.items];
   loading.value = false;
 }
 async function loadMore() {
@@ -62,7 +69,7 @@ async function loadMore() {
       <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1400px] tw_mx-auto">
         <div class="tw_flex tw_justify-between sm:tw_justify-start tw_items-center tw_gap-4">
           <h1 class="h1">
-            Dashboard <span class="tw_text-lg">({{ allVideosCount }})</span>
+            Dashboard <span class="tw_text-lg">({{ allItemsCount }})</span>
           </h1>
           <div class="tw_mr-3">
             <q-btn
@@ -126,20 +133,20 @@ async function loadMore() {
 
         <div class="tw_flex tw_gap-0 tw_justify-start tw_flex-wrap tw_items-start tw_@container">
           <div
-            v-if="allVideos.length === 0 && !loading"
+            v-if="allItems.length === 0 && !loading"
             class="tw_text-lg tw_mt-4 tw_text-center tw_italic tw_opacity-70 tw_w-full"
           >
-            <span v-if="filters.filterBy === 'all'">No Videos Found</span>
-            <span v-if="filters.filterBy === 'private'">No Private Videos</span>
-            <span v-else>No Liked Videos</span>
+            <span v-if="filters.filterBy === 'liked'">No Liked Items</span>
+            <span v-if="filters.filterBy === 'private'">No Private Items</span>
+            <span v-else>No Items Found</span>
           </div>
           <DashboardItem
-            v-for="(video, i) in allVideos"
+            v-for="(item, i) in allItems"
             :key="i"
             :expandedView="expandedView"
-            :video="video"
-            :liked="allLikes.some((like: any) => like.videoId === video.id)"
-            class="tw_w-full @lg:tw_w-1/2 @xl:tw_w-1/2 @3xl:tw_w-1/3 @5xl:tw_w-1/4 @7xl:tw_w-1/5"
+            :item="item"
+            :liked="allLikes.some((like: any) => like.itemId === item.id)"
+            class="tw_w-1/2 @lg:tw_w-1/3 @xl:tw_w-1/3 @3xl:tw_w-1/4 @5xl:tw_w-1/5 @7xl:tw_w-1/6"
           />
         </div>
 
@@ -150,9 +157,11 @@ async function loadMore() {
         <q-infinite-scroll
           @load="loadMore"
           :offset="100"
-          :disable="loading || allVideos.length >= allVideosCount"
+          :disable="loading || allItems.length >= allItemsCount"
         />
       </main>
+
+      <div></div>
     </template>
   </NuxtLayout>
 </template>

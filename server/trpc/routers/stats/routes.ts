@@ -3,31 +3,31 @@ import dayjs from 'dayjs';
 
 export const statsRouter = router({
   getAll: protectedProcedure.query(async ({ ctx }) => {
-    const videos = await ctx.prisma.video.findMany({ include: { video: true } });
+    const items = await ctx.prisma.item.findMany({ include: { file: true } });
 
     const results = {
-      videos: {
+      items: {
         shortest: Infinity,
         longest: 0,
         average: 0,
         total: 0,
         views: 0,
-        count: videos.length,
+        count: items.length,
       },
       format: {} as any,
       people: {} as any,
       year: {} as any,
     };
 
-    videos.forEach((video) => {
-      const { video: videoData, dateOrder, originalFormat } = video;
-      const metadata: any = videoData?.metadata;
-      const people = video.people?.split(',') || [];
+    items.forEach((item) => {
+      const { file, dateOrder } = item;
+      const metadata: any = file.metadata;
+      const people = item.people?.split(',') || [];
 
-      results.videos.shortest = Math.min(results.videos.shortest, metadata.duration);
-      results.videos.longest = Math.max(results.videos.longest, metadata.duration);
-      results.videos.total += metadata.duration;
-      results.videos.views += video.views || 0;
+      results.items.shortest = Math.min(results.items.shortest, metadata.duration);
+      results.items.longest = Math.max(results.items.longest, metadata.duration);
+      results.items.total += metadata.duration;
+      results.items.views += item.view || 0;
 
       // people
       if (people.length > 0) {
@@ -54,14 +54,14 @@ export const statsRouter = router({
         results.year[year].duration += metadata.duration / 60; // convert to minutes
       }
 
-      // original format
-      if (!!originalFormat) {
-        if (!results.format[originalFormat]) {
-          results.format[originalFormat] = { clips: 0, duration: 0 };
-        }
-        results.format[originalFormat].clips++;
-        results.format[originalFormat].duration += metadata.duration / 60; // convert to minutes
-      }
+      // // original format
+      // if (!!originalFormat) {
+      //   if (!results.format[originalFormat]) {
+      //     results.format[originalFormat] = { clips: 0, duration: 0 };
+      //   }
+      //   results.format[originalFormat].clips++;
+      //   results.format[originalFormat].duration += metadata.duration / 60; // convert to minutes
+      // }
     });
 
     // fill in missing years
@@ -82,7 +82,7 @@ export const statsRouter = router({
       }, {});
 
     // make average
-    results.videos.average = results.videos.total / videos.length;
+    results.items.average = results.items.total / items.length;
 
     return results;
   }),

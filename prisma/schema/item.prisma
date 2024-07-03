@@ -1,0 +1,26 @@
+model Item {
+  id          Int     @id @default(autoincrement())
+  description String?
+  people      String?
+  view        Int     @default(0)
+  type        String
+
+  dateDisplay String?
+  dateOrder   DateTime @db.Date
+
+  ownerId Int
+  owner   User @relation(name: "OwnedVideo", fields: [ownerId], references: [id])
+
+  published String @default("private")
+  allowList User[] @relation(name: "AllowList")
+  blockList User[] @relation(name: "BlockList")
+
+  file    File[]
+  comment Comment[]
+  history History[]
+  like    Like[]
+  report  Report[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

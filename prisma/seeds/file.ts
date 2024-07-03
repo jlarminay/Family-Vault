@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import S3 from '../../server/utils/s3.js';
+import ImageProcessor from '../../server/utils/imageProcessor.js';
 import VideoProcessor from '../../server/utils/videoProcessor.js';
 import fs from 'fs';
 
@@ -21,38 +22,63 @@ export default async () => {
     './videos/demo5.mp4',
     './videos/demo6.mp4',
     './videos/demo7.mp4',
+    './images/image1.jpg',
+    './images/image2.jpg',
+    './images/image3.jpg',
+    './images/image4.jpg',
+    './images/image5.jpg',
+    './images/image6.jpg',
   ];
 
   // create seeds
   for (let i = 0; i < newData.length; i++) {
-    // detect what type of file
-    const processing = new VideoProcessor('./prisma/seeds/' + newData[i]);
-    const results = await processing.prepareNewVideo();
+    const type = newData[i].split('.').pop();
 
-    // upload to s3
-    await s3.upload({
-      key: `videos/${results.video.name}`,
-      filePath: `./prisma/seeds/videos/${results.video.name}`,
-    });
-    await s3.upload({
-      key: `videos/${results.thumbnail.name}`,
-      filePath: `${targetDir}/${results.thumbnail.name}`,
-    });
+    if (type === 'mp4') {
+      // detect what type of file
+      const processing = new VideoProcessor('./prisma/seeds/' + newData[i]);
+      const results = await processing.prepareNewVideo();
 
-    // insert into db
-    await prisma.file.create({
-      data: {
-        ...results.video,
-        size: results.video.size.toString(),
-      },
-    });
-    await prisma.file.create({
-      data: {
-        ...results.thumbnail,
-        size: results.thumbnail.size.toString(),
-      },
-    });
-    count += 2;
+      // upload to s3
+      await s3.upload({
+        key: `videos/${results.video.name}`,
+        filePath: `./prisma/seeds/videos/${results.video.name}`,
+      });
+      await s3.upload({
+        key: `videos/${results.thumbnail.name}`,
+        filePath: `${targetDir}/${results.thumbnail.name}`,
+      });
+
+      // insert into db
+      await prisma.file.create({
+        data: {
+          ...results.video,
+        },
+      });
+      await prisma.file.create({
+        data: {
+          ...results.thumbnail,
+        },
+      });
+      count += 2;
+    }
+
+    // manage image
+    if (type === 'webp' || type === 'jpg') {
+      const processing = new ImageProcessor('./prisma/seeds/' + newData[i]);
+      await processing.convertToWebp();
+      const results = await processing.prepareNewImage();
+
+      // upload image
+      await s3.upload({
+        key: `images/${results.randomString}_${results.image.name}`,
+        filePath: `${targetDir}/${results.image.name}`,
+      });
+
+      // insert into db
+      await prisma.file.create({ data: results.image });
+      count++;
+    }
   }
 
   console.log('Insert file: ', count);

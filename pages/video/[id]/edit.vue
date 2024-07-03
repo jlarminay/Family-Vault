@@ -6,11 +6,11 @@ const { data: authData } = useAuth();
 const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
-const videoStore = useVideoStore();
+const itemStore = useItemStore();
 
 const form = ref<any>(null);
 const videoId = ref<number>(parseInt(route.params.id as string));
-const video = ref(await videoStore.getSingle(videoId.value));
+const video = ref(await itemStore.getSingle(videoId.value));
 const allUsers = ref(await userStore.getAll());
 const videoEdit = ref<any>({});
 const loading = ref(false);
@@ -37,7 +37,7 @@ async function updateVideo() {
   if (!(await form.value.validate())) return;
   //
   loading.value = true;
-  let response = await videoStore.update(videoEdit.value);
+  let response = await itemStore.update(videoEdit.value);
   loading.value = false;
   if (!response) {
     toaster({ type: 'error', message: 'Something went wrong.<br/>Please try again later.' });

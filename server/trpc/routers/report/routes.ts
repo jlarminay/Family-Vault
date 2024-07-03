@@ -5,22 +5,22 @@ import webhooks from '@/server/utils/webhooks';
 
 export const reportRouter = router({
   create: protectedProcedure
-    .input(z.object({ videoId: z.number(), report: z.string().max(256) }))
+    .input(z.object({ itemId: z.number(), report: z.string().max(256) }))
     .mutation(async ({ ctx, input }) => {
       const session = await getServerSession(ctx.event);
-      const { videoId, report } = input;
+      const { itemId, report } = input;
 
       // insert into db
       const response = await ctx.prisma.report.create({
         data: {
-          videoId,
+          itemId,
           userId: session?.id || 0,
           report,
         },
       });
       // send webhook
-      const video = await ctx.prisma.video.findUnique({ where: { id: videoId } });
-      webhooks.discord({ video, user: session, report });
+      const item = await ctx.prisma.item.findUnique({ where: { id: itemId } });
+      webhooks.discord({ item, user: session, report });
       // return response
       return response;
     }),
