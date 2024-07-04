@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import dayjs from 'dayjs';
 definePageMeta({
   middleware: 'admin-authorized-only',
 });
@@ -59,7 +58,7 @@ const allVideos = ref(await adminStore.videoRead());
           <template #body-cell-createdAt="props">
             <q-td :props="props">
               <div class="tw_line-clamp-1">
-                {{ dayjs(props.row.createdAt).format('MMM D, YYYY') }}
+                {{ $dayjs(props.row.createdAt).format('MMM D, YYYY') }}
               </div>
             </q-td>
           </template>

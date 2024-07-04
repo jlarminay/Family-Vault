@@ -1,4 +1,6 @@
 import { PrismaClient } from '@prisma/client';
+import { faker } from '@faker-js/faker';
+import dayjs from 'dayjs';
 
 const prisma = new PrismaClient();
 
@@ -9,44 +11,49 @@ export default async () => {
       text: 'This is a good comment',
       itemId: 1,
       userId: 3,
-      createdAt: new Date('2023-11-01'),
+      createdAt: dayjs().subtract(1, 'day').toDate(),
     },
     {
       text: 'This is a bad comment',
       itemId: 1,
       userId: 4,
-      createdAt: new Date('2023-09-26'),
+      createdAt: dayjs().subtract(2, 'day').toDate(),
     },
     {
-      text: 'This is another comment',
+      text: faker.person.jobDescriptor(),
       itemId: 1,
       userId: 4,
-      createdAt: new Date('2023-12-22'),
+      createdAt: dayjs().subtract(10, 'day').toDate(),
     },
     {
-      text: 'This is a comment',
+      text: faker.person.jobDescriptor(),
       itemId: 2,
       userId: 5,
+      createdAt: dayjs().subtract(20, 'day').toDate(),
     },
     {
-      text: 'This is a comment',
+      text: faker.person.jobDescriptor(),
       itemId: 2,
       userId: 4,
+      createdAt: dayjs().subtract(10, 'day').toDate(),
     },
     {
-      text: 'This is a comment',
+      text: faker.person.jobDescriptor(),
       itemId: 2,
       userId: 4,
+      createdAt: dayjs().subtract(2, 'day').toDate(),
     },
     {
-      text: 'This is a comment',
+      text: faker.commerce.productDescription(),
       itemId: 3,
       userId: 5,
+      createdAt: dayjs().subtract(1, 'day').toDate(),
     },
     {
-      text: 'This is a comment',
+      text: faker.commerce.productDescription(),
       itemId: 3,
       userId: 4,
+      createdAt: dayjs().toDate(),
     },
   ];
 

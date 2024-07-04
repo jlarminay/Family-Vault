@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import dayjs from 'dayjs';
 const emit = defineEmits(['fileUpdated']);
 const props = defineProps({
   maxSize: {
@@ -49,9 +48,9 @@ watch(
   (newValue, oldValue) => {
     console.log('Upload state changed', oldValue, newValue);
     if (oldValue === 'idle' && newValue === 'uploading') {
-      startTime.value = dayjs().unix();
+      startTime.value = $dayjs().unix();
       timer.value = setInterval(() => {
-        elapsedTime.value = dayjs().unix() - startTime.value;
+        elapsedTime.value = $dayjs().unix() - startTime.value;
       }, 500);
     } else {
       startTime.value = 0;

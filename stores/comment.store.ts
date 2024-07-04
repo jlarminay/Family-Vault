@@ -6,13 +6,13 @@ export const useCommentStore = defineStore('comment', {
   getters: {},
 
   actions: {
-    async getForVideo(videoId: number) {
+    async getForVideo(itemId: number) {
       const { $trpc } = useNuxtApp();
-      return await $trpc.comment.getForVideo.query({ videoId });
+      return await $trpc.comment.getForVideo.query({ itemId });
     },
-    async createForVideo(videoId: number, text: string) {
+    async createForVideo(itemId: number, text: string) {
       const { $trpc } = useNuxtApp();
-      return await $trpc.comment.createForVideo.mutate({ videoId, text });
+      return await $trpc.comment.createForVideo.mutate({ itemId, text });
     },
   },
 });

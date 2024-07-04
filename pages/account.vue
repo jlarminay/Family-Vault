@@ -110,9 +110,9 @@ async function updateUser() {
             No Videos Found
           </div>
           <DashboardItem
-            v-for="(video, i) in history.map((v: any) => v.video)"
+            v-for="(item, i) in history"
             :key="i"
-            :video="video"
+            :item="item"
             class="tw_w-full md:tw_w-1/2 lg:tw_w-1/3"
           />
         </div>

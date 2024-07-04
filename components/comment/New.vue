@@ -25,7 +25,7 @@ async function postComment() {
 
 <template>
   <div class="tw_flex tw_gap-4 tw_items-start tw_mt-6 tw_group">
-    <div class="tw_w-[40px] tw_h-[40px] tw_bg-gray-200 tw_rounded-full tw_overflow-hidden">
+    <div class="tw_w-[40px] tw_h-[40px] tw_border tw_rounded-full tw_overflow-hidden">
       <img :src="authData?.avatar" class="tw_w-full tw_h-full tw_object-cover" />
     </div>
     <div class="tw_flex-1">
@@ -43,7 +43,7 @@ async function postComment() {
           no-caps
           unelevated
           :loading="loading"
-          size="14px"
+          size="12px"
           color="primary"
           label="Comment"
           @click="postComment()"

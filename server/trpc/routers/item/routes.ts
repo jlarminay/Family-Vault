@@ -42,6 +42,7 @@ export const itemRouter = router({
           select: {
             id: true,
             name: true,
+            avatar: true,
           },
         },
       },
@@ -93,8 +94,12 @@ export const itemRouter = router({
           ...item,
           // clean date before returning
           dateOrder: item.dateOrder.toISOString().split('T')[0] as any,
-          // clean thumbnail url
-          // thumbnail: item.thumbnail || { path: 'https://placehold.co/640x360?text=Processing...' },
+          // clean files
+          video:
+            item.type === 'video' && item.file.length > 0
+              ? item.file.find((file) => file.type === 'video')
+              : null,
+          image: item.file.find((file) => file.type === 'image'),
         };
       })
       .sort((a: any, b: any) => {

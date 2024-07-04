@@ -1,4 +1,6 @@
 import { PrismaClient } from '@prisma/client';
+import dayjs from 'dayjs';
+import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient();
 
@@ -7,117 +9,160 @@ export default async () => {
   const newData = [
     {
       type: 'video',
-      description: 'This is a video',
-      people: 'John',
-      dateOrder: new Date('2010-04-05'),
+      description: faker.commerce.productDescription(),
+      people: `${faker.person.firstName()}, ${faker.person.firstName()}`,
+      dateOrder: dayjs().toDate(), // today
+      createdAt: dayjs().toDate(), // today
       ownerId: 3,
       published: 'public',
       file: [1, 2],
     },
     {
       type: 'video',
-      description: 'This is a video',
-      people: 'John',
-      dateOrder: new Date('2010-04-05'),
+      description: faker.commerce.productDescription(),
+      people: `${faker.person.firstName()}, ${faker.person.firstName()}, ${faker.person.firstName()}`,
+      dateOrder: dayjs().toDate(), // today
+      createdAt: dayjs().subtract(1, 'day').toDate(), // yesterday
       ownerId: 3,
       published: 'public',
       file: [3, 4],
     },
     {
       type: 'video',
-      description: 'This is a video',
-      people: 'John',
-      dateOrder: new Date('2010-04-05'),
+      description: faker.commerce.productDescription(),
+      people: `${faker.person.firstName()}`,
+      dateOrder: dayjs().subtract(1, 'day').toDate(), // yesterday
+      createdAt: dayjs().subtract(1, 'day').toDate(), // yesterday
+
       ownerId: 3,
       published: 'public',
       file: [5, 6],
     },
     {
       type: 'video',
-      description: 'This is a video',
-      people: 'John',
-      dateOrder: new Date('2010-04-05'),
+      description: '',
+      people: '',
+      dateOrder: dayjs().subtract(1, 'day').toDate(), // yesterday
+      createdAt: dayjs().subtract(1, 'day').toDate(), // yesterday
       ownerId: 3,
       published: 'public',
       file: [7, 8],
     },
     {
       type: 'video',
-      description: 'This is a video',
-      people: 'John',
-      dateOrder: new Date('2010-04-05'),
+      description: faker.commerce.productDescription(),
+      people: '',
+      dateOrder: dayjs().subtract(20, 'day').toDate(), // 20 days ago
+      createdAt: dayjs().subtract(10, 'day').toDate(), // 10 days ago
       ownerId: 3,
       published: 'public',
       file: [9, 10],
     },
     {
       type: 'video',
-      description: 'This is a video',
-      people: 'John',
-      dateOrder: new Date('2010-04-05'),
+      description: faker.commerce.productDescription(),
+      people: `${faker.person.firstName()}, ${faker.person.firstName()}`,
+      dateOrder: dayjs().subtract(60, 'day').toDate(), // 60 days ago
+      createdAt: dayjs().subtract(30, 'day').toDate(), // 30 days ago
       ownerId: 3,
       published: 'public',
       file: [11, 12],
     },
     {
       type: 'video',
-      description: 'This is a video',
-      people: 'John',
-      dateOrder: new Date('2010-04-05'),
+      description: '',
+      people: '',
+      dateOrder: dayjs()
+        .subtract(Math.floor(Math.random() * 640) + 360, 'day')
+        .toDate(), // 360 - 1000 days ago
+      createdAt: dayjs()
+        .subtract(Math.floor(Math.random() * 640) + 360, 'day')
+        .toDate(), // 360 - 1000 days ago
       ownerId: 3,
       published: 'public',
       file: [13, 14],
     },
     {
       type: 'image',
-      description: 'This is a video',
-      people: 'John',
-      dateOrder: new Date('2010-04-05'),
+      description: faker.commerce.productDescription(),
+      people: `${faker.person.firstName()}, ${faker.person.firstName()}, ${faker.person.firstName()}, ${faker.person.firstName()}, ${faker.person.firstName()}`,
+      dateOrder: dayjs()
+        .subtract(Math.floor(Math.random() * 640) + 360, 'day')
+        .toDate(), // 360 - 1000 days ago
+      createdAt: dayjs()
+        .subtract(Math.floor(Math.random() * 640) + 360, 'day')
+        .toDate(), // 360 - 1000 days ago
       ownerId: 3,
       published: 'public',
       file: [15],
     },
     {
       type: 'image',
-      description: 'This is a video',
-      people: 'John',
-      dateOrder: new Date('2010-04-05'),
+      description: faker.commerce.productDescription(),
+      people: `${faker.person.firstName()}, ${faker.person.firstName()}`,
+      dateOrder: dayjs()
+        .subtract(Math.floor(Math.random() * 640) + 360, 'day')
+        .toDate(), // 360 - 1000 days ago
+      createdAt: dayjs()
+        .subtract(Math.floor(Math.random() * 640) + 360, 'day')
+        .toDate(), // 360 - 1000 days ago
       ownerId: 3,
       published: 'public',
       file: [16],
     },
     {
       type: 'image',
-      description: 'This is a video',
-      people: 'John',
-      dateOrder: new Date('2010-04-05'),
+      description: faker.commerce.productDescription(),
+      people: '',
+      dateOrder: dayjs()
+        .subtract(Math.floor(Math.random() * 640) + 360, 'day')
+        .toDate(), // 360 - 1000 days ago
+      createdAt: dayjs()
+        .subtract(Math.floor(Math.random() * 640) + 360, 'day')
+        .toDate(), // 360 - 1000 days ago
       ownerId: 3,
       published: 'public',
       file: [17],
     },
     {
       type: 'image',
-      description: 'This is a video',
-      people: 'John',
-      dateOrder: new Date('2010-04-05'),
+      description: '',
+      people: '',
+      dateOrder: dayjs()
+        .subtract(Math.floor(Math.random() * 640) + 360, 'day')
+        .toDate(), // 360 - 1000 days ago
+      createdAt: dayjs()
+        .subtract(Math.floor(Math.random() * 640) + 360, 'day')
+        .toDate(), // 360 - 1000 days ago
       ownerId: 3,
       published: 'public',
       file: [18],
     },
     {
       type: 'image',
-      description: 'This is a video',
-      people: 'John',
-      dateOrder: new Date('2010-04-05'),
+      description: '',
+      people: '',
+      dateOrder: dayjs()
+        .subtract(Math.floor(Math.random() * 640) + 360, 'day')
+        .toDate(), // 360 - 1000 days ago
+      createdAt: dayjs()
+        .subtract(Math.floor(Math.random() * 640) + 360, 'day')
+        .toDate(), // 360 - 1000 days ago
       ownerId: 3,
       published: 'public',
       file: [19],
     },
     {
       type: 'image',
-      description: 'This is a video',
-      people: 'John',
-      dateOrder: new Date('2010-04-05'),
+      description: '',
+      people: `${faker.person.firstName()}, ${faker.person.firstName()}`,
+      // random day dayjs
+      dateOrder: dayjs()
+        .subtract(Math.floor(Math.random() * 640) + 360, 'day')
+        .toDate(), // 360 - 1000 days ago
+      createdAt: dayjs()
+        .subtract(Math.floor(Math.random() * 640) + 360, 'day')
+        .toDate(), // 360 - 1000 days ago
       ownerId: 3,
       published: 'public',
       file: [20],
@@ -138,6 +183,7 @@ export default async () => {
         file: {
           connect: newData[i].file.map((id) => ({ id })),
         },
+        createdAt: newData[i].createdAt,
       },
     });
   }

@@ -1,6 +1,5 @@
 import { adminProcedure, router } from '@/server/trpc/trpc';
 import { z } from 'zod';
-import dayjs from 'dayjs';
 
 export const adminRouter = router({
   // item (R)

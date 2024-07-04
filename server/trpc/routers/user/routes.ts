@@ -18,7 +18,7 @@ export const userRouter = router({
   getHistory: protectedProcedure.query(async ({ ctx }) => {
     const session = await getServerSession(ctx.event);
 
-    return await ctx.prisma.history.findMany({
+    const history = await ctx.prisma.history.findMany({
       where: {
         userId: session?.id,
       },
@@ -33,6 +33,21 @@ export const userRouter = router({
         createdAt: 'desc',
       },
       take: 12,
+    });
+
+    return history.map((historyItem) => {
+      const item = historyItem.item;
+      return {
+        ...item,
+        // clean date before returning
+        dateOrder: item.dateOrder.toISOString().split('T')[0] as any,
+        // clean files
+        video:
+          item.type === 'video' && item.file.length > 0
+            ? item.file.find((file) => file.type === 'video')
+            : null,
+        image: item.file.find((file) => file.type === 'image'),
+      };
     });
   }),
 
