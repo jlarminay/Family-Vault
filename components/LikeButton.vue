@@ -1,35 +1,34 @@
 <script setup lang="ts">
-const emits = defineEmits(['clicked']);
-defineProps({
-  count: {
+const props = defineProps({
+  itemId: {
     type: Number,
     required: true,
   },
-  isLiked: {
-    type: Boolean,
-    default: false,
-  },
 });
 
-const isClicked = ref(false);
+const likeStore = useLikeStore();
+const likeData = ref(await likeStore.getForVideo(props.itemId));
+const loading = ref(false);
+const clickedOnce = ref(false);
+
+async function updateLike() {
+  loading.value = true;
+  clickedOnce.value = true;
+  await likeStore.update(props.itemId, !likeData.value.isLiked);
+  likeData.value = await likeStore.getForVideo(props.itemId);
+  loading.value = false;
+}
 </script>
 
 <template>
-  <q-btn
-    outline
-    rounded
-    :size="$q.screen.lt.sm ? '10px' : '12px'"
-    class="tw_flex tw_flex-nowrap"
-    :class="{ 'tw_text-red-500': isLiked }"
-    @click="
-      isClicked = !isLiked;
-      emits('clicked');
-    "
-  >
-    <div class="tw_flex tw_items-center tw_whitespace-nowrap">
-      <q-icon :name="isLiked ? 'o_favorite' : 'o_favorite_border'" :class="{ tada: isClicked }" />
-      <span class="tw_text-sm sm:tw_text-lg tw_ml-1">{{ count }}</span>
-    </div>
+  <q-btn round flat :disable="loading" :loading="loading" @click="updateLike">
+    <q-icon
+      :name="likeData.isLiked ? 'o_favorite' : 'o_favorite_border'"
+      :class="{
+        'tw_text-red-500': likeData.isLiked,
+        tada: likeData.isLiked && clickedOnce,
+      }"
+    />
   </q-btn>
 </template>
 

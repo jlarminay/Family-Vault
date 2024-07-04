@@ -53,7 +53,13 @@ const cleanedAllItems = computed(() => {
       }
     });
 
-    return finalGrouping;
+    // remove empty ones
+    return finalGrouping
+      .filter((group) => group.items.length > 0)
+      .map((group, i) => {
+        if (i === 0) group.label = `Uploaded ${group.label}`;
+        return group;
+      });
   }
 
   // group by date taken
@@ -109,10 +115,12 @@ watch(
 async function search() {
   // scroll to top
   loading.value = true;
+  allLikes.value = await likeStore.getAllMine();
   const result = await itemStore.search({
     ...filters.value,
     page: page.value,
   });
+
   if (result.page === 1) allItems.value = [];
   allItemsCount.value = result.count;
   allItems.value = [...allItems.value, ...result.items];
@@ -163,7 +171,6 @@ const getSelectedItem = computed(() => {
             <q-btn round flat class="!tw_p-0" icon="o_filter_list" color="dark" :loading="loading">
               <q-menu>
                 <q-list>
-                  <q-item-label header dense>Sort Videos</q-item-label>
                   <q-item
                     v-for="option in [
                       // { label: 'Alphabetical (A-Z)', value: 'title-asc' },
@@ -176,7 +183,6 @@ const getSelectedItem = computed(() => {
                       // { label: 'Duration (Shortest)', value: 'duration-asc' },
                     ]"
                     :key="option.value"
-                    dense
                     clickable
                     v-ripple
                     v-close-popup
@@ -220,22 +226,20 @@ const getSelectedItem = computed(() => {
             <span v-else>No Items Found</span>
           </div>
 
-          <div v-for="(group, i) in cleanedAllItems" :key="i" class="tw_w-full">
-            <div v-if="group.items.length > 0" class="tw_my-4">
-              <h2 class="h2 tw_ml-2 tw_mb-1">{{ group.label }}</h2>
+          <div v-for="(group, i) in cleanedAllItems" :key="i" class="tw_my-4">
+            <h2 class="h2 tw_ml-2 tw_mb-1">{{ group.label }}</h2>
 
-              <div
-                class="tw_flex tw_gap-0 tw_justify-start tw_flex-wrap tw_items-start tw_@container"
-              >
-                <DashboardItem
-                  v-for="(item, i) in group.items"
-                  :key="i"
-                  :expandedView="expandedView"
-                  :item="item"
-                  :liked="allLikes.some((like: any) => like.itemId === item.id)"
-                  class="tw_w-1/2 @lg:tw_w-1/3 @xl:tw_w-1/3 @3xl:tw_w-1/4 @5xl:tw_w-1/5 @7xl:tw_w-1/6"
-                />
-              </div>
+            <div
+              class="tw_flex tw_gap-0 tw_justify-start tw_flex-wrap tw_items-start tw_@container"
+            >
+              <DashboardItem
+                v-for="(item, i) in group.items"
+                :key="i"
+                :expandedView="expandedView"
+                :item="item"
+                :liked="allLikes.some((like: any) => like.itemId === item.id)"
+                class="tw_w-1/3 @lg:tw_w-1/3 @xl:tw_w-1/3 @3xl:tw_w-1/4 @5xl:tw_w-1/5 @7xl:tw_w-1/6"
+              />
             </div>
           </div>
         </div>

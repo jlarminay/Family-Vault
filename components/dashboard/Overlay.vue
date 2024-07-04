@@ -70,7 +70,7 @@ const displayInfo = computed(() => {
             </div>
             <div class="tw_flex tw_gap-2">
               <q-btn round flat icon="o_feedback" />
-              <q-btn round flat icon="o_favorite_border" />
+              <LikeButton :itemId="selectedItem.id" />
               <q-btn round flat icon="o_info" @click="showInfoMenu = !showInfoMenu" />
             </div>
           </div>
