@@ -22,6 +22,7 @@ const player = ref<any>(null);
 const initialPlay = ref<boolean>(false);
 
 onMounted(() => {
+  console.log('creating player');
   player.value = new Plyr('#videoPlayer', {
     // controls: [
     //   'play-large', // The large play button in the center
@@ -103,10 +104,15 @@ onMounted(() => {
     }
   });
 });
+onUnmounted(() => {
+  console.log('destroying player');
+  player.value.destroy();
+  player.value = null;
+});
 </script>
 
 <template>
-  <video id="videoPlayer" playsinline controls :poster="posterUrl">
+  <video v-if="!!player" id="videoPlayer" playsinline controls :poster="posterUrl">
     <source :src="videoUrl" type="video/mp4" />
   </video>
 </template>

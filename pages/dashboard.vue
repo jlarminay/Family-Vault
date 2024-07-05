@@ -27,7 +27,7 @@ const cleanedAllItems = computed(() => {
   // group by date uploaded
   if (filters.value.sortBy === 'date-added-desc') {
     const finalGrouping = [
-      { label: 'Uploaded Today', items: [] as any[] },
+      { label: 'Today', items: [] as any[] },
       { label: 'Yesterday', items: [] as any[] },
       { label: 'This Month', items: [] as any[] },
       { label: 'This Year', items: [] as any[] },
@@ -131,19 +131,6 @@ async function loadMore() {
   loading.value = true;
   await search();
 }
-
-const getSelectedItem = computed(() => {
-  const currentId = parseInt((route.query.id as string) || '');
-
-  // unlock scrolling when overlay is closed
-  document.body.classList.remove('tw_overflow-hidden');
-  if (!currentId) return null;
-
-  // lock scrolling when overlay is open
-  document.body.classList.add('tw_overflow-hidden');
-
-  return allItems.value.find((item: any) => item.id === currentId);
-});
 </script>
 
 <template>
@@ -255,11 +242,7 @@ const getSelectedItem = computed(() => {
         />
       </main>
 
-      <DashboardOverlay
-        v-if="!!getSelectedItem"
-        :loading="loading"
-        :selectedItem="getSelectedItem"
-      />
+      <DashboardOverlay :allItems="allItems" />
     </template>
   </NuxtLayout>
 </template>
