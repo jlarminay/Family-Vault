@@ -232,6 +232,11 @@ export const itemRouter = router({
         },
         include: {
           file: true,
+          like: {
+            select: {
+              userId: true,
+            },
+          },
           owner: {
             select: {
               name: true,
@@ -253,14 +258,34 @@ export const itemRouter = router({
         },
       });
 
-      // clean date before returning
-      item.dateOrder = item.dateOrder.toISOString().split('T')[0] as any;
-
       if (!item.published && item.ownerId !== session?.id && session?.role !== 'admin') {
         throw new Error('Item not published');
       }
 
-      return item;
+      return {
+        id: item.id,
+        description: item.description,
+        people: item.people,
+        view: item.view,
+        type: item.type,
+        dateDisplay: item.dateDisplay,
+        dateOrder: item.dateOrder.toISOString().split('T')[0] as any,
+        createdAt: item.createdAt.toISOString().split('T')[0] as any,
+        // owner
+        ownerId: item.ownerId,
+        owner: item.owner,
+        like: item.like.length,
+        // access
+        published: item.published,
+        allowList: item.allowList,
+        blockList: item.blockList,
+        // files
+        image:
+          item.file.length === 0
+            ? null
+            : item.file.find((file) => file.type === 'image' || file.type === 'thumbnail'),
+        video: item.file.length === 0 ? null : item.file.find((file) => file.type === 'video'),
+      };
     }),
 
   incrementViewCount: protectedProcedure

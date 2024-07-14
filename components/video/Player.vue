@@ -22,7 +22,6 @@ const player = ref<any>(null);
 const initialPlay = ref<boolean>(false);
 
 onMounted(() => {
-  console.log('creating player');
   player.value = new Plyr('#videoPlayer', {
     // controls: [
     //   'play-large', // The large play button in the center
@@ -105,7 +104,6 @@ onMounted(() => {
   });
 });
 onUnmounted(() => {
-  console.log('destroying player');
   player.value.destroy();
   player.value = null;
 });

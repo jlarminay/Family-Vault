@@ -19,11 +19,6 @@ defineProps({
   <NuxtLink
     class="tw_inline-block tw_rounded tw_overflow-hidden tw_transition hover:tw_bg-slate-200 tw_p-2"
     :class="{ 'tw_cursor-not-allowed tw_opacity-70': item.status === 'processing' }"
-    :to="
-      item.status === 'processing'
-        ? ''
-        : { path: '/dashboard', query: { ...$route.query, id: item.id } }
-    "
     replace
   >
     <div class="tw_relative tw_rounded">

@@ -21,10 +21,10 @@ export const useItemStore = defineStore('item', {
       return results;
     },
 
-    async getSingle(id: number) {
+    async getSingle(id: string) {
       const { $trpc } = useNuxtApp();
 
-      let results = await $trpc.item.getSingle.query({ id });
+      let results = await $trpc.item.getSingle.query({ id: parseInt(id) });
       return {
         ...results,
       };

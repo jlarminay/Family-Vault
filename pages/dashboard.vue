@@ -7,7 +7,6 @@ const { data: authData } = useAuth();
 const route = useRoute();
 const router = useRouter();
 
-const adminStore = useAdminStore();
 const itemStore = useItemStore();
 const likeStore = useLikeStore();
 const allItemsCount = ref(0);
@@ -15,8 +14,6 @@ const allItems = ref<any>([]);
 const allLikes = ref(await likeStore.getAllMine());
 const loading = ref(false);
 const expandedView = ref(false);
-
-const selectedItem = ref<any>(false);
 
 const page = ref(1);
 const filters = ref({
@@ -115,16 +112,6 @@ watch(
   },
   { immediate: true },
 );
-watch(
-  () => [route.query.id, allItems.value],
-  (newValue) => {
-    console.log(newValue, selectedItem.value);
-    if (route.query.id && !selectedItem.value && allItems.value.length > 0) {
-      selectedItem.value = allItems.value.find((item: any) => item.id === route.query.id) || false;
-    }
-  },
-  { immediate: true },
-);
 
 async function search() {
   // scroll to top
@@ -144,10 +131,6 @@ async function loadMore() {
   page.value++;
   loading.value = true;
   await search();
-}
-async function closeOverlay() {
-  selectedItem.value = null;
-  router.push({ path: '/dashboard', query: { ...route.query, id: undefined } });
 }
 </script>
 
@@ -221,8 +204,6 @@ async function closeOverlay() {
           </div>
         </div>
 
-        {{ selectedItem }}
-
         <div>
           <div
             v-if="allItems.length === 0 && !loading"
@@ -246,7 +227,11 @@ async function closeOverlay() {
                 :item="item"
                 :liked="allLikes.some((like: any) => like.itemId === item.id)"
                 class="tw_w-1/3 @lg:tw_w-1/3 @xl:tw_w-1/3 @3xl:tw_w-1/4 @5xl:tw_w-1/5 @7xl:tw_w-1/6"
-                @click="selectedItem = item"
+                :to="
+                  item.status === 'processing'
+                    ? ''
+                    : { path: '/dashboard', query: { ...route.query, id: item.id } }
+                "
               />
             </div>
           </div>
@@ -263,11 +248,7 @@ async function closeOverlay() {
         />
       </main>
 
-      <DashboardOverlay
-        v-if="selectedItem"
-        :selectedItem="selectedItem"
-        @closeOverlay="closeOverlay"
-      />
+      <DashboardOverlay />
     </template>
   </NuxtLayout>
 </template>

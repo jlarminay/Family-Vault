@@ -1,26 +1,33 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
 
-const emits = defineEmits(['closeOverlay']);
-const props = defineProps({
-  selectedItem: {
-    type: Object,
-    required: true,
-  },
-});
 const route = useRoute();
 const router = useRouter();
 
+const itemStore = useItemStore();
 const showInfoMenu = ref(true);
 const showMoreDetails = ref(false);
+const selectedItem = ref<any>(null);
 const loading = ref(false);
 
+watch(
+  () => route.query.id,
+  async (id) => {
+    if (id) {
+      loading.value = true;
+      selectedItem.value = await itemStore.getSingle(id as string);
+      loading.value = false;
+    }
+  },
+  { immediate: true },
+);
+
 const displayInfo = computed(() => {
-  const item = props.selectedItem;
-  const mainFile = item.type === 'video' ? item.video : item.image;
+  const mainFile =
+    selectedItem.value.type === 'video' ? selectedItem.value.video : selectedItem.value.image;
   return [
-    { icon: 'o_description', label: 'Description', value: item.description || '-' },
-    { icon: 'o_people', label: 'People', value: item.people || '-' },
+    { icon: 'o_description', label: 'Description', value: selectedItem.value.description || '-' },
+    { icon: 'o_people', label: 'People', value: selectedItem.value.people || '-' },
     {
       icon: 'o_aspect_ratio',
       label: 'Resolution',
@@ -42,16 +49,21 @@ const displayInfo = computed(() => {
     {
       icon: 'o_today',
       label: 'Added Date',
-      value: dayjs(item.createdAt).format('MMMM D, YYYY h:mm A'),
+      value: dayjs(selectedItem.value.createdAt).format('MMMM D, YYYY h:mm A'),
       hidden: true,
     },
   ];
 });
+async function closeOverlay() {
+  selectedItem.value = null;
+  router.push({ path: '/dashboard', query: { ...route.query, id: undefined } });
+}
 </script>
 
 <template>
   <div
-    class="tw_fixed tw_top-0 tw_left-0 tw_w-screen tw_h-screen tw_bg-black tw_bg-opacity-95 tw_z-[10000] tw_transition-[top]"
+    v-if="selectedItem"
+    class="tw_fixed tw_top-0 tw_left-0 tw_w-screen tw_h-screen tw_bg-black tw_bg-opacity-[99%] tw_z-[10000] tw_transition-[top]"
   >
     <div
       class="tw_flex tw_justify-stretch tw_items-stretch tw_h-full tw_w-full"
@@ -65,7 +77,7 @@ const displayInfo = computed(() => {
         <div v-if="selectedItem" class="tw_flex tw_flex-col tw_h-full">
           <div class="tw_flex tw_justify-between tw_px-4 tw_py-2">
             <div>
-              <q-btn round flat icon="o_arrow_back" @click="emits('closeOverlay')" />
+              <q-btn round flat icon="o_arrow_back" @click="closeOverlay" />
             </div>
             <div class="tw_flex tw_gap-2">
               <q-btn round flat icon="o_feedback" />
@@ -74,22 +86,26 @@ const displayInfo = computed(() => {
             </div>
           </div>
 
-          <div class="tw_w-full tw_h-full tw_border-4 tw_border-red-500">
-            <div v-if="selectedItem && !loading" class="tw_min-h-0 tw_p-4 tw_h-full tw_w-full">
+          <div class="tw_min-h-0 tw_w-full tw_h-full tw_border-4 tw_border-red-500 tw_p-6">
+            <div class="tw_w-full tw_h-full tw_grid tw_grid-cols-1 tw_grid-rows-1">
+              <div
+                class="tw_col-start-1 tw_row-start-1 tw_w-full tw_h-full tw_flex tw_justify-center tw_items-center"
+              >
+                <q-spinner-dots color="primary" size="50px" />
+              </div>
               <img
-                v-if="selectedItem.type === 'image'"
+                v-if="selectedItem && !loading && selectedItem.type === 'image'"
                 :src="selectedItem.image.path"
-                class="tw_w-full tw_h-full tw_object-contain"
+                class="tw_col-start-1 tw_row-start-1 tw_w-full tw_h-full tw_object-contain"
                 draggable="false"
               />
-              <VideoPlayer
-                v-if="selectedItem.type === 'video'"
-                :videoUrl="selectedItem.video.path"
-                :posterUrl="selectedItem.image.path"
-              />
-            </div>
-            <div v-else class="tw_w-full tw_h-full tw_flex tw_justify-center tw_items-center">
-              <q-spinner-dots color="primary" size="50px" />
+              <div class="tw_col-start-1 tw_row-start-1">
+                <VideoPlayer
+                  v-if="selectedItem && !loading && selectedItem.type === 'video'"
+                  :videoUrl="selectedItem.video.path"
+                  :posterUrl="selectedItem.image.path"
+                />
+              </div>
             </div>
           </div>
         </div>
