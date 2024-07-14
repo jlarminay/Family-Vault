@@ -112,7 +112,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <video v-if="!!player" id="videoPlayer" playsinline controls :poster="posterUrl">
+  <video id="videoPlayer" playsinline controls :poster="posterUrl">
     <source :src="videoUrl" type="video/mp4" />
   </video>
 </template>

@@ -1,42 +1,22 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
+
+const emits = defineEmits(['closeOverlay']);
 const props = defineProps({
-  allItems: {
-    type: Array,
+  selectedItem: {
+    type: Object,
     required: true,
   },
 });
 const route = useRoute();
 const router = useRouter();
 
-const itemStore = useItemStore();
 const showInfoMenu = ref(true);
 const showMoreDetails = ref(false);
-const selectedItemId = ref<any>(false);
-const selectedItem = ref<any>(false);
 const loading = ref(false);
 
-watch(
-  () => route.query.id,
-  async () => {
-    if (route.query.id) {
-      // open the overlay
-      selectedItemId.value = parseInt(route.query.id as string) || 0;
-      selectedItem.value = props.allItems.find(
-        (item: any) => item.id === selectedItemId.value,
-      ) as any;
-
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      loading.value = false;
-    }
-  },
-  { immediate: true },
-);
-
 const displayInfo = computed(() => {
-  if (!selectedItem.value) return [];
-
-  const item = selectedItem.value;
+  const item = props.selectedItem;
   const mainFile = item.type === 'video' ? item.video : item.image;
   return [
     { icon: 'o_description', label: 'Description', value: item.description || '-' },
@@ -67,63 +47,11 @@ const displayInfo = computed(() => {
     },
   ];
 });
-
-async function handleSwipe(event: any) {
-  console.log(event);
-  if (event.direction === 'left') {
-    await nextItem();
-  } else if (event.direction === 'right') {
-    await prevItem();
-  }
-}
-
-async function closeOverlay() {
-  console.log('closing overlay');
-  selectedItemId.value = false;
-  selectedItem.value = false;
-  await router.push({ path: route.path, query: { ...route.query, id: undefined } });
-}
-
-const isThereANextItem = computed(() => {
-  const currentIndex = props.allItems.findIndex((item: any) => item.id === selectedItemId.value);
-  return currentIndex < props.allItems.length - 1;
-});
-async function nextItem() {
-  return;
-  // loading.value = true;
-  // const currentIndex = props.allItems.findIndex((item: any) => item.id === selectedItemId.value);
-  // if (currentIndex === -1) return;
-  // const nextIndex = currentIndex + 1;
-  // if (nextIndex >= props.allItems.length) return;
-  // await router.push({
-  //   path: route.path,
-  //   query: { ...route.query, id: (props.allItems as any)[nextIndex].id },
-  // });
-}
-const isThereAPrevItem = computed(() => {
-  const currentIndex = props.allItems.findIndex((item: any) => item.id === selectedItemId.value);
-  return currentIndex > 0;
-});
-async function prevItem() {
-  return;
-  // loading.value = true;
-  // const currentIndex = props.allItems.findIndex((item: any) => item.id === selectedItemId.value);
-  // if (currentIndex === -1) return;
-  // const prevIndex = currentIndex - 1;
-  // if (prevIndex < 0) return;
-  // await router.push({
-  //   path: route.path,
-  //   query: { ...route.query, id: (props.allItems as any)[prevIndex].id },
-  // });
-}
 </script>
 
 <template>
   <div
     class="tw_fixed tw_top-0 tw_left-0 tw_w-screen tw_h-screen tw_bg-black tw_bg-opacity-95 tw_z-[10000] tw_transition-[top]"
-    :class="{
-      'tw_top-[100%]': !selectedItem,
-    }"
   >
     <div
       class="tw_flex tw_justify-stretch tw_items-stretch tw_h-full tw_w-full"
@@ -133,56 +61,43 @@ async function prevItem() {
       }"
     >
       <!-- Main Container -->
-      <div
-        class="tw_flex-grow tw_text-white tw_border-4 tw_border-red-300"
-        v-touch-swipe="handleSwipe"
-      >
+      <div class="tw_flex-grow tw_text-white">
         <div v-if="selectedItem" class="tw_flex tw_flex-col tw_h-full">
           <div class="tw_flex tw_justify-between tw_px-4 tw_py-2">
             <div>
-              <q-btn round flat icon="o_arrow_back" @click="closeOverlay" />
-            </div>
-            <div>
-              <q-btn
-                v-if="isThereAPrevItem"
-                round
-                flat
-                icon="o_navigate_before"
-                @click="prevItem"
-              />
-              {{ allItems.length || '-' }}
-              {{ loading }}
-              <q-btn v-if="isThereANextItem" round flat icon="o_navigate_next" @click="nextItem" />
+              <q-btn round flat icon="o_arrow_back" @click="emits('closeOverlay')" />
             </div>
             <div class="tw_flex tw_gap-2">
               <q-btn round flat icon="o_feedback" />
-              <LikeButton :itemId="selectedItem?.id" />
+              <LikeButton :itemId="selectedItem.id" />
               <q-btn round flat icon="o_info" @click="showInfoMenu = !showInfoMenu" />
             </div>
           </div>
 
-          <div v-if="selectedItem && !loading" class="tw_min-h-0 tw_p-4 tw_h-full tw_w-full">
-            <img
-              v-if="selectedItem.type === 'image'"
-              :src="selectedItem.file[0].path"
-              class="tw_w-full tw_h-full tw_object-contain"
-              draggable="false"
-            />
-            <VideoPlayer
-              v-if="selectedItem.type === 'video'"
-              :videoUrl="selectedItem.video.path"
-              :posterUrl="selectedItem.image.path"
-            />
-          </div>
-          <div v-else class="tw_w-full tw_h-full tw_flex tw_justify-center tw_items-center">
-            <q-spinner-dots color="primary" size="50px" />
+          <div class="tw_w-full tw_h-full tw_border-4 tw_border-red-500">
+            <div v-if="selectedItem && !loading" class="tw_min-h-0 tw_p-4 tw_h-full tw_w-full">
+              <img
+                v-if="selectedItem.type === 'image'"
+                :src="selectedItem.image.path"
+                class="tw_w-full tw_h-full tw_object-contain"
+                draggable="false"
+              />
+              <VideoPlayer
+                v-if="selectedItem.type === 'video'"
+                :videoUrl="selectedItem.video.path"
+                :posterUrl="selectedItem.image.path"
+              />
+            </div>
+            <div v-else class="tw_w-full tw_h-full tw_flex tw_justify-center tw_items-center">
+              <q-spinner-dots color="primary" size="50px" />
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Side Menu -->
       <div
-        class="tw_flex-shrink tw_h-full tw_bg-white tw_transition-[width,min-width] tw_overflow-x-hidden tw_overflow-y-scroll tw_border-4 tw_border-blue-400"
+        class="tw_flex-shrink tw_h-full tw_bg-white tw_transition-[width,min-width] tw_overflow-x-hidden tw_overflow-y-scroll"
         :class="{
           'tw_min-w-full tw_w-full': $q.screen.lt.sm && showInfoMenu,
           'tw_min-w-[50%] tw_w-[50%]': $q.screen.sm && showInfoMenu,

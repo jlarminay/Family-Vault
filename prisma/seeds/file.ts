@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import S3 from '../../server/utils/s3.js';
-import ImageProcessor from '../../server/utils/imageProcessor.js';
-import VideoProcessor from '../../server/utils/videoProcessor.js';
+import fileProcessor from '../../server/utils/fileProcessor.js';
 import fs from 'fs';
 
 const prisma = new PrismaClient();
@@ -14,69 +13,76 @@ export default async () => {
   if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir);
 
   let count = 0;
-  const newData = [
-    './videos/demo1.mp4',
-    './videos/demo2.mp4',
-    './videos/demo3.mp4',
-    './videos/demo4.mp4',
-    './videos/demo5.mp4',
-    './videos/demo6.mp4',
-    './videos/demo7.mp4',
-    './images/image1.jpg',
-    './images/image2.jpg',
-    './images/image3.jpg',
-    './images/image4.jpg',
-    './images/image5.jpg',
-    './images/image6.jpg',
-  ];
+  const allFiles = await s3.getAllFiles();
 
-  // create seeds
-  for (let i = 0; i < newData.length; i++) {
-    const type = newData[i].split('.').pop();
+  for (let i = 0; i < allFiles.length; i++) {
+    const file = allFiles[i];
 
-    if (type === 'mp4') {
-      // detect what type of file
-      const processing = new VideoProcessor('./prisma/seeds/' + newData[i]);
-      const results = await processing.prepareNewVideo();
+    // check content type
+    // if video
+    if (file.contentType.startsWith('video/')) {
+      // get metadata
+      const videoName = file.fullPath.split('/').pop() || '';
+      const videoMetadata = await fileProcessor.video.getMetadata({ videoPath: file.fullPath });
+      const newThumbnail = await fileProcessor.video.getThumbnailAt({
+        videoPath: file.fullPath,
+        duration: videoMetadata.duration,
+        timePercentage: 10,
+      });
+      const imageMetadata = await fileProcessor.image.getMetadata(newThumbnail);
 
       // upload to s3
       await s3.upload({
-        key: `videos/${results.video.name}`,
-        filePath: `./prisma/seeds/videos/${results.video.name}`,
-      });
-      await s3.upload({
-        key: `videos/${results.thumbnail.name}`,
-        filePath: `${targetDir}/${results.thumbnail.name}`,
+        targetPath: file.key.replace(videoName, newThumbnail.name),
+        localPath: newThumbnail.path,
       });
 
       // insert into db
       await prisma.file.create({
         data: {
-          ...results.video,
+          name: videoName,
+          path: file.fullPath,
+          type: 'video',
+          size: file.size.toString(),
+          metadata: videoMetadata,
         },
       });
       await prisma.file.create({
         data: {
-          ...results.thumbnail,
+          name: newThumbnail.name,
+          path: file.fullPath.replace(videoName, newThumbnail.name),
+          type: 'thumbnail',
+          size: '0',
+          metadata: imageMetadata,
         },
       });
+
+      // cleanup
+      fs.rmSync(newThumbnail.path);
+
       count += 2;
     }
-
-    // manage image
-    if (type === 'webp' || type === 'jpg') {
-      const processing = new ImageProcessor('./prisma/seeds/' + newData[i]);
-      await processing.convertToWebp();
-      const results = await processing.prepareNewImage();
-
-      // upload image
-      await s3.upload({
-        key: `images/${results.randomString}_${results.image.name}`,
-        filePath: `${targetDir}/${results.image.name}`,
+    // if image
+    else if (file.contentType.startsWith('image/')) {
+      // get metadata
+      const imageName = file.fullPath.split('/').pop() || '';
+      const imageMetadata = await fileProcessor.image.getMetadata({
+        name: imageName,
+        path: file.fullPath,
       });
 
       // insert into db
-      await prisma.file.create({ data: results.image });
+      await prisma.file.create({
+        data: {
+          name: imageName,
+          path: file.fullPath,
+          type: 'image',
+          size: file.size.toString(),
+          metadata: imageMetadata,
+        },
+      });
+
+      // cleanup
       count++;
     }
   }

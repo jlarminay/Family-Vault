@@ -1,5 +1,6 @@
 import { adminProcedure, router } from '@/server/trpc/trpc';
 import { z } from 'zod';
+import S3 from '~/server/utils/s3';
 
 export const adminRouter = router({
   // item (R)
@@ -81,6 +82,19 @@ export const adminRouter = router({
           where: { id: input.id },
         });
       }),
+  },
+
+  // s3 commands
+  ...{
+    getAllFiles: adminProcedure.query(async () => {
+      const s3 = new S3();
+      console.log('running s3');
+      return await s3.getAllFiles();
+    }),
+    getMetadata: adminProcedure.input(z.object({ key: z.string() })).query(async ({ input }) => {
+      const s3 = new S3();
+      return await s3.getFileMetadata(input.key);
+    }),
   },
 });
 

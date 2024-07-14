@@ -1,7 +1,7 @@
 export default function (duration: number, style: 'time' | 'string' = 'time'): string {
   const hrs = Math.floor(duration / 3600);
   const mins = Math.floor((duration % 3600) / 60);
-  const secs = duration % 60;
+  const secs = Math.floor(duration % 60);
 
   let finalString = '';
 
