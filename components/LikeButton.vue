@@ -7,9 +7,17 @@ const props = defineProps({
 });
 
 const likeStore = useLikeStore();
-const likeData = ref(await likeStore.getForVideo(props.itemId));
+const likeData = ref<any>(null);
 const loading = ref(false);
 const clickedOnce = ref(false);
+
+watch(
+  () => props.itemId,
+  async (id) => {
+    likeData.value = await likeStore.getForVideo(id);
+  },
+  { immediate: true },
+);
 
 async function updateLike() {
   loading.value = true;
@@ -21,12 +29,12 @@ async function updateLike() {
 </script>
 
 <template>
-  <q-btn round flat :disable="loading" :loading="loading" @click="updateLike">
+  <q-btn v-if="likeData" round flat :disable="loading" :loading="loading" @click="updateLike">
     <q-icon
       :name="likeData.isLiked ? 'o_favorite' : 'o_favorite_border'"
       :class="{
         'tw_text-red-500': likeData.isLiked,
-        tada: likeData.isLiked && clickedOnce,
+        // tada: likeData.isLiked && clickedOnce,
       }"
     />
   </q-btn>

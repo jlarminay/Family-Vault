@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
+
 definePageMeta({
   middleware: 'authorized-only',
 });
 const { data: authData } = useAuth();
 const route = useRoute();
-const router = useRouter();
 
 const itemStore = useItemStore();
 const likeStore = useLikeStore();
@@ -204,38 +204,12 @@ async function loadMore() {
           </div>
         </div>
 
-        <div>
-          <div
-            v-if="allItems.length === 0 && !loading"
-            class="tw_text-lg tw_mt-4 tw_text-center tw_italic tw_opacity-70 tw_w-full"
-          >
-            <span v-if="filters.filterBy === 'liked'">No Liked Items</span>
-            <span v-if="filters.filterBy === 'private'">No Private Items</span>
-            <span v-else>No Items Found</span>
-          </div>
-
-          <div v-for="(group, i) in cleanedAllItems" :key="i" class="tw_my-4">
-            <h2 class="h2 tw_ml-2 tw_mb-1">{{ group.label }}</h2>
-
-            <div
-              class="tw_flex tw_gap-0 tw_justify-start tw_flex-wrap tw_items-start tw_@container"
-            >
-              <DashboardItem
-                v-for="(item, i) in group.items"
-                :key="i"
-                :expandedView="expandedView"
-                :item="item"
-                :liked="allLikes.some((like: any) => like.itemId === item.id)"
-                class="tw_w-1/3 @lg:tw_w-1/3 @xl:tw_w-1/3 @3xl:tw_w-1/4 @5xl:tw_w-1/5 @7xl:tw_w-1/6"
-                :to="
-                  item.status === 'processing'
-                    ? ''
-                    : { path: '/dashboard', query: { ...route.query, id: item.id } }
-                "
-              />
-            </div>
-          </div>
-        </div>
+        <DashboardGallery
+          :allItems="cleanedAllItems"
+          :allLikes="allLikes"
+          :loading="loading"
+          :expandedView="expandedView"
+        />
 
         <div v-if="loading" class="tw_flex tw_justify-center">
           <q-spinner-dots color="primary" size="40px" />
@@ -248,7 +222,7 @@ async function loadMore() {
         />
       </main>
 
-      <DashboardOverlay />
+      <!-- <DashboardOverlay /> -->
     </template>
   </NuxtLayout>
 </template>

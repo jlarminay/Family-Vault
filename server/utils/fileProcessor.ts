@@ -10,13 +10,14 @@ export default {
       duration: number;
     }> => {
       const { videoPath } = opts;
+      // check if file exists
       const { stdout } = shell.exec(
         `ffprobe -v quiet -print_format json -show_format -show_streams "${videoPath}"`,
         { silent: true },
       );
 
       const probeData = JSON.parse(stdout);
-      const videoStream = probeData.streams.find((stream: any) => stream.codec_type === 'video');
+      const videoStream = probeData.streams?.find((stream: any) => stream.codec_type === 'video');
 
       const rotation =
         videoStream.side_data_list?.find((sideData: any) => sideData.rotation)?.rotation || null;

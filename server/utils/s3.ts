@@ -1,13 +1,12 @@
 import {
   S3Client,
   PutObjectCommand,
-  GetObjectCommand,
   ListObjectsV2Command,
   HeadObjectCommand,
+  PutObjectAclCommand,
 } from '@aws-sdk/client-s3';
 import { resolve, extname } from 'path';
 import { createReadStream } from 'fs';
-import shell from 'shelljs';
 import mimeOptions from './mimeOptions.js';
 
 export default class S3 {
@@ -78,9 +77,13 @@ export default class S3 {
           // return all other files
           return true;
         }).map((item) => {
+          const getCDNPath = `${process.env.S3_ENDPOINT?.replace(
+            'https://sfo2.',
+            'https://larminay-vault-storage.sfo2.cdn.',
+          )}/${item.Key || ''}`.replace(' ', '%20');
           return {
             key: item.Key || '',
-            fullPath: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${item.Key || ''}`,
+            fullPath: getCDNPath,
             lastModified: item.LastModified || new Date('1900-01-01'),
             eTag: item.ETag || '',
             size: item.Size || 0,
@@ -96,6 +99,23 @@ export default class S3 {
     }
   }
 
+  async updateFilePermissions(key: string) {
+    try {
+      const command = new PutObjectAclCommand({
+        Bucket: process.env.S3_BUCKET,
+        Key: key,
+        ACL: 'public-read',
+      });
+
+      const response = await this.client.send(command);
+
+      return true;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  }
+
   async getFileMetadata(key: string) {
     try {
       const command = new HeadObjectCommand({
@@ -108,29 +128,9 @@ export default class S3 {
       const metadata: any = {
         fileSize: response.ContentLength,
         contentType: response.ContentType,
+        // acl: response.ACL,
+        fullPath: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${key}`,
       };
-
-      const fullPath = `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${key}`;
-
-      // check if file is an image
-      if (response.ContentType?.startsWith('image/')) {
-        // get image dimensions
-      }
-      // check if file is a video
-      else if (response.ContentType?.startsWith('video/')) {
-        const { stdout } = shell.exec(
-          `ffprobe -v quiet -print_format json -show_format -show_streams "${fullPath}"`,
-          { silent: true },
-        );
-        const probeData = JSON.parse(stdout);
-        const videoStream = probeData.streams.find((stream: any) => stream.codec_type === 'video');
-        metadata.rotation =
-          videoStream.side_data_list?.find((sideData: any) => sideData.rotation)?.rotation || null;
-        metadata.resolution = metadata.rotation
-          ? `${videoStream.height}x${videoStream.width}`
-          : `${videoStream.width}x${videoStream.height}`;
-        metadata.duration = probeData.format.duration;
-      }
 
       return metadata;
     } catch (err) {

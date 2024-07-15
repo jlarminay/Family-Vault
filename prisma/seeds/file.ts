@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import S3 from '../../server/utils/s3.js';
 import fileProcessor from '../../server/utils/fileProcessor.js';
 import fs from 'fs';
+import shell from 'shelljs';
 
 const prisma = new PrismaClient();
 const s3 = new S3();
@@ -17,6 +18,14 @@ export default async () => {
 
   for (let i = 0; i < allFiles.length; i++) {
     const file = allFiles[i];
+
+    // check if file is accessible
+    const { stdout: canAccessFile } = shell.exec(`curl -I ${file.fullPath}`, { silent: true });
+    if (canAccessFile.includes('HTTP/1.1 403')) {
+      // update privacy of file
+      // console.log('cant access file: ', file.fullPath);
+      await s3.updateFilePermissions(file.key);
+    }
 
     // check content type
     // if video

@@ -48,3 +48,30 @@
     }
   }
 }
+
+/* ----------------------------------- */
+/* LightGallery */
+.lg-container {
+  .lg-backdrop {
+    @apply !tw_z-[12000];
+  }
+  .lg-outer {
+    @apply !tw_z-[12001] tw_transition-[width];
+
+    .lg-toolbar {
+      @apply tw_flex tw_justify-between tw_items-center tw_text-gray-300;
+
+      .lg-counter {
+        @apply tw_text-gray-300;
+      }
+
+      &::after,
+      .lg-close {
+        @apply tw_hidden;
+      }
+    }
+  }
+  .lg-has-html5 img {
+    @apply !tw_object-contain;
+  }
+}

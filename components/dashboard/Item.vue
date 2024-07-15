@@ -16,10 +16,16 @@ defineProps({
 </script>
 
 <template>
-  <NuxtLink
-    class="tw_inline-block tw_rounded tw_overflow-hidden tw_transition hover:tw_bg-slate-200 tw_p-2"
-    :class="{ 'tw_cursor-not-allowed tw_opacity-70': item.status === 'processing' }"
-    replace
+  <a
+    class="tw_inline-block tw_rounded tw_overflow-hidden tw_transition hover:tw_bg-slate-200 tw_p-2 tw_cursor-pointer"
+    :data-src="item.type === 'video' ? null : item.image.path"
+    :data-video="
+      item.type === 'video'
+        ? `{&quot;source&quot;: [{&quot;src&quot;:&quot;${item.video.path}&quot;, &quot;type&quot;:&quot;video/mp4&quot;}], &quot;attributes&quot;: {&quot;preload&quot;: true, &quot;controls&quot;: true}}`
+        : null
+    "
+    :data-poster="item.type === 'video' ? item.image.path : null"
+    :ariaDescribedby="item.description"
   >
     <div class="tw_relative tw_rounded">
       <img
@@ -69,7 +75,7 @@ defineProps({
         {{ desc.value }}
       </p>
     </div>
-  </NuxtLink>
+  </a>
 </template>
 
 <style scoped lang="postcss"></style>

@@ -33,7 +33,8 @@ async function postComment() {
         v-model="newComment"
         outlined
         dense
-        autogrow
+        type="textarea"
+        rows="4"
         maxlength="256"
         placeholder="Add a comment..."
       />

@@ -19,7 +19,7 @@ refreshData();
 </script>
 
 <template>
-  <div class="tw_border-t tw_pt-4">
+  <div>
     <h4 class="h4">{{ comments.length }} Comments</h4>
 
     <!-- add comment -->
