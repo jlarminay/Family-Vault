@@ -11,11 +11,19 @@ const comments = ref<any>([]);
 const loading = ref(false);
 
 async function refreshData() {
+  console.log('refreshing comments');
   loading.value = true;
   comments.value = await commentStore.getForVideo(props.itemId);
   loading.value = false;
 }
-refreshData();
+
+watch(
+  () => props.itemId,
+  () => {
+    refreshData();
+  },
+  { immediate: true },
+);
 </script>
 
 <template>

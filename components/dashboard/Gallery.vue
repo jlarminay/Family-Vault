@@ -5,6 +5,7 @@ import lgHash from 'lightgallery/plugins/hash';
 import 'lightgallery/css/lightgallery.css';
 import 'lightgallery/css/lg-video.css';
 
+const emits = defineEmits(['loadMore', 'updateLike']);
 const props = defineProps<{
   allItems: Array<any>;
   allLikes: Array<any>;
@@ -12,6 +13,7 @@ const props = defineProps<{
   expandedView: boolean;
 }>();
 
+const $q = useQuasar();
 const gallery = ref<any>(null);
 const currentSelectedItem = ref<any>(null);
 const showCommentData = ref<boolean>(false);
@@ -21,7 +23,6 @@ const showInfoData = ref<boolean>(false);
 watch(
   () => props.allItems,
   async () => {
-    console.log('allItems changed');
     await nextTick();
     manageGallery();
   },
@@ -31,20 +32,13 @@ watch(
 watch(
   () => [showCommentData.value, showInfoData.value],
   async () => {
-    console.log('sidemenu changed');
-
     const lgOuter = document.querySelector('.lg-outer');
-    const sidebarData = document.getElementById('sidebarData');
-    if (!lgOuter || !sidebarData) return;
+    if (!lgOuter) return;
 
-    if (showCommentData.value || showInfoData.value) {
+    if ($q.screen.gt.xs && (showCommentData.value || showInfoData.value)) {
       lgOuter.classList.add('!tw_w-[calc(100vw-300px)]');
-      sidebarData.classList.add('!tw_w-[300px]');
-      sidebarData.classList.remove('!tw_w-0');
     } else {
       lgOuter.classList.remove('!tw_w-[calc(100vw-300px)]');
-      sidebarData.classList.remove('!tw_w-[300px]');
-      sidebarData.classList.add('!tw_w-0');
     }
   },
 );
@@ -68,6 +62,10 @@ function manageGallery() {
       currentSelectedItem.value = allItems[index] || null;
       // stop body from scrolling
       document.body.style.overflow = 'hidden';
+      // if index is penultimate item, load more
+      if (index === allItems.length - 2) {
+        emits('loadMore');
+      }
     });
     element.addEventListener('lgBeforeClose', (event: any) => {
       // hide sidebar
@@ -93,6 +91,10 @@ function moveCustomControls() {
     customButtonsContainer.classList.remove('tw_hidden');
   }
 }
+function closeSidebar() {
+  showCommentData.value = false;
+  showInfoData.value = false;
+}
 
 onUnmounted(() => {
   if (gallery.value) {
@@ -112,7 +114,7 @@ onUnmounted(() => {
 
     <div id="lightGallery">
       <div v-for="(group, i) in allItems" :key="i" class="tw_my-4">
-        <h2 class="h2 tw_ml-2 tw_mb-1">{{ group.label }}</h2>
+        <h2 class="h2 tw_ml-0.5 sm:tw_ml-2 sm:tw_mb-1">{{ group.label }}</h2>
 
         <div class="tw_flex tw_gap-0 tw_justify-start tw_flex-wrap tw_items-start tw_@container">
           <DashboardItem
@@ -121,7 +123,7 @@ onUnmounted(() => {
             :expandedView="expandedView"
             :item="item"
             :liked="allLikes.some((like: any) => like.itemId === item.id)"
-            class="gallery-item tw_w-1/3 @lg:tw_w-1/3 @xl:tw_w-1/3 @3xl:tw_w-1/4 @5xl:tw_w-1/5 @7xl:tw_w-1/6"
+            class="gallery-item tw_w-1/4 @lg:tw_w-1/4 @xl:tw_w-1/4 @3xl:tw_w-1/5 @5xl:tw_w-1/6 @7xl:tw_w-1/7"
           />
         </div>
       </div>
@@ -130,7 +132,11 @@ onUnmounted(() => {
     <!-- Custom Icons -->
     <div id="customButtons" class="tw_hidden">
       <div class="tw_flex tw_items-center tw_pr-[20px] tw_gap-1">
-        <LikeButton v-if="currentSelectedItem" :itemId="currentSelectedItem.id" />
+        <LikeButton
+          v-if="currentSelectedItem"
+          :itemId="currentSelectedItem.id"
+          @updateLike="emits('updateLike')"
+        />
         <q-btn
           round
           flat
@@ -154,11 +160,24 @@ onUnmounted(() => {
     </div>
 
     <!-- Sidebar Data -->
+    <div
+      id="sidebarOverlay"
+      class="tw_opacity-0 tw_fixed tw_top-0 tw_left-0 tw_w-full tw_h-full tw_z-[12002]"
+      :class="{ tw_hidden: (!showCommentData && !showInfoData) || $q.screen.gt.xs }"
+      @click="closeSidebar"
+      v-touch-swipe.mouse.right="closeSidebar"
+    />
     <DashboardSidebar
       id="sidebarData"
       :selectedItem="currentSelectedItem"
       :showInfoData="showInfoData"
       :showCommentData="showCommentData"
+      class="tw_max-w-[80%]"
+      :class="{
+        'tw_w-0': !showCommentData && !showInfoData,
+        'tw_w-[300px]': showCommentData || showInfoData,
+      }"
+      v-touch-swipe.mouse.right="closeSidebar"
     />
   </div>
 </template>

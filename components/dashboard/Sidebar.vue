@@ -42,7 +42,7 @@ const displayInfo = computed(() => {
 
 <template>
   <div
-    class="tw_fixed tw_top-0 tw_right-0 tw_h-screen tw_z-[12002] tw_w-0 tw_bg-white tw_transition-[width]"
+    class="tw_fixed tw_top-0 tw_right-0 tw_h-screen tw_z-[12003] tw_w-0 tw_bg-white tw_transition-[width]"
   >
     <!-- Info Block -->
     <div v-if="selectedItem && showInfoData && !loading" class="tw_p-4">

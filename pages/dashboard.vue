@@ -128,9 +128,15 @@ async function search() {
   loading.value = false;
 }
 async function loadMore() {
+  if (loading.value) return;
+  if (allItems.value.length >= allItemsCount.value) return;
+
   page.value++;
   loading.value = true;
   await search();
+}
+async function refreshLikes() {
+  allLikes.value = await likeStore.getAllMine();
 }
 </script>
 
@@ -209,6 +215,8 @@ async function loadMore() {
           :allLikes="allLikes"
           :loading="loading"
           :expandedView="expandedView"
+          @loadMore="loadMore"
+          @updateLike="refreshLikes"
         />
 
         <div v-if="loading" class="tw_flex tw_justify-center">

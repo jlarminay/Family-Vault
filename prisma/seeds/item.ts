@@ -31,8 +31,11 @@ export default async () => {
             .toDate();
     const files =
       type === 'video'
-        ? [{ path: file.fullPath }, { path: `${file.fullPath}.thumbnail.webp` }]
-        : [{ path: file.fullPath }];
+        ? [
+            { path: file.fullPath.replace(' ', '%20') },
+            { path: `${file.fullPath}.thumbnail.webp`.replace(' ', '%20') },
+          ]
+        : [{ path: file.fullPath.replace(' ', '%20') }];
 
     await prisma.item.create({
       data: {

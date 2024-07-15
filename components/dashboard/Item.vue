@@ -17,7 +17,7 @@ defineProps({
 
 <template>
   <a
-    class="tw_inline-block tw_rounded tw_overflow-hidden tw_transition hover:tw_bg-slate-200 tw_p-2 tw_cursor-pointer"
+    class="tw_inline-block tw_rounded tw_overflow-hidden tw_transition hover:tw_bg-slate-200 tw_p-0.5 sm:tw_p-2 tw_cursor-pointer"
     :data-src="item.type === 'video' ? null : item.image.path"
     :data-video="
       item.type === 'video'

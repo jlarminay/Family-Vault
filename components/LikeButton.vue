@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const emits = defineEmits(['updateLike']);
 const props = defineProps({
   itemId: {
     type: Number,
@@ -24,6 +25,7 @@ async function updateLike() {
   clickedOnce.value = true;
   await likeStore.update(props.itemId, !likeData.value.isLiked);
   likeData.value = await likeStore.getForVideo(props.itemId);
+  emits('updateLike');
   loading.value = false;
 }
 </script>
