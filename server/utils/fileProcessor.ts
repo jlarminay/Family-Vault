@@ -1,4 +1,8 @@
 import shell from 'shelljs';
+import { statSync } from 'fs';
+import { resolve } from 'path';
+import sizeOf from 'image-size';
+import fs from 'fs';
 
 export default {
   video: {
@@ -33,19 +37,21 @@ export default {
       };
     },
     getThumbnailAt: async (opts: {
+      videoName: string;
       videoPath: string;
       duration: number;
       timePercentage: number;
     }): Promise<{ name: string; path: string }> => {
-      const { videoPath, duration, timePercentage } = opts;
+      const { videoName, videoPath, duration, timePercentage } = opts;
       const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
-      const fileName = videoPath.split('/').pop() || '';
 
       // get time at percentage of video duration
       const targetTime = Math.floor((duration * timePercentage) / 100);
 
+      const targetVideoPath = videoPath.replace(' ', '%20');
+
       const { stdout, stderr, code } = shell.exec(
-        `ffmpeg -y -i "${videoPath}" -ss ${targetTime} -vframes 1 "${targetDir}/${fileName}.thumbnail.webp"`,
+        `ffmpeg -y -i "${targetVideoPath}" -ss ${targetTime} -vframes 1 "${targetDir}/${videoName}.thumbnail.webp"`,
         { silent: true },
       );
 
@@ -54,8 +60,8 @@ export default {
       }
 
       return {
-        name: `${fileName}.thumbnail.webp`,
-        path: `${targetDir}/${fileName}.thumbnail.webp`,
+        name: `${videoName}.thumbnail.webp`,
+        path: `${targetDir}/${videoName}.thumbnail.webp`,
       };
     },
   },
@@ -65,14 +71,41 @@ export default {
       path: string;
     }): Promise<{
       resolution: string;
+      size: number;
     }> => {
       const { name, path } = opts;
+      const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+      let newPath = path;
 
-      const resolution = '0x0';
+      // check if file is local or remote
+      if (path.startsWith('http')) {
+        // download file
+        const remotePath = path.replace(' ', '%20');
+        const localPath = `${targetDir}/${name}`.replace(' ', '%20');
+
+        shell.exec(`curl -o ${localPath} ${remotePath}`, { silent: true });
+        newPath = resolve(localPath);
+      }
+
+      // get metadata
+      const dimensions = sizeOf(newPath);
+      const resolution = `${dimensions.width}x${dimensions.height}`;
+      const size = statSync(newPath).size;
 
       return {
         resolution,
+        size,
       };
+    },
+    delete: async (fileName: string): Promise<void> => {
+      const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+      const targetPath = resolve(`${targetDir}/${fileName}`.replace(' ', '%20'));
+
+      // check if file exists
+      if (!fs.existsSync(targetPath)) return;
+
+      // delete file
+      fs.rmSync(targetPath);
     },
   },
 };

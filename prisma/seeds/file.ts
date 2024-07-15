@@ -31,9 +31,10 @@ export default async () => {
     // if video
     if (file.contentType.startsWith('video/')) {
       // get metadata
-      const videoName = file.fullPath.split('/').pop() || '';
+      const videoName = file.key.split('/').pop() || '';
       const videoMetadata = await fileProcessor.video.getMetadata({ videoPath: file.fullPath });
       const newThumbnail = await fileProcessor.video.getThumbnailAt({
+        videoName: videoName,
         videoPath: file.fullPath,
         duration: videoMetadata.duration,
         timePercentage: 10,
@@ -50,7 +51,7 @@ export default async () => {
       await prisma.file.create({
         data: {
           name: videoName,
-          path: file.fullPath,
+          path: file.fullPath.replace(' ', '%20'),
           type: 'video',
           size: file.size.toString(),
           metadata: videoMetadata,
@@ -59,15 +60,15 @@ export default async () => {
       await prisma.file.create({
         data: {
           name: newThumbnail.name,
-          path: file.fullPath.replace(videoName, newThumbnail.name),
+          path: file.fullPath.replace(videoName, newThumbnail.name).replace(' ', '%20'),
           type: 'thumbnail',
-          size: '0',
+          size: imageMetadata.size.toString(),
           metadata: imageMetadata,
         },
       });
 
       // cleanup
-      fs.rmSync(newThumbnail.path);
+      fileProcessor.image.delete(newThumbnail.name);
 
       count += 2;
     }
@@ -84,7 +85,7 @@ export default async () => {
       await prisma.file.create({
         data: {
           name: imageName,
-          path: file.fullPath,
+          path: file.fullPath.replace(' ', '%20'),
           type: 'image',
           size: file.size.toString(),
           metadata: imageMetadata,
@@ -92,6 +93,8 @@ export default async () => {
       });
 
       // cleanup
+      fileProcessor.image.delete(imageName);
+
       count++;
     }
   }

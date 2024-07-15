@@ -1,129 +1,154 @@
 import { PrismaClient } from '@prisma/client';
-import VideoProcessor from '../server/utils/videoProcessor.js';
+import dayjs from 'dayjs';
 import S3 from '../server/utils/s3.js';
+import fileProcessor from '../server/utils/fileProcessor.js';
+import shell from 'shelljs';
 import fs from 'fs';
 
-const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
 const prisma = new PrismaClient();
+const s3 = new S3();
 
 async function waitForReset() {
-  await new Promise((resolve) => setTimeout(resolve, 10000)); // wait 10 seconds
+  // wait for 10 seconds
+  await new Promise((resolve) => setTimeout(resolve, 10000));
 }
 
 async function main() {
+  console.log('Starting to monitor s3 bucket for changes');
+
   while (true) {
-    // check folder for new files
-    const files = fs.readdirSync(targetDir).filter((file) => file.endsWith('.json'));
+    // get last updated time
+    let lastCreatedAt = dayjs('1900-01-01');
+    const lastCreatedItem = await prisma.file.findFirst({
+      orderBy: { updatedAt: 'desc' },
+    });
+    if (lastCreatedItem) lastCreatedAt = dayjs(lastCreatedItem.createdAt).startOf('second');
 
-    if (files.length === 0) {
-      await waitForReset();
-      continue;
-    }
+    // get all files from s3
+    const allFiles = await s3.getAllFiles();
 
-    const file = files[0];
-    const filePath = `${targetDir}/${file}`;
-    const data: {
-      videoId: number;
-      key: string;
-      name: string;
-      targetVideo: string;
-    } = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    // filter files that are newer than last updated time
+    const newFiles = allFiles.filter((file) =>
+      dayjs(file.lastModified).startOf('second').isAfter(dayjs(lastCreatedAt)),
+    );
 
-    console.log(`processing video ${data.key} ${data.name}`);
+    // format them as needed
+    let count = 0;
+    for (let i = 0; i < newFiles.length; i++) {
+      const file = newFiles[i];
 
-    // process new file
-    let videoData: any = {};
-
-    // get metadata
-    try {
-      const processing = new VideoProcessor(data.targetVideo);
-      videoData = await processing.prepareNewVideo();
-    } catch (e) {
-      console.log(`failed to process video ${data.key} ${data.name}`);
-      await waitForReset();
-      continue;
-    }
-
-    // upload to s3
-    try {
-      const s3 = new S3();
-      await s3.upload({
-        key: `videos/${videoData.video.name}`,
-        filePath: `${targetDir}/${videoData.video.name}`,
+      // check if already processed
+      const existingFile = await prisma.file.findFirst({
+        where: { path: file.fullPath },
       });
-      await s3.upload({
-        key: `videos/${videoData.thumbnail.name}`,
-        filePath: `${targetDir}/${videoData.thumbnail.name}`,
-      });
-    } catch (e) {
-      console.log(`failed to upload to s3 ${data.key} ${data.name}`);
-      await waitForReset();
-      continue;
-    }
+      if (existingFile) continue;
 
-    // insert into db
-    try {
-      const dbVideo = await prisma.file.create({
-        data: {
-          ...videoData.video,
-          name: data.name,
-          size: videoData.video.size.toString(),
-        },
-      });
-
-      const dbThumbnail = await prisma.file.create({
-        data: {
-          ...videoData.thumbnail,
-          name: data.name,
-          size: videoData.thumbnail.size.toString(),
-        },
-      });
-
-      if (data.videoId === 0) {
-        // video does not exist in db, insert it
-        await prisma.video.create({
-          data: {
-            title: data.name,
-            description: '',
-            ownerId: 1,
-            dateDisplay: '',
-            dateOrder: new Date(),
-            published: 'private',
-            status: 'finished',
-          },
-        });
-      } else {
-        // video already exists in db, update it
-        await prisma.video.update({
-          where: { id: data.videoId },
-          data: {
-            videoId: dbVideo.id,
-            thumbnailId: dbThumbnail.id,
-            status: 'finished',
-          },
-        });
+      // check if file is accessible
+      const { stdout: canAccessFile } = shell.exec(`curl -I ${file.fullPath}`, { silent: true });
+      if (canAccessFile.includes('HTTP/1.1 403')) {
+        // update privacy of file
+        await s3.updateFilePermissions(file.key);
       }
-    } catch (e) {
-      console.log(`failed to insert into db ${data.key} ${data.name}`);
-      console.log(e);
-      await waitForReset();
-      continue;
+
+      // check content type
+      // if video
+      if (file.contentType.startsWith('video/')) {
+        // get metadata
+        const videoName = file.key.split('/').pop() || '';
+        const videoMetadata = await fileProcessor.video.getMetadata({ videoPath: file.fullPath });
+        const newThumbnail = await fileProcessor.video.getThumbnailAt({
+          videoName: videoName,
+          videoPath: file.fullPath,
+          duration: videoMetadata.duration,
+          timePercentage: 10,
+        });
+        const imageMetadata = await fileProcessor.image.getMetadata(newThumbnail);
+
+        // upload to s3
+        await s3.upload({
+          targetPath: file.key.replace(videoName, newThumbnail.name),
+          localPath: newThumbnail.path,
+        });
+
+        // insert files into db
+        const newVideo = await prisma.file.create({
+          data: {
+            name: videoName,
+            path: file.fullPath.replace(' ', '%20'),
+            type: 'video',
+            size: file.size.toString(),
+            metadata: videoMetadata,
+          },
+        });
+        const newImage = await prisma.file.create({
+          data: {
+            name: newThumbnail.name,
+            path: file.fullPath.replace(videoName, newThumbnail.name).replace(' ', '%20'),
+            type: 'thumbnail',
+            size: imageMetadata.size.toString(),
+            metadata: imageMetadata,
+          },
+        });
+        // insert item into db
+        await prisma.item.create({
+          data: {
+            type: 'video',
+            owner: { connect: { email: 'j.larminay@gmail.com' } },
+            dateOrder: dayjs().toISOString(),
+            file: {
+              connect: [{ id: newVideo.id }, { id: newImage.id }],
+            },
+          },
+        });
+
+        // cleanup
+        fileProcessor.image.delete(newThumbnail.name);
+
+        count += 2;
+      }
+      // if image
+      else if (file.contentType.startsWith('image/')) {
+        // get metadata
+        const imageName = file.key.split('/').pop() || '';
+        const imageMetadata = await fileProcessor.image.getMetadata({
+          name: imageName,
+          path: file.fullPath,
+        });
+
+        // insert file into db
+        const newImage = await prisma.file.create({
+          data: {
+            name: imageName,
+            path: file.fullPath.replace(' ', '%20'),
+            type: 'image',
+            size: file.size.toString(),
+            metadata: imageMetadata,
+          },
+        });
+        // insert item into db
+        await prisma.item.create({
+          data: {
+            type: 'image',
+            owner: { connect: { email: 'j.larminay@gmail.com' } },
+            dateOrder: dayjs().toISOString(),
+            file: {
+              connect: { id: newImage.id },
+            },
+          },
+        });
+
+        // cleanup
+        fileProcessor.image.delete(imageName);
+
+        // cleanup
+        count++;
+      }
     }
 
-    // delete all old files
-    try {
-      fs.unlinkSync(`${targetDir}/${file}`);
-      fs.unlinkSync(`${targetDir}/${videoData.video.name}`);
-      fs.unlinkSync(`${targetDir}/${videoData.thumbnail.name}`);
-    } catch (e) {
-      console.log(`failed to delete old files ${data.key} ${data.name}`);
-      await waitForReset();
-      continue;
-    }
+    // console log if needed
+    if (count > 0) console.log(`Inserted ${count} files`);
 
-    console.log(`finished processing video ${data.key} ${data.name}`);
-
-    // wait 10 seconds
+    // wait given time
     await waitForReset();
   }
 }

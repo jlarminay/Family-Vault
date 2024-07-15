@@ -80,7 +80,7 @@ export default class S3 {
           const getCDNPath = `${process.env.S3_ENDPOINT?.replace(
             'https://sfo2.',
             'https://larminay-vault-storage.sfo2.cdn.',
-          )}/${item.Key || ''}`.replace(' ', '%20');
+          )}/${item.Key || ''}`;
           return {
             key: item.Key || '',
             fullPath: getCDNPath,
@@ -139,3 +139,5 @@ export default class S3 {
     }
   }
 }
+
+export type s3 = S3;
