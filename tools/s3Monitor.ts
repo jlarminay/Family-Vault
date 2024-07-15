@@ -9,8 +9,8 @@ const prisma = new PrismaClient();
 const s3 = new S3();
 
 async function waitForReset() {
-  // wait for 10 seconds
-  await new Promise((resolve) => setTimeout(resolve, 10000));
+  // wait for 60 seconds
+  await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
 }
 
 async function main() {
