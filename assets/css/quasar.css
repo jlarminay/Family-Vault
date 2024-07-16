@@ -35,6 +35,9 @@
   @apply tw_bg-dark tw_text-white tw_text-sm tw_font-maven-pro tw_font-normal tw_p-2 tw_rounded-md;
 }
 
+.fullscreen {
+  @apply tw_z-[12006];
+}
 .q-dialog {
   .q-card {
     .q-card__actions {
@@ -43,4 +46,8 @@
       }
     }
   }
+}
+
+.q-menu {
+  @apply tw_z-[12007];
 }

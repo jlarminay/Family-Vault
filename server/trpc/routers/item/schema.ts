@@ -22,12 +22,8 @@ export const editItemSchema = z.object({
   id: z.number(),
   description: z.string().max(1024).nullable().optional(),
   people: z.string().max(1024).nullable().optional(),
-  dateDisplay: z.string().max(64).nullable().optional(),
-  dateOrder: z.coerce.date(),
-  // originalFormat: z
-  //   .string(z.enum(['VHS', 'VHS-C', 'Video 8', 'Super 8', '8mm', 'Phone', 'Other']))
-  //   .nullable()
-  //   .optional(),
+  dateEstimate: z.boolean().nullable().optional(),
+  takenAt: z.coerce.date(),
   published: z.string(z.enum(['public', 'private', 'allow-few', 'deny-few'])),
   allowList: z.array(z.number()).nullable().optional(),
   blockList: z.array(z.number()).nullable().optional(),

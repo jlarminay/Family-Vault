@@ -31,7 +31,7 @@ defineProps({
         <slot name="body" />
       </q-card-section>
 
-      <q-card-actions align="right" class="tw_p-4">
+      <q-card-actions v-if="!!$slots['actions']" align="right" class="tw_p-4">
         <slot name="actions" />
       </q-card-actions>
     </q-card>

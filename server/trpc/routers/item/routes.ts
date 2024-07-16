@@ -2,6 +2,7 @@ import { protectedProcedure, router } from '@/server/trpc/trpc';
 import { getServerSession } from '#auth';
 import { z } from 'zod';
 import { searchSchema, editItemSchema } from './schema';
+import dayjs from 'dayjs';
 
 export const itemRouter = router({
   search: protectedProcedure.input(searchSchema).query(async ({ input, ctx }) => {
@@ -20,7 +21,6 @@ export const itemRouter = router({
         ],
       },
       include: {
-        file: true,
         like: {
           select: {
             userId: true,
@@ -56,7 +56,10 @@ export const itemRouter = router({
           // check if search is for file name
           if (input.search.startsWith('file:')) {
             const search = input.search.split('file:')[1].trim();
-            if (!item.file.some((file) => file.name.toLowerCase().includes(search.toLowerCase()))) {
+            if (
+              !item.name.toLowerCase().includes(search.toLowerCase()) &&
+              !item.path.toLowerCase().includes(search.toLowerCase())
+            ) {
               return false;
             }
           }
@@ -91,54 +94,22 @@ export const itemRouter = router({
       })
       .map((item) => {
         return {
-          id: item.id,
-          description: item.description,
-          people: item.people,
-          view: item.view,
-          type: item.type,
-          dateDisplay: item.dateDisplay,
-          dateOrder: item.dateOrder.toISOString().split('T')[0] as any,
-          createdAt: item.createdAt.toISOString().split('T')[0] as any,
-          // owner
-          ownerId: item.ownerId,
-          owner: item.owner,
+          ...item,
+          takenAt: dayjs(item.takenAt).format('YYYY-MM-DD') as string,
+          createdAt: dayjs(item.createdAt).format('YYYY-MM-DD') as string,
           like: item.like.length,
-          // access
-          published: item.published,
-          allowList: item.allowList,
-          blockList: item.blockList,
-          // files
-          image:
-            item.file.length === 0
-              ? null
-              : item.file.find((file) => file.type === 'image' || file.type === 'thumbnail'),
-          video: item.file.length === 0 ? null : item.file.find((file) => file.type === 'video'),
         };
       })
       .sort((a: any, b: any) => {
-        if (input.sortBy === 'title-asc') {
-          return a.title.localeCompare(b.title);
-        }
-        if (input.sortBy === 'title-desc') {
-          return b.title.localeCompare(a.title);
-        }
         if (input.sortBy === 'date-taken-desc') {
-          return new Date(b.dateOrder).getTime() - new Date(a.dateOrder).getTime();
-        }
-        if (input.sortBy === 'date-taken-asc') {
-          return new Date(a.dateOrder).getTime() - new Date(b.dateOrder).getTime();
+          const dateDiff = dayjs(b.takenAt).diff(dayjs(a.takenAt));
+          if (dateDiff !== 0) return dateDiff;
+          return a.name.localeCompare(b.name);
         }
         if (input.sortBy === 'date-added-desc') {
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        }
-        if (input.sortBy === 'date-added-asc') {
-          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-        }
-        if (input.sortBy === 'duration-desc') {
-          return b.item?.metadata?.duration - a.item?.metadata?.duration;
-        }
-        if (input.sortBy === 'duration-asc') {
-          return a.item?.metadata?.duration - b.item?.metadata?.duration;
+          const dateDiff = dayjs(b.createdAt).diff(dayjs(a.createdAt));
+          if (dateDiff !== 0) return dateDiff;
+          return a.name.localeCompare(b.name);
         }
       });
 
@@ -148,60 +119,6 @@ export const itemRouter = router({
       items: cleanedItems.slice((page - 1) * limit, page * limit),
     };
   }),
-
-  getRelated: protectedProcedure
-    .input(z.object({ currentId: z.number(), limit: z.number() }))
-    .query(async ({ ctx, input }) => {
-      const session = await getServerSession(ctx.event);
-      const { limit } = input;
-
-      const currentItem = await ctx.prisma.item.findUniqueOrThrow({
-        where: {
-          id: input.currentId,
-        },
-      });
-      const allItems = await ctx.prisma.item.findMany({
-        where: {
-          AND: [
-            { id: { not: input.currentId } }, // exclude current item
-            {
-              OR: [
-                { ownerId: session?.id },
-                { published: 'public' },
-                {
-                  AND: [{ published: 'allow-few' }, { allowList: { some: { id: session?.id } } }],
-                },
-              ],
-            },
-          ],
-        },
-        include: {
-          file: true,
-          allowList: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          blockList: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          owner: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-        },
-      });
-
-      // somehow filter based on if the item is related to the current item
-
-      return allItems.sort(() => Math.random() - Math.random()).slice(0, limit);
-    }),
 
   getSingle: protectedProcedure
     .input(z.object({ id: z.number() }))
@@ -231,7 +148,6 @@ export const itemRouter = router({
           ],
         },
         include: {
-          file: true,
           like: {
             select: {
               userId: true,
@@ -263,28 +179,10 @@ export const itemRouter = router({
       }
 
       return {
-        id: item.id,
-        description: item.description,
-        people: item.people,
-        view: item.view,
-        type: item.type,
-        dateDisplay: item.dateDisplay,
-        dateOrder: item.dateOrder.toISOString().split('T')[0] as any,
-        createdAt: item.createdAt.toISOString().split('T')[0] as any,
-        // owner
-        ownerId: item.ownerId,
-        owner: item.owner,
+        ...item,
+        takenAt: dayjs(item.takenAt).format('YYYY-MM-DD') as string,
+        createdAt: dayjs(item.createdAt).format('YYYY-MM-DD') as string,
         like: item.like.length,
-        // access
-        published: item.published,
-        allowList: item.allowList,
-        blockList: item.blockList,
-        // files
-        image:
-          item.file.length === 0
-            ? null
-            : item.file.find((file) => file.type === 'image' || file.type === 'thumbnail'),
-        video: item.file.length === 0 ? null : item.file.find((file) => file.type === 'video'),
       };
     }),
 
@@ -342,8 +240,8 @@ export const itemRouter = router({
       data: {
         description: input.description,
         people: input.people,
-        dateDisplay: input.dateDisplay,
-        dateOrder: input.dateOrder,
+        dateEstimate: input.dateEstimate || false,
+        takenAt: input.takenAt,
         published: input.published,
         allowList: {
           set: input.allowList?.map((user: any) => ({ id: user })) || [],

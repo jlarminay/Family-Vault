@@ -9,6 +9,8 @@ const prisma = new PrismaClient();
 const s3 = new S3();
 
 async function waitForReset() {
+  console.log('Waiting for 60 seconds before checking again');
+  console.log('');
   // wait for 60 seconds
   await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
 }
@@ -16,10 +18,14 @@ async function waitForReset() {
 async function main() {
   console.log('Starting to monitor s3 bucket for changes');
 
+  const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+  if (fs.existsSync(targetDir)) fs.rmSync(targetDir, { recursive: true });
+  if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir);
+
   while (true) {
     // get last updated time
     let lastCreatedAt = dayjs('1900-01-01');
-    const lastCreatedItem = await prisma.file.findFirst({
+    const lastCreatedItem = await prisma.item.findFirst({
       orderBy: { updatedAt: 'desc' },
     });
     if (lastCreatedItem) lastCreatedAt = dayjs(lastCreatedItem.createdAt).startOf('second');
@@ -27,21 +33,25 @@ async function main() {
     // get all files from s3
     const allFiles = await s3.getAllFiles();
 
-    // filter files that are newer than last updated time
-    const newFiles = allFiles.filter((file) =>
-      dayjs(file.lastModified).startOf('second').isAfter(dayjs(lastCreatedAt)),
-    );
+    console.log(`Found ${allFiles.length} files`);
+
+    // // filter files that are newer than last updated time
+    // const newFiles = allFiles.filter((file) =>
+    //   dayjs(file.lastModified).startOf('second').isAfter(dayjs(lastCreatedAt)),
+    // );
 
     // format them as needed
     let count = 0;
-    for (let i = 0; i < newFiles.length; i++) {
-      const file = newFiles[i];
+    for (let i = 0; i < allFiles.length; i++) {
+      const file = allFiles[i];
 
       // check if already processed
-      const existingFile = await prisma.file.findFirst({
+      const existingFile = await prisma.item.findFirst({
         where: { path: file.fullPath },
       });
       if (existingFile) continue;
+
+      console.log(`Processing file ${file.key}`);
 
       // check if file is accessible
       const { stdout: canAccessFile } = shell.exec(`curl -I ${file.fullPath}`, { silent: true });
@@ -56,55 +66,44 @@ async function main() {
         // get metadata
         const videoName = file.key.split('/').pop() || '';
         const videoMetadata = await fileProcessor.video.getMetadata({ videoPath: file.fullPath });
-        const newThumbnail = await fileProcessor.video.getThumbnailAt({
+        const newVideoThumbnail = await fileProcessor.video.getThumbnailAt({
           videoName: videoName,
           videoPath: file.fullPath,
           duration: videoMetadata.duration,
           timePercentage: 10,
         });
-        const imageMetadata = await fileProcessor.image.getMetadata(newThumbnail);
 
         // upload to s3
         await s3.upload({
-          targetPath: file.key.replace(videoName, newThumbnail.name),
-          localPath: newThumbnail.path,
+          targetPath: file.key.replace(videoName, newVideoThumbnail.name),
+          localPath: newVideoThumbnail.path,
         });
 
-        // insert files into db
-        const newVideo = await prisma.file.create({
-          data: {
-            name: videoName,
-            path: file.fullPath.replace(' ', '%20'),
-            type: 'video',
-            size: file.size.toString(),
-            metadata: videoMetadata,
-          },
-        });
-        const newImage = await prisma.file.create({
-          data: {
-            name: newThumbnail.name,
-            path: file.fullPath.replace(videoName, newThumbnail.name).replace(' ', '%20'),
-            type: 'thumbnail',
-            size: imageMetadata.size.toString(),
-            metadata: imageMetadata,
-          },
-        });
         // insert item into db
         await prisma.item.create({
           data: {
+            // item data
+            description: '',
+            people: '',
+            dateEstimate: true,
+            takenAt: dayjs().toDate(),
             type: 'video',
+            // file data
+            name: videoName,
+            path: file.fullPath,
+            size: file.size.toString(),
+            metadata: videoMetadata,
+            // privacy
+            published: 'private',
+            // owner
             owner: { connect: { email: 'j.larminay@gmail.com' } },
-            dateOrder: dayjs().toISOString(),
-            file: {
-              connect: [{ id: newVideo.id }, { id: newImage.id }],
-            },
           },
         });
 
         // cleanup
-        fileProcessor.image.delete(newThumbnail.name);
+        fileProcessor.image.delete(newVideoThumbnail.name);
 
-        count += 2;
+        count++;
       }
       // if image
       else if (file.contentType.startsWith('image/')) {
@@ -114,35 +113,48 @@ async function main() {
           name: imageName,
           path: file.fullPath,
         });
-
-        // insert file into db
-        const newImage = await prisma.file.create({
-          data: {
-            name: imageName,
-            path: file.fullPath.replace(' ', '%20'),
-            type: 'image',
-            size: file.size.toString(),
-            metadata: imageMetadata,
-          },
+        const newImageThumbnail = await fileProcessor.image.getThumbnail({
+          name: imageName,
+          path: file.fullPath,
         });
+
+        // upload to s3
+        await s3.upload({
+          targetPath: file.key.replace(imageName, newImageThumbnail.name),
+          localPath: newImageThumbnail.path,
+        });
+
         // insert item into db
         await prisma.item.create({
           data: {
+            // item data
+            description: '',
+            people: '',
+            dateEstimate: true,
+            takenAt: dayjs().toDate(),
             type: 'image',
+            // file data
+            name: imageName,
+            path: file.fullPath,
+            size: file.size.toString(),
+            metadata: imageMetadata,
+            // privacy
+            published: 'private',
+            // owner
             owner: { connect: { email: 'j.larminay@gmail.com' } },
-            dateOrder: dayjs().toISOString(),
-            file: {
-              connect: { id: newImage.id },
-            },
           },
         });
 
         // cleanup
         fileProcessor.image.delete(imageName);
+        fileProcessor.image.delete(newImageThumbnail.name);
 
         // cleanup
         count++;
       }
+
+      // add delay of 0.5s
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
 
     // console log if needed

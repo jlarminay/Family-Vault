@@ -1,30 +1,39 @@
 <script setup lang="ts">
+import dayjs from 'dayjs';
+
 definePageMeta({
   middleware: 'admin-authorized-only',
 });
 
 const adminStore = useAdminStore();
-const allVideos = ref(await adminStore.videoRead());
+const allVideos = ref(await adminStore.itemRead());
 </script>
 
 <template>
   <Head>
-    <title>Videos | Admin | Larminay Vault</title>
+    <title>Items | Admin | Larminay Vault</title>
   </Head>
 
   <NuxtLayout name="app">
     <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1000px] tw_mx-auto">
-      <AdminSectionHeader title="Collections" />
+      <AdminSectionHeader title="Items" />
 
       <div class="tw_mt-6">
         <q-table
           flat
           :columns="[
-            { name: 'title', label: 'Title', field: 'title', align: 'left', sortable: true },
+            { name: 'name', label: 'Name', field: 'name', align: 'left', sortable: true },
             {
               name: 'owner',
               label: 'Owner',
               field: 'owner',
+              align: 'left',
+              sortable: true,
+            },
+            {
+              name: 'takenAt',
+              label: 'Taken At',
+              field: 'takenAt',
               align: 'left',
               sortable: true,
             },
@@ -41,31 +50,29 @@ const allVideos = ref(await adminStore.videoRead());
           :wrap-cells="true"
           :rows-per-page-options="[25, 50, 100, 0]"
         >
-          <template #body-cell-title="props">
+          <template #body-cell-name="props">
             <q-td :props="props">
-              <div class="tw_flex tw_items-center tw_justify-start">
-                <q-icon
-                  v-if="props.row.published === 'private'"
-                  name="lock"
-                  class="tw_text-primary tw_text-base tw_rounded-full tw_mr-2"
-                />
-                <NuxtLink :to="`/video/${props.row.id}`" class="link tw_line-clamp-1">
-                  {{ props.row.title }}
-                </NuxtLink>
-              </div>
-            </q-td>
-          </template>
-          <template #body-cell-createdAt="props">
-            <q-td :props="props">
-              <div class="tw_line-clamp-1">
-                {{ $dayjs(props.row.createdAt).format('MMM D, YYYY') }}
-              </div>
+              {{ props.row.name }}
             </q-td>
           </template>
           <template #body-cell-owner="props">
             <q-td :props="props">
               <div class="tw_line-clamp-1">
                 {{ props.row.owner.name }}
+              </div>
+            </q-td>
+          </template>
+          <template #body-cell-takenAt="props">
+            <q-td :props="props">
+              <div class="tw_line-clamp-1">
+                {{ dayjs(props.row.takenAt).format('MMM D, YYYY') }}
+              </div>
+            </q-td>
+          </template>
+          <template #body-cell-createdAt="props">
+            <q-td :props="props">
+              <div class="tw_line-clamp-1">
+                {{ dayjs(props.row.createdAt).format('MMM D, YYYY') }}
               </div>
             </q-td>
           </template>

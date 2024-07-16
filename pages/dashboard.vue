@@ -70,7 +70,7 @@ const cleanedAllItems = computed(() => {
     // group by month year
     // array must be { label: 'Month Year', items: [] }
     allItems.value.forEach((item: any) => {
-      const itemDate = dayjs(item.dateOrder);
+      const itemDate = dayjs(item.takenAt);
       const monthYear = itemDate.format('MMMM YYYY');
       const groupIndex = finalGrouping.findIndex((group: any) => group.label === monthYear);
       if (groupIndex === -1) {
@@ -148,7 +148,15 @@ async function refreshLikes() {
   <NuxtLayout name="app">
     <template #default>
       <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1400px] tw_mx-auto">
-        <div class="tw_flex tw_justify-between sm:tw_justify-start tw_items-center tw_gap-4">
+        <div
+          class="tw_border-2 tw_rounded tw_border-blue-200 tw_bg-blue-50 tw_px-2 tw_py-1 tw_mb-4 tw_text-base tw_text-center"
+        >
+          The system is under maintenance. Some features may not work as expected.
+          <br />
+          We apologize for the inconvenience.
+        </div>
+
+        <div class="tw_flex tw_justify-between sm:tw_justify-start tw_items-center sm:tw_gap-4">
           <h1 class="h1">
             Dashboard <span class="tw_text-lg">({{ allItemsCount }})</span>
           </h1>
@@ -167,14 +175,8 @@ async function refreshLikes() {
                 <q-list>
                   <q-item
                     v-for="option in [
-                      // { label: 'Alphabetical (A-Z)', value: 'title-asc' },
-                      // { label: 'Alphabetical (Z-A)', value: 'title-desc' },
                       { label: 'Date Added (Newest)', value: 'date-added-desc' },
-                      // { label: 'Date Added (Oldest)', value: 'date-added-asc' },
                       { label: 'Date Taken (Newest)', value: 'date-taken-desc' },
-                      // { label: 'Date Taken (Oldest)', value: 'date-taken-asc' },
-                      // { label: 'Duration (Longest)', value: 'duration-desc' },
-                      // { label: 'Duration (Shortest)', value: 'duration-asc' },
                     ]"
                     :key="option.value"
                     clickable
@@ -210,7 +212,7 @@ async function refreshLikes() {
           </div>
         </div>
 
-        <DashboardGallery
+        <Gallery
           :allItems="cleanedAllItems"
           :allLikes="allLikes"
           :loading="loading"
@@ -229,8 +231,6 @@ async function refreshLikes() {
           :disable="loading || allItems.length >= allItemsCount"
         />
       </main>
-
-      <!-- <DashboardOverlay /> -->
     </template>
   </NuxtLayout>
 </template>

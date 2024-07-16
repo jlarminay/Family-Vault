@@ -48,16 +48,18 @@ export default {
       // get time at percentage of video duration
       const targetTime = Math.floor((duration * timePercentage) / 100);
 
-      const targetVideoPath = videoPath.replace(' ', '%20');
-
-      const { stdout, stderr, code } = shell.exec(
-        `ffmpeg -y -i "${targetVideoPath}" -ss ${targetTime} -vframes 1 "${targetDir}/${videoName}.thumbnail.webp"`,
+      // create thumbnail
+      shell.exec(
+        `ffmpeg -y -i "${videoPath}" -ss ${targetTime} -vframes 1 "${targetDir}/${videoName}.thumbnail.webp"`,
         { silent: true },
       );
-
-      if (code !== 0) {
-        throw new Error(stderr);
-      }
+      // resize thumbnail
+      shell.exec(
+        `cwebp -q 80 -resize 400 0 "${targetDir}/${videoName}.thumbnail.webp" -o "${targetDir}/${videoName}.thumbnail.webp"`,
+        {
+          silent: true,
+        },
+      );
 
       return {
         name: `${videoName}.thumbnail.webp`,
@@ -80,10 +82,10 @@ export default {
       // check if file is local or remote
       if (path.startsWith('http')) {
         // download file
-        const remotePath = path.replace(' ', '%20');
-        const localPath = `${targetDir}/${name}`.replace(' ', '%20');
+        const remotePath = path;
+        const localPath = `${targetDir}/${name}`;
 
-        shell.exec(`curl -o ${localPath} ${remotePath}`, { silent: true });
+        shell.exec(`curl -o "${localPath}" "${remotePath}"`, { silent: true });
         newPath = resolve(localPath);
       }
 
@@ -97,15 +99,45 @@ export default {
         size,
       };
     },
+    getThumbnail: async (opts: {
+      name: string;
+      path: string;
+    }): Promise<{ name: string; path: string }> => {
+      const { name, path } = opts;
+      const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+      let newPath = path;
+
+      // check if file is local or remote
+      if (path.startsWith('http')) {
+        // download file
+        const remotePath = path;
+        const localPath = `${targetDir}/${name}`;
+
+        shell.exec(`curl -o "${localPath}" "${remotePath}"`, { silent: true });
+        newPath = resolve(localPath);
+      }
+
+      // convert image to webp using cwebp and resize to width of 400px
+      shell.exec(`cwebp -q 80 -resize 400 0 ${newPath} -o "${targetDir}/${name}.thumbnail.webp"`, {
+        silent: true,
+      });
+
+      // return path
+      return {
+        name: `${name}.thumbnail.webp`,
+        path: `${targetDir}/${name}.thumbnail.webp`,
+      };
+    },
     delete: async (fileName: string): Promise<void> => {
       const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
-      const targetPath = resolve(`${targetDir}/${fileName}`.replace(' ', '%20'));
+      const targetPath1 = resolve(`${targetDir}/${fileName}`);
+      const targetPath2 = resolve(`${targetDir}/${fileName}`);
 
       // check if file exists
-      if (!fs.existsSync(targetPath)) return;
+      if (fs.existsSync(targetPath1)) fs.rmSync(targetPath1);
+      if (fs.existsSync(targetPath2)) fs.rmSync(targetPath2);
 
-      // delete file
-      fs.rmSync(targetPath);
+      return;
     },
   },
 };

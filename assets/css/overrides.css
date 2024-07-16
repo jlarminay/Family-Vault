@@ -27,10 +27,10 @@
 /* ----------------------------------- */
 /* Toaster */
 .c-toast-container {
-  @apply tw_z-[9999] tw_mt-4 md:tw_mt-0;
+  @apply !tw_z-[12010] tw_mt-4 md:tw_mt-0;
 
   .c-toast {
-    @apply tw_z-[9999] tw_pointer-events-auto;
+    @apply !tw_z-[12010] tw_pointer-events-auto;
 
     [class^='c-toast--'] {
       @apply tw_border-2 tw_bg-white tw_rounded-lg tw_px-6 tw_py-4 tw_mb-2 tw_flex tw_items-start tw_gap-2 tw_relative tw_z-[9999] tw_max-w-[400px];

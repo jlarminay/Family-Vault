@@ -10,9 +10,10 @@ function main() {
     shell.exec('npm run docker');
     shell.exec('npx prisma generate');
     shell.exec('npm run db:seed');
-    shell.exec(
-      'npx concurrently -n "NUXT,STUDIO,MONITOR" -c "auto"  "npm run dev" "npx prisma studio --browser none" "npm run s3-monitor"',
-    );
+    // shell.exec(
+    //   'npx concurrently -n "NUXT,STUDIO,MONITOR" -c "auto"  "npm run dev" "npm run db:studio" "npm run s3-monitor"',
+    // );
+    shell.exec('npx concurrently -n "NUXT,STUDIO" -c "auto"  "npm run dev" "npm run db:studio"');
     return;
   }
 }

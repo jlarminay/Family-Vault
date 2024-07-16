@@ -14,12 +14,12 @@ export const useItemStore = defineStore('item', {
       return await $trpc.item.search.query(options);
     },
 
-    async getRelated(currentId: number, limit: number) {
-      const { $trpc } = useNuxtApp();
+    // async getRelated(currentId: number, limit: number) {
+    //   const { $trpc } = useNuxtApp();
 
-      let results = await $trpc.item.getRelated.query({ currentId, limit });
-      return results;
-    },
+    //   let results = await $trpc.item.getRelated.query({ currentId, limit });
+    //   return results;
+    // },
 
     async getSingle(id: string) {
       const { $trpc } = useNuxtApp();
@@ -42,8 +42,8 @@ export const useItemStore = defineStore('item', {
         id: itemData.id,
         description: itemData.description,
         people: itemData.people,
-        dateDisplay: itemData.dateDisplay,
-        dateOrder: itemData.dateOrder,
+        dateEstimate: itemData.dateEstimate,
+        takenAt: itemData.takenAt,
         published: itemData.published,
         allowList: itemData.allowList ? itemData.allowList.map((user: any) => user.value) : [],
       };

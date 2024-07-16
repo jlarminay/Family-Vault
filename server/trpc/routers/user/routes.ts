@@ -1,6 +1,7 @@
 import { protectedProcedure, router } from '@/server/trpc/trpc';
 import { getServerSession } from '#auth';
 import { editOwnUserSchema } from './schema';
+import dayjs from 'dayjs';
 
 export const userRouter = router({
   getAll: protectedProcedure.query(async ({ ctx }) => {
@@ -23,11 +24,7 @@ export const userRouter = router({
         userId: session?.id,
       },
       include: {
-        item: {
-          include: {
-            file: true,
-          },
-        },
+        item: true,
       },
       orderBy: {
         createdAt: 'desc',
@@ -39,14 +36,8 @@ export const userRouter = router({
       const item = historyItem.item;
       return {
         ...item,
-        // clean date before returning
-        dateOrder: item.dateOrder.toISOString().split('T')[0] as any,
-        // clean files
-        video:
-          item.type === 'video' && item.file.length > 0
-            ? item.file.find((file) => file.type === 'video')
-            : null,
-        image: item.file.find((file) => file.type === 'image'),
+        takenAt: dayjs(item.takenAt).format('YYYY-MM-DD') as string,
+        createdAt: dayjs(item.createdAt).format('YYYY-MM-DD') as string,
       };
     });
   }),

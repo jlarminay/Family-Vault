@@ -10,31 +10,37 @@ const props = defineProps<{
 const loading = ref(false);
 
 const displayInfo = computed(() => {
-  const mainFile =
-    props.selectedItem.type === 'video' ? props.selectedItem.video : props.selectedItem.image;
-
   return [
+    {
+      icon: 'o_today',
+      label: 'Date Taken',
+      value: `${dayjs(props.selectedItem.takenAt).format('MMMM D, YYYY')} ${
+        props.selectedItem.dateEstimate ? '(est.)' : ''
+      }`,
+    },
     { icon: 'o_description', label: 'Description', value: props.selectedItem.description || '-' },
     { icon: 'o_people', label: 'People', value: props.selectedItem.people || '-' },
     {
       icon: 'o_aspect_ratio',
       label: 'Resolution',
-      value: `${mainFile.metadata?.resolution} (${getAspectRatio(mainFile.metadata?.resolution)})`,
+      value: `${props.selectedItem.metadata?.resolution} (${getAspectRatio(
+        props.selectedItem.metadata?.resolution,
+      )})`,
     },
     {
       icon: 'o_sd_card',
       label: 'Size',
-      value: formatSize(mainFile.size),
+      value: formatSize(props.selectedItem.size),
     },
     {
       icon: 'o_folder',
       label: 'Filename',
-      value: mainFile.name,
+      value: props.selectedItem.name,
     },
     {
       icon: 'o_today',
       label: 'Added Date',
-      value: dayjs(props.selectedItem.createdAt).format('MMMM D, YYYY h:mm A'),
+      value: dayjs(props.selectedItem.createdAt).format('MMMM D, YYYY'),
     },
   ];
 });
@@ -45,8 +51,10 @@ const displayInfo = computed(() => {
     class="tw_fixed tw_top-0 tw_right-0 tw_h-screen tw_z-[12003] tw_w-0 tw_bg-white tw_transition-[width]"
   >
     <!-- Info Block -->
-    <div v-if="selectedItem && showInfoData && !loading" class="tw_p-4">
-      <div class="tw_flex tw_flex-col tw_gap-8">
+    <div v-if="selectedItem && showInfoData && !loading" class="tw_p-4 tw_h-full">
+      <div class="tw_flex tw_flex-col tw_gap-6 tw_h-full tw_overflow-x-hidden tw_overflow-y-scroll">
+        <GalleryLockWarning :item="selectedItem" />
+
         <div v-for="(info, i) in displayInfo" :key="i" class="tw_flex tw_gap-4 tw_items-start">
           <q-icon size="24px" :name="info.icon" class="tw_mt-1.5" />
           <div class="tw_flex tw_flex-col">

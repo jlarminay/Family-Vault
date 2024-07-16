@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import validator from 'validator';
+import dayjs from 'dayjs';
+
 const { data: authData } = useAuth();
 definePageMeta({
   middleware: 'admin-authorized-only',
@@ -123,7 +125,7 @@ async function saveUser() {
             <q-td :props="props">
               {{
                 props.row.lastLogin
-                  ? $dayjs(props.row.lastLogin).format('MMM D, YYYY h:mm A')
+                  ? dayjs(props.row.lastLogin).format('MMM D, YYYY h:mm A')
                   : 'Never'
               }}
             </q-td>

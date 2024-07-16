@@ -8,6 +8,7 @@ import {
 import { resolve, extname } from 'path';
 import { createReadStream } from 'fs';
 import mimeOptions from './mimeOptions.js';
+import dayjs from 'dayjs';
 
 export default class S3 {
   private client: S3Client;
@@ -52,7 +53,7 @@ export default class S3 {
     {
       key: string;
       fullPath: string;
-      lastModified: Date;
+      lastModified: string;
       eTag: string;
       size: number;
       storageClass: string;
@@ -84,7 +85,7 @@ export default class S3 {
           return {
             key: item.Key || '',
             fullPath: getCDNPath,
-            lastModified: item.LastModified || new Date('1900-01-01'),
+            lastModified: dayjs(item.LastModified).format('YYYY-MM-DD') || '1900-01-01',
             eTag: item.ETag || '',
             size: item.Size || 0,
             storageClass: item.StorageClass || '',
@@ -99,7 +100,7 @@ export default class S3 {
     }
   }
 
-  async updateFilePermissions(key: string) {
+  async updateFilePermissions(key: string): Promise<boolean> {
     try {
       const command = new PutObjectAclCommand({
         Bucket: process.env.S3_BUCKET,
@@ -116,7 +117,11 @@ export default class S3 {
     }
   }
 
-  async getFileMetadata(key: string) {
+  async getFileMetadata(key: string): Promise<{
+    fileSize: number;
+    contentType: string;
+    fullPath: string;
+  } | null> {
     try {
       const command = new HeadObjectCommand({
         Bucket: process.env.S3_BUCKET,
@@ -125,9 +130,9 @@ export default class S3 {
 
       const response = await this.client.send(command);
 
-      const metadata: any = {
-        fileSize: response.ContentLength,
-        contentType: response.ContentType,
+      const metadata = {
+        fileSize: response.ContentLength || 0,
+        contentType: response.ContentType || '',
         // acl: response.ACL,
         fullPath: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${key}`,
       };
@@ -138,6 +143,19 @@ export default class S3 {
       return null;
     }
   }
+
+  // async generatePresignedUrl(folder, filename) {
+  //   const params = {
+  //     Bucket: process.env.S3_BUCKET_NAME,
+  //     Key: `${folder}/${filename}`,
+  //     Expires: 3600, // URL expiration time in seconds
+  //   };
+
+  //   const command = new PutObjectCommand(params);
+  //   const url = await getSignedUrl(this.client, command, { expiresIn: params.Expires });
+
+  //   return url;
+  // }
 }
 
 export type s3 = S3;

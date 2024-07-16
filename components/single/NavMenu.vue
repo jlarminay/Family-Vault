@@ -98,7 +98,7 @@ function handleSearch() {
                 </q-item-section>
                 <q-item-section>My Profile</q-item-section>
               </q-item>
-              <q-item
+              <!-- <q-item
                 v-if="authData?.role === 'admin'"
                 clickable
                 v-close-popup
@@ -108,7 +108,7 @@ function handleSearch() {
                   <q-icon name="o_cloud_upload" />
                 </q-item-section>
                 <q-item-section>Upload Video</q-item-section>
-              </q-item>
+              </q-item> -->
 
               <q-separator />
               <q-item

@@ -5,8 +5,14 @@ model Item {
   view        Int     @default(0)
   type        String
 
-  dateDisplay String?
-  dateOrder   DateTime @db.Date
+  // file data
+  name     String
+  path     String @unique
+  size     String
+  metadata Json?
+
+  dateEstimate Boolean  @default(false)
+  takenAt      DateTime @db.Date
 
   ownerId Int
   owner   User @relation(name: "OwnedVideo", fields: [ownerId], references: [id])
@@ -15,7 +21,6 @@ model Item {
   allowList User[] @relation(name: "AllowList")
   blockList User[] @relation(name: "BlockList")
 
-  file    File[]
   comment Comment[]
   history History[]
   like    Like[]

@@ -10,6 +10,7 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "docker": "docker-compose -f docker-compose.yml up -d",
+    "db:studio": "prisma studio --browser none",
     "db:reset": "prisma migrate reset --skip-seed -f",
     "db:deploy": "prisma migrate deploy",
     "db:seed": "prisma migrate reset -f",

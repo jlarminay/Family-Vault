@@ -5,6 +5,7 @@ import lgHash from 'lightgallery/plugins/hash';
 import 'lightgallery/css/lightgallery.css';
 import 'lightgallery/css/lg-video.css';
 
+const { data: authData } = useAuth();
 const emits = defineEmits(['loadMore', 'updateLike']);
 const props = defineProps<{
   allItems: Array<any>;
@@ -14,10 +15,12 @@ const props = defineProps<{
 }>();
 
 const $q = useQuasar();
+const itemStore = useItemStore();
 const gallery = ref<any>(null);
 const currentSelectedItem = ref<any>(null);
 const showCommentData = ref<boolean>(false);
 const showInfoData = ref<boolean>(false);
+const showEditModal = ref<boolean>(false);
 
 // watch items to refresh gallery
 watch(
@@ -50,7 +53,8 @@ function manageGallery() {
       plugins: [lgVideo, lgHash],
       selector: '.gallery-item',
       loop: false,
-      hash: true,
+      galleryId: 'gallery',
+      hash: false,
       download: false,
       autoplayFirstVideo: false,
     });
@@ -65,6 +69,12 @@ function manageGallery() {
       // if index is penultimate item, load more
       if (index === allItems.length - 2) {
         emits('loadMore');
+      }
+    });
+    element.addEventListener('lgAfterSlide', (event: any) => {
+      // increment view count
+      if (currentSelectedItem.value) {
+        itemStore.incrementViewCount(currentSelectedItem.value.id);
       }
     });
     element.addEventListener('lgBeforeClose', (event: any) => {
@@ -117,7 +127,7 @@ onUnmounted(() => {
         <h2 class="h2 tw_ml-0.5 sm:tw_ml-2 sm:tw_mb-1">{{ group.label }}</h2>
 
         <div class="tw_flex tw_gap-0 tw_justify-start tw_flex-wrap tw_items-start tw_@container">
-          <DashboardItem
+          <GalleryItem
             v-for="(item, i) in group.items"
             :key="i"
             :expandedView="expandedView"
@@ -132,6 +142,13 @@ onUnmounted(() => {
     <!-- Custom Icons -->
     <div id="customButtons" class="tw_hidden">
       <div class="tw_flex tw_items-center tw_pr-[20px] tw_gap-1">
+        <q-btn
+          v-if="authData?.role === 'admin'"
+          round
+          flat
+          icon="o_edit"
+          @click="showEditModal = true"
+        />
         <LikeButton
           v-if="currentSelectedItem"
           :itemId="currentSelectedItem.id"
@@ -167,7 +184,7 @@ onUnmounted(() => {
       @click="closeSidebar"
       v-touch-swipe.mouse.right="closeSidebar"
     />
-    <DashboardSidebar
+    <GallerySidebar
       id="sidebarData"
       :selectedItem="currentSelectedItem"
       :showInfoData="showInfoData"
@@ -178,6 +195,14 @@ onUnmounted(() => {
         'tw_w-[300px]': showCommentData || showInfoData,
       }"
       v-touch-swipe.mouse.right="closeSidebar"
+    />
+
+    <!-- Edit Modal -->
+    <GalleryEditModal
+      v-model="showEditModal"
+      :itemId="currentSelectedItem?.id || 0"
+      @update="showEditModal = false"
+      @close="showEditModal = false"
     />
   </div>
 </template>

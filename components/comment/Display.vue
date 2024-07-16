@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import dayjs from 'dayjs';
+
 defineProps({
   comment: {
     type: Object,
@@ -17,7 +19,7 @@ defineProps({
         <div>
           <p class="tw_font-bold tw_mb-0">{{ comment.user.name }}</p>
           <p class="tw_text-sm tw_text-gray-500 tw_leading-none">
-            {{ $dayjs(comment.createdAt).from($dayjs()) }}
+            {{ dayjs(comment.createdAt).from(dayjs()) }}
           </p>
         </div>
       </div>
