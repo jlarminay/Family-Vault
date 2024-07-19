@@ -48,11 +48,11 @@ const displayInfo = computed(() => {
 
 <template>
   <div
-    class="tw_fixed tw_top-0 tw_right-0 tw_h-screen tw_z-[12003] tw_w-0 tw_bg-white tw_transition-[width]"
+    class="tw_fixed tw_top-0 tw_right-0 tw_h-screen tw_z-[12003] tw_w-0 tw_bg-white tw_transition-[width] tw_overflow-x-hidden tw_overflow-y-scroll"
   >
     <!-- Info Block -->
     <div v-if="selectedItem && showInfoData && !loading" class="tw_p-4 tw_h-full">
-      <div class="tw_flex tw_flex-col tw_gap-6 tw_h-full tw_overflow-x-hidden tw_overflow-y-scroll">
+      <div class="tw_flex tw_flex-col tw_gap-6 tw_h-full">
         <GalleryLockWarning :item="selectedItem" />
 
         <div v-for="(info, i) in displayInfo" :key="i" class="tw_flex tw_gap-4 tw_items-start">
@@ -76,7 +76,7 @@ const displayInfo = computed(() => {
     </div>
 
     <!-- Comment Block -->
-    <div v-if="selectedItem && showCommentData && !loading" class="tw_p-4">
+    <div v-else-if="selectedItem && showCommentData && !loading" class="tw_p-4">
       <div class="tw_flex tw_flex-col tw_gap-8">
         <Comment :itemId="selectedItem.id" />
       </div>
