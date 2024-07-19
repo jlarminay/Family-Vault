@@ -99,7 +99,7 @@ async function updateUser() {
       </div>
 
       <!-- History -->
-      <div class="tw_mt-10">
+      <div v-if="false" class="tw_mt-10">
         <h1 class="h1">History <span class="tw_text-lg">(Last 12 videos)</span></h1>
 
         <div class="tw_flex tw_gap-0 tw_justify-start tw_flex-wrap tw_items-start tw_mt-2">
@@ -109,12 +109,7 @@ async function updateUser() {
           >
             No Videos Found
           </div>
-          <DashboardItem
-            v-for="(video, i) in history.map((v: any) => v.video)"
-            :key="i"
-            :video="video"
-            class="tw_w-full md:tw_w-1/2 lg:tw_w-1/3"
-          />
+          <pre>{{ history }}</pre>
         </div>
       </div>
     </main>

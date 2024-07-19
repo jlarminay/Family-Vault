@@ -6,19 +6,11 @@ export const useAdminStore = defineStore('admin', {
   getters: {},
 
   actions: {
-    // video (R)
+    // item (R)
     ...{
-      async videoRead() {
+      async itemRead() {
         const { $trpc } = useNuxtApp();
-        return await $trpc.admin.videoRead.query();
-      },
-    },
-
-    // file (R)
-    ...{
-      async filesRead() {
-        const { $trpc } = useNuxtApp();
-        return await $trpc.admin.filesRead.query();
+        return await $trpc.admin.itemRead.query();
       },
     },
 
@@ -35,18 +27,6 @@ export const useAdminStore = defineStore('admin', {
       async userUpdate(user: any) {
         const { $trpc } = useNuxtApp();
         return await $trpc.admin.userUpdate.mutate(user);
-      },
-    },
-
-    // report (RD)
-    ...{
-      async reportRead() {
-        const { $trpc } = useNuxtApp();
-        return await $trpc.admin.reportRead.query();
-      },
-      async reportDelete(id: number) {
-        const { $trpc } = useNuxtApp();
-        return await $trpc.admin.reportDelete.mutate({ id });
       },
     },
   },

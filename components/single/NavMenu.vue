@@ -2,7 +2,7 @@
 const { data: authData } = useAuth();
 const route = useRoute();
 
-const videoStore = useVideoStore();
+const itemStore = useItemStore();
 const search = ref<string>('');
 const showSearchInput = ref(false);
 
@@ -98,17 +98,17 @@ function handleSearch() {
                 </q-item-section>
                 <q-item-section>My Profile</q-item-section>
               </q-item>
-              <q-item
+              <!-- <q-item
                 v-if="authData?.role === 'admin'"
                 clickable
                 v-close-popup
-                @click="videoStore.showUploadModal = true"
+                @click="itemStore.showUploadModal = true"
               >
                 <q-item-section avatar>
                   <q-icon name="o_cloud_upload" />
                 </q-item-section>
                 <q-item-section>Upload Video</q-item-section>
-              </q-item>
+              </q-item> -->
 
               <q-separator />
               <q-item
@@ -122,12 +122,12 @@ function handleSearch() {
                 </q-item-section>
                 <q-item-section>Progress</q-item-section>
               </q-item>
-              <q-item clickable v-close-popup to="/stats">
+              <!-- <q-item clickable v-close-popup to="/stats">
                 <q-item-section avatar>
                   <q-icon name="o_query_stats" />
                 </q-item-section>
                 <q-item-section>Stats</q-item-section>
-              </q-item>
+              </q-item> -->
               <q-item clickable v-close-popup to="/legal">
                 <q-item-section avatar>
                   <q-icon name="o_policy" />

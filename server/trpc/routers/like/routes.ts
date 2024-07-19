@@ -4,14 +4,14 @@ import { z } from 'zod';
 
 export const likeRouter = router({
   getForVideo: protectedProcedure
-    .input(z.object({ videoId: z.number() }))
+    .input(z.object({ itemId: z.number() }))
     .query(async ({ ctx, input }) => {
       const session = await getServerSession(ctx.event);
-      const { videoId } = input;
+      const { itemId } = input;
 
       return {
-        count: await ctx.prisma.like.count({ where: { videoId } }),
-        isLiked: (await ctx.prisma.like.count({ where: { videoId, userId: session?.id } })) > 0,
+        count: await ctx.prisma.like.count({ where: { itemId } }),
+        isLiked: (await ctx.prisma.like.count({ where: { itemId, userId: session?.id } })) > 0,
       };
     }),
 
@@ -20,30 +20,30 @@ export const likeRouter = router({
 
     return await ctx.prisma.like.findMany({
       where: { userId: session?.id },
-      include: { video: true },
+      include: { item: true },
     });
   }),
 
   update: protectedProcedure
-    .input(z.object({ videoId: z.number(), liked: z.boolean() }))
+    .input(z.object({ itemId: z.number(), liked: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
       const session = await getServerSession(ctx.event);
-      const { videoId, liked } = input;
+      const { itemId, liked } = input;
 
       if (liked) {
         await ctx.prisma.like.create({
           data: {
             userId: session?.id || 0,
-            videoId,
+            itemId,
           },
         });
         return true; // to show liked
       } else {
         await ctx.prisma.like.delete({
           where: {
-            userId_videoId: {
+            userId_itemId: {
               userId: session?.id || 0,
-              videoId,
+              itemId,
             },
           },
         });

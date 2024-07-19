@@ -1,22 +1,12 @@
 import { adminProcedure, router } from '@/server/trpc/trpc';
 import { z } from 'zod';
-import dayjs from 'dayjs';
 
 export const adminRouter = router({
-  // video (R)
+  // item (R)
   ...{
-    videoRead: adminProcedure.query(async ({ ctx }) => {
-      return await ctx.prisma.video.findMany({
+    itemRead: adminProcedure.query(async ({ ctx }) => {
+      return await ctx.prisma.item.findMany({
         include: { owner: true },
-      });
-    }),
-  },
-
-  // files (R)
-  ...{
-    filesRead: adminProcedure.query(async ({ ctx }) => {
-      return await ctx.prisma.file.findMany({
-        include: { video: true, thumbnail: true },
       });
     }),
   },
@@ -66,20 +56,6 @@ export const adminRouter = router({
             role: input.role,
             active: input.active,
           },
-        });
-      }),
-  },
-
-  // report (RD)
-  ...{
-    reportRead: adminProcedure.query(async ({ ctx }) => {
-      return await ctx.prisma.report.findMany({ include: { user: true, video: true } });
-    }),
-    reportDelete: adminProcedure
-      .input(z.object({ id: z.number() }))
-      .mutation(async ({ ctx, input }) => {
-        return await ctx.prisma.report.delete({
-          where: { id: input.id },
         });
       }),
   },

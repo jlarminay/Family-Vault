@@ -38,7 +38,7 @@ export default {
     });
 
     // return if user has any videos or if user is on any allow list
-    const hasPrivateVideos = await prisma.video.count({
+    const hasPrivateVideos = await prisma.item.count({
       where: {
         OR: [
           {
