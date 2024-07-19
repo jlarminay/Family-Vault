@@ -1,15 +1,15 @@
 import fetch from 'node-fetch';
 
 export default {
-  discord: async (opts: { video: any; user: any; report: string }) => {
+  discord: async (opts: { item: any; user: any; report: string }) => {
     const env = useRuntimeConfig() as any;
-    const { video, user, report } = opts;
+    const { item, user, report } = opts;
 
     const urlProtocol = env.public.environment === 'dev' ? 'http://' : 'https://';
-    const videoUrl = `${urlProtocol}${env.public.baseUrl}/video/${video.id}`;
+    const itemUrl = `${urlProtocol}${env.public.baseUrl}/item/${item.id}`;
 
     let content = '';
-    content += `Received report on "[${video.title}](${videoUrl})" from "${user.name}".`;
+    content += `Received report on "[${item.title}](${itemUrl})" from "${user.name}".`;
     content += `\n> ${report.trim().split('\n').join('\n> ')} `;
 
     try {

@@ -8,12 +8,12 @@ export default async () => {
     {
       report: 'This video is very inappropriate.',
       userId: 4,
-      videoId: 1,
+      itemId: 1,
     },
     {
       report: 'This video is very inappropriate also.',
       userId: 5,
-      videoId: 3,
+      itemId: 3,
     },
   ];
 

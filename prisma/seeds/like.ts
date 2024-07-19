@@ -9,15 +9,15 @@ export default async () => {
   const newData = [
     {
       userId: 3,
-      videoId: 1,
+      itemId: 1,
     },
     {
       userId: 4,
-      videoId: 1,
+      itemId: 1,
     },
     {
       userId: 5,
-      videoId: 2,
+      itemId: 2,
     },
   ];
 

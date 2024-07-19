@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
+
 const emit = defineEmits(['fileUpdated']);
 const props = defineProps({
   maxSize: {

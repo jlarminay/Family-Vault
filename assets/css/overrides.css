@@ -27,10 +27,10 @@
 /* ----------------------------------- */
 /* Toaster */
 .c-toast-container {
-  @apply tw_z-[9999] tw_mt-4 md:tw_mt-0;
+  @apply !tw_z-[12010] tw_mt-4 md:tw_mt-0;
 
   .c-toast {
-    @apply tw_z-[9999] tw_pointer-events-auto;
+    @apply !tw_z-[12010] tw_pointer-events-auto;
 
     [class^='c-toast--'] {
       @apply tw_border-2 tw_bg-white tw_rounded-lg tw_px-6 tw_py-4 tw_mb-2 tw_flex tw_items-start tw_gap-2 tw_relative tw_z-[9999] tw_max-w-[400px];
@@ -46,5 +46,32 @@
         @apply tw_bg-blue-50 tw_border-blue-400;
       }
     }
+  }
+}
+
+/* ----------------------------------- */
+/* LightGallery */
+.lg-container {
+  .lg-backdrop {
+    @apply !tw_z-[12000];
+  }
+  .lg-outer {
+    @apply !tw_z-[12001] tw_transition-[width];
+
+    .lg-toolbar {
+      @apply tw_flex tw_justify-between tw_items-center tw_text-gray-300;
+
+      .lg-counter {
+        @apply tw_text-gray-300;
+      }
+
+      &::after,
+      .lg-close {
+        @apply tw_hidden;
+      }
+    }
+  }
+  .lg-has-html5 img {
+    @apply !tw_object-contain;
   }
 }

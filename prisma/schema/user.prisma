@@ -1,18 +1,19 @@
 model User {
-  id             Int       @id @default(autoincrement())
-  email          String    @unique
-  name           String
-  provider       String
-  role           String    @default("user")
-  avatar         String?
-  lastLogin      DateTime?
-  views          Int       @default(0)
-  active         Boolean   @default(true)
-  comments       Comment[] @relation(name: "CommentToUser") // can have many comments
-  uploadedVideos Video[]   @relation(name: "UserToVideo") // can upload many videos
-  likes          Like[]    @relation(name: "LikeToUser") // can have many likes
-  report         Report[]  @relation(name: "ReportToUser") // can report many videos
-  allowedVideos  Video[]   @relation(name: "UserToVideo1")
-  blockedVideos  Video[]   @relation(name: "UserToVideo2")
-  History        History[]
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  name      String
+  provider  String
+  role      String    @default("user")
+  avatar    String?
+  lastLogin DateTime?
+  views     Int       @default(0)
+  active    Boolean   @default(true)
+
+  comment   Comment[] @relation()
+  like      Like[]    @relation()
+  report    Report[]  @relation()
+  history   History[]
+  allowed   Item[]    @relation(name: "AllowList")
+  blocked   Item[]    @relation(name: "BlockList")
+  ownedItem Item[]    @relation(name: "OwnedVideo")
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const route = useRoute();
 
-const videoStore = useVideoStore();
+const itemStore = useItemStore();
 const search = ref<string>('');
 const videoData = ref<any>(null);
 const uploadState = ref<string>('idle');
@@ -53,7 +53,7 @@ async function uploadVideo() {
 <template>
   <Modal
     ref="modal"
-    v-model="videoStore.showUploadModal"
+    v-model="itemStore.showUploadModal"
     class="tw_w-full"
     :closeButton="false"
     persistent
@@ -92,7 +92,7 @@ async function uploadVideo() {
         color="dark"
         @click="
           uploadState = 'idle';
-          videoStore.showUploadModal = false;
+          itemStore.showUploadModal = false;
         "
       />
       <q-btn
@@ -121,7 +121,7 @@ async function uploadVideo() {
         color="dark"
         @click="
           uploadState = 'idle';
-          videoStore.showUploadModal = false;
+          itemStore.showUploadModal = false;
         "
       />
     </template>

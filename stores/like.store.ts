@@ -6,10 +6,10 @@ export const useLikeStore = defineStore('like', {
   getters: {},
 
   actions: {
-    async getForVideo(videoId: number) {
+    async getForVideo(itemId: number) {
       const { $trpc } = useNuxtApp();
 
-      let results = await $trpc.like.getForVideo.query({ videoId });
+      let results = await $trpc.like.getForVideo.query({ itemId });
       return results;
     },
     async getAllMine() {
@@ -18,11 +18,11 @@ export const useLikeStore = defineStore('like', {
       let results = await $trpc.like.getAllMine.query();
       return results;
     },
-    async update(videoId: number, liked: boolean) {
+    async update(itemId: number, liked: boolean) {
       const { $trpc } = useNuxtApp();
 
       let results = await $trpc.like.update.mutate({
-        videoId: videoId,
+        itemId,
         liked,
       });
       return results;

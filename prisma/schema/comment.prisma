@@ -1,10 +1,12 @@
 model Comment {
-  id        Int      @id @default(autoincrement())
-  text      String
+  id   Int    @id @default(autoincrement())
+  text String
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+  itemId Int
+  item   Item @relation(fields: [itemId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  userId    Int
-  user      User     @relation(name: "CommentToUser", fields: [userId], references: [id])
-  videoId   Int
-  video     Video    @relation(name: "CommentToVideo", fields: [videoId], references: [id])
 }

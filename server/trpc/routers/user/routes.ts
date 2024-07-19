@@ -1,6 +1,7 @@
 import { protectedProcedure, router } from '@/server/trpc/trpc';
 import { getServerSession } from '#auth';
 import { editOwnUserSchema } from './schema';
+import dayjs from 'dayjs';
 
 export const userRouter = router({
   getAll: protectedProcedure.query(async ({ ctx }) => {
@@ -18,22 +19,26 @@ export const userRouter = router({
   getHistory: protectedProcedure.query(async ({ ctx }) => {
     const session = await getServerSession(ctx.event);
 
-    return await ctx.prisma.history.findMany({
+    const history = await ctx.prisma.history.findMany({
       where: {
         userId: session?.id,
       },
       include: {
-        video: {
-          include: {
-            thumbnail: true,
-            video: true,
-          },
-        },
+        item: true,
       },
       orderBy: {
         createdAt: 'desc',
       },
       take: 12,
+    });
+
+    return history.map((historyItem) => {
+      const item = historyItem.item;
+      return {
+        ...item,
+        takenAt: dayjs(item.takenAt).format('YYYY-MM-DD') as string,
+        createdAt: dayjs(item.createdAt).format('YYYY-MM-DD') as string,
+      };
     });
   }),
 
