@@ -7,9 +7,11 @@ import fs from 'fs';
 
 const prisma = new PrismaClient();
 const s3 = new S3();
+let firstRun = true;
 
 async function waitForReset() {
   // wait for 60 seconds
+  // console.log('Waiting for 60 seconds');
   await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
 }
 
@@ -21,26 +23,24 @@ async function main() {
   if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir);
 
   while (true) {
-    // get last updated time
-    let lastCreatedAt = dayjs('1900-01-01');
-    const lastCreatedItem = await prisma.item.findFirst({
-      orderBy: { updatedAt: 'desc' },
-    });
-    if (lastCreatedItem) lastCreatedAt = dayjs(lastCreatedItem.createdAt).startOf('second');
+    // get current date
+    const checkDate = firstRun ? dayjs('1900-01-01') : dayjs().startOf('day');
 
     // get all files from s3
     const allFiles = await s3.getAllFiles();
 
     // console.log(`Found ${allFiles.length} files`);
 
-    // // filter files that are newer than last updated time
-    // const newFiles = allFiles.filter((file) =>
-    //   dayjs(file.lastModified).startOf('second').isAfter(dayjs(lastCreatedAt)),
-    // );
+    // filter files that are newer than last updated time
+    const cleanedFiles = allFiles.filter((file) =>
+      dayjs(file.lastModified).startOf('second').isAfter(dayjs(checkDate)),
+    );
+
+    // console.log(`Found ${cleanedFiles.length} new files`);
 
     // format them as needed
     let count = 0;
-    for (let i = 0; i < allFiles.length; i++) {
+    for (let i = 0; i < cleanedFiles.length; i++) {
       const file = allFiles[i];
 
       // check if already processed
@@ -84,7 +84,7 @@ async function main() {
             description: '',
             people: '',
             dateEstimate: true,
-            takenAt: dayjs().toDate(),
+            takenAt: dayjs().toISOString().split('T')[0],
             type: 'video',
             // file data
             name: videoName,
@@ -129,7 +129,7 @@ async function main() {
             description: '',
             people: '',
             dateEstimate: true,
-            takenAt: dayjs().toDate(),
+            takenAt: dayjs().toISOString().split('T')[0],
             type: 'image',
             // file data
             name: imageName,
@@ -157,6 +157,9 @@ async function main() {
 
     // console log if needed
     if (count > 0) console.log(`Inserted ${count} files`);
+
+    // set first run to false
+    firstRun = false;
 
     // wait given time
     await waitForReset();
