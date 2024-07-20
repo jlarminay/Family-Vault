@@ -54,7 +54,7 @@
             'apt-transport-https',
             'curl',
             'ffmpeg',
-            'cwebp',
+            'libwebp',
           ]
         state: present
         update_cache: true
