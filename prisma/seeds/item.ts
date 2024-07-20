@@ -62,12 +62,14 @@ export default async () => {
             faker.person.firstName(),
           ).join(', '),
           dateEstimate: Math.random() < 0.5 ? true : false,
-          takenAt:
-            count === 0
-              ? dayjs().toDate()
-              : dayjs()
-                  .subtract(Math.floor(Math.random() * 400) + 1, 'day')
-                  .toDate(),
+          takenAt: (count === 0
+            ? dayjs().toDate()
+            : dayjs()
+                .subtract(Math.floor(Math.random() * 400) + 1, 'day')
+                .toDate()
+          )
+            .toISOString()
+            .split('T')[0],
           type: 'video',
           // file data
           name: videoName,
@@ -114,12 +116,14 @@ export default async () => {
             faker.person.firstName(),
           ).join(', '),
           dateEstimate: Math.random() < 0.5 ? true : false,
-          takenAt:
-            count === 0
-              ? dayjs().toDate()
-              : dayjs()
-                  .subtract(Math.floor(Math.random() * 400) + 1, 'day')
-                  .toDate(),
+          takenAt: (count === 0
+            ? dayjs().toDate()
+            : dayjs()
+                .subtract(Math.floor(Math.random() * 400) + 1, 'day')
+                .toDate()
+          )
+            .toISOString()
+            .split('T')[0],
           type: 'image',
           // file data
           name: imageName,

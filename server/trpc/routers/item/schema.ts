@@ -23,7 +23,7 @@ export const editItemSchema = z.object({
   description: z.string().max(1024).nullable().optional(),
   people: z.string().max(1024).nullable().optional(),
   dateEstimate: z.boolean().nullable().optional(),
-  takenAt: z.coerce.date(),
+  takenAt: z.string().max(16),
   published: z.string(z.enum(['public', 'private', 'allow-few', 'deny-few'])),
   allowList: z.array(z.number()).nullable().optional(),
   blockList: z.array(z.number()).nullable().optional(),

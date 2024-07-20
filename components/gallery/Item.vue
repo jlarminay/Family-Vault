@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import dayjs from 'dayjs';
+
 defineProps({
   item: {
     type: Object,
@@ -17,10 +19,10 @@ defineProps({
 
 <template>
   <a
-    class="tw_inline-block tw_rounded tw_overflow-hidden tw_transition hover:tw_bg-slate-200 tw_px-1 sm:tw_px-2 tw_cursor-pointer"
+    class="tw_inline-block tw_rounded tw_overflow-hidden tw_transition hover:tw_bg-slate-200 tw_cursor-pointer"
     :class="{
-      'tw_py-1': !expandedView,
-      'tw_py-2': expandedView,
+      'tw_p-1 sm:tw_p-2': !expandedView,
+      'tw_p-2': expandedView,
     }"
     :data-lg-size="item.metadata.resolution.replace('x', '-')"
     :data-src="item.type === 'video' ? null : item.path"
@@ -64,10 +66,10 @@ defineProps({
         />
       </div>
     </div>
-    <div v-if="expandedView" class="tw_mt-2 tw_text-gray-500">
-      <p class="tw_text-xs sm:tw_text-sm tw_flex tw_items-center tw_gap-1">
+    <div v-if="expandedView" class="tw_mt-0.5">
+      <p class="tw_text-xs sm:tw_text-sm tw_flex tw_items-center tw_gap-1 tw_text-gray-500">
         <q-icon name="o_calendar_month" class="tw_hidden sm:tw_block" />
-        {{ $dayjs(item.takenAt).format('MMM D, YYYY') }}
+        {{ dayjs(item.takenAt).format('MMM D, YYYY') }}
         {{ item.dateEstimate ? '(est.)' : '' }}
       </p>
       <p class="tw_text-xs sm:tw_text-sm tw_line-clamp-2">{{ item.description }}</p>

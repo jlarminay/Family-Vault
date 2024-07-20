@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "Video" ALTER COLUMN "dateOrder" SET DATA TYPE DATE;

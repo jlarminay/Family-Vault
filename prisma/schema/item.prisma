@@ -11,8 +11,8 @@ model Item {
   size     String
   metadata Json?
 
-  dateEstimate Boolean  @default(false)
-  takenAt      DateTime @db.Date
+  dateEstimate Boolean @default(false)
+  takenAt      String
 
   ownerId Int
   owner   User @relation(name: "OwnedVideo", fields: [ownerId], references: [id])

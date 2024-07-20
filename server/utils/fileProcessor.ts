@@ -117,9 +117,9 @@ export default {
         newPath = resolve(localPath);
       }
 
-      // convert image to webp using cwebp and resize to width of 400px
+      // convert image to webp using imagemagick and resize to width of 400px
       shell.exec(
-        `convert "${newPath}" -auto-orient -resize 400x "${targetDir}/${name}.thumbnail.webp"`,
+        `magick "${newPath}" -auto-orient -resize 400x400\> "${targetDir}/${name}.thumbnail.webp"`,
         {
           silent: true,
         },

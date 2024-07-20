@@ -95,7 +95,7 @@ export const itemRouter = router({
       .map((item) => {
         return {
           ...item,
-          // takenAt: dayjs(item.takenAt).format('YYYY-MM-DD') as string,
+          // takenAt: item.takenAt.toISOString().split('T')[0],
           // createdAt: dayjs(item.createdAt).format('YYYY-MM-DD') as string,
           like: item.like.length,
         };
@@ -180,7 +180,7 @@ export const itemRouter = router({
 
       return {
         ...item,
-        // takenAt: dayjs(item.takenAt).format('YYYY-MM-DD') as string,
+        // takenAt: item.takenAt.toISOString().split('T')[0],
         // createdAt: dayjs(item.createdAt).format('YYYY-MM-DD') as string,
         like: item.like.length,
       };
@@ -213,12 +213,12 @@ export const itemRouter = router({
       });
 
       // add to history
-      await ctx.prisma.history.create({
-        data: {
-          userId: session.id,
-          itemId: input.id,
-        },
-      });
+      // await ctx.prisma.history.create({
+      //   data: {
+      //     userId: session.id,
+      //     itemId: input.id,
+      //   },
+      // });
     }),
 
   update: protectedProcedure.input(editItemSchema).mutation(async ({ ctx, input }) => {
