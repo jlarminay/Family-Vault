@@ -24,7 +24,7 @@ async function main() {
 
   while (true) {
     // get current date
-    const checkDate = firstRun ? dayjs('1900-01-01') : dayjs().startOf('day');
+    const checkDate = firstRun ? dayjs('1900-01-01') : dayjs().subtract(1, 'day').startOf('day');
 
     // get all files from s3
     const allFiles = await s3.getAllFiles();

@@ -3,6 +3,7 @@ import { statSync } from 'fs';
 import { resolve } from 'path';
 import sizeOf from 'image-size';
 import fs from 'fs';
+import os from 'os';
 
 export default {
   video: {
@@ -118,8 +119,9 @@ export default {
       }
 
       // convert image to webp using imagemagick and resize to width of 400px
+      const command = os.platform() === 'win32' ? 'magick' : 'convert';
       shell.exec(
-        `magick "${newPath}" -auto-orient -resize 400x400\> "${targetDir}/${name}.thumbnail.webp"`,
+        `${command} "${newPath}" -auto-orient -resize 400x400\> "${targetDir}/${name}.thumbnail.webp"`,
         {
           silent: true,
         },
