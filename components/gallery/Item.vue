@@ -17,7 +17,11 @@ defineProps({
 
 <template>
   <a
-    class="tw_inline-block tw_rounded tw_overflow-hidden tw_transition hover:tw_bg-slate-200 tw_p-0.5 sm:tw_p-2 tw_cursor-pointer"
+    class="tw_inline-block tw_rounded tw_overflow-hidden tw_transition hover:tw_bg-slate-200 tw_px-1 sm:tw_px-2 tw_cursor-pointer"
+    :class="{
+      'tw_py-1': !expandedView,
+      'tw_py-2': expandedView,
+    }"
     :data-lg-size="item.metadata.resolution.replace('x', '-')"
     :data-src="item.type === 'video' ? null : item.path"
     :data-video="
@@ -31,7 +35,7 @@ defineProps({
     <div class="tw_relative tw_rounded">
       <img
         :src="`${item.path}.thumbnail.webp`"
-        class="tw_w-full tw_aspect-square sm:tw_aspect-video tw_object-cover tw_rounded"
+        class="tw_w-full tw_aspect-video tw_object-cover tw_rounded"
       />
       <span
         v-if="item.status !== 'processing' && item.type === 'video'"
@@ -61,19 +65,11 @@ defineProps({
       </div>
     </div>
     <div v-if="expandedView" class="tw_mt-2 tw_text-gray-500">
-      <p
-        v-for="(desc, i) in [
-          { label: 'Uploaded:', value: item.createdAt },
-          { label: 'Taken:', value: item.takenAt },
-          { label: 'Desc:', value: item.description },
-          { label: 'People:', value: item.people },
-        ]"
-        :key="i"
-        class="tw_text-sm tw_truncate"
-      >
-        <b>{{ desc.label }}</b>
-        {{ desc.value }}
+      <p class="tw_text-xs sm:tw_text-sm tw_flex tw_items-center tw_gap-1">
+        <q-icon name="o_calendar_month" class="tw_hidden sm:tw_block" />
+        {{ $dayjs(item.takenAt).format('MMM D, YYYY') }}
       </p>
+      <p class="tw_text-xs sm:tw_text-sm tw_line-clamp-2">{{ item.description }}</p>
     </div>
   </a>
 </template>

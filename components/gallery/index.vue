@@ -133,7 +133,7 @@ onUnmounted(() => {
             :expandedView="expandedView"
             :item="item"
             :liked="allLikes.some((like: any) => like.itemId === item.id)"
-            class="gallery-item tw_w-1/4 @lg:tw_w-1/4 @xl:tw_w-1/4 @3xl:tw_w-1/5 @5xl:tw_w-1/6 @7xl:tw_w-1/7"
+            class="gallery-item tw_w-1/3 @lg:tw_w-1/3 @xl:tw_w-1/3 @3xl:tw_w-1/4 @5xl:tw_w-1/5 @7xl:tw_w-1/6"
           />
         </div>
       </div>

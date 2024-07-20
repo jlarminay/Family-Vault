@@ -162,11 +162,10 @@ async function refreshLikes() {
           </h1>
           <div class="tw_mr-3">
             <q-btn
-              v-if="authData?.role === 'admin'"
               round
               flat
               class="!tw_p-0"
-              icon="o_expand"
+              :icon="!expandedView ? 'o_unfold_more' : 'o_unfold_less'"
               color="dark"
               @click="expandedView = !expandedView"
             />
