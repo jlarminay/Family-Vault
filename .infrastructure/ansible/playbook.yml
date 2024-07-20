@@ -54,7 +54,6 @@
             'apt-transport-https',
             'curl',
             'ffmpeg',
-            'ffprobe',
             'cwebp',
           ]
         state: present

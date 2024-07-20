@@ -55,7 +55,7 @@ async function main() {
 
       // check if file is accessible
       const { stdout: canAccessFile } = shell.exec(`curl -I ${file.fullPath}`, { silent: true });
-      if (canAccessFile.includes('HTTP/1.1 403')) {
+      if (/HTTP(?:\/\d(?:\.\d)?)? 403/.test(canAccessFile)) {
         // update privacy of file
         await s3.updateFilePermissions(file.key);
       }
