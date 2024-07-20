@@ -32,8 +32,9 @@ async function main() {
     // console.log(`Found ${allFiles.length} files`);
 
     // filter files that are newer than last updated time
-    const cleanedFiles = allFiles.filter((file) =>
-      dayjs(file.lastModified).startOf('second').isAfter(dayjs(checkDate)),
+    const cleanedFiles = allFiles.filter(
+      (file) => true,
+      // dayjs(file.lastModified).startOf('second').isAfter(dayjs(checkDate)),
     );
 
     // console.log(`Found ${cleanedFiles.length} new files`);

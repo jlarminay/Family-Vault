@@ -51,16 +51,16 @@ export default {
 
       // create thumbnail
       shell.exec(
-        `ffmpeg -y -i "${videoPath}" -ss ${targetTime} -vframes 1 "${targetDir}/${videoName}.thumbnail.webp"`,
+        `ffmpeg -y -i "${videoPath}" -ss ${targetTime} -vframes 1 -vf scale=200:-1 "${targetDir}/${videoName}.thumbnail.webp"`,
         { silent: true },
       );
       // resize thumbnail
-      shell.exec(
-        `cwebp -q 80 -resize 400 0 "${targetDir}/${videoName}.thumbnail.webp" -o "${targetDir}/${videoName}.thumbnail.webp"`,
-        {
-          silent: true,
-        },
-      );
+      // shell.exec(
+      //   `cwebp -q 80 -resize 200 0 "${targetDir}/${videoName}.thumbnail.webp" -o "${targetDir}/${videoName}.thumbnail.webp"`,
+      //   {
+      //     silent: true,
+      //   },
+      // );
 
       return {
         name: `${videoName}.thumbnail.webp`,
@@ -119,9 +119,8 @@ export default {
       }
 
       // convert image to webp using imagemagick and resize to width of 400px
-      const command = os.platform() === 'win32' ? 'magick' : 'convert';
       shell.exec(
-        `${command} "${newPath}" -auto-orient -resize 400x400\> "${targetDir}/${name}.thumbnail.webp"`,
+        `ffmpeg -i "${newPath}" -vf "scale=200:200:force_original_aspect_ratio=increase" -q:v 90 "${targetDir}/${name}.thumbnail.webp"`,
         {
           silent: true,
         },
