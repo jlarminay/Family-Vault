@@ -95,8 +95,8 @@ export const itemRouter = router({
       .map((item) => {
         return {
           ...item,
-          takenAt: dayjs(item.takenAt).format('YYYY-MM-DD') as string,
-          createdAt: dayjs(item.createdAt).format('YYYY-MM-DD') as string,
+          // takenAt: dayjs(item.takenAt).format('YYYY-MM-DD') as string,
+          // createdAt: dayjs(item.createdAt).format('YYYY-MM-DD') as string,
           like: item.like.length,
         };
       })
@@ -180,8 +180,8 @@ export const itemRouter = router({
 
       return {
         ...item,
-        takenAt: dayjs(item.takenAt).format('YYYY-MM-DD') as string,
-        createdAt: dayjs(item.createdAt).format('YYYY-MM-DD') as string,
+        // takenAt: dayjs(item.takenAt).format('YYYY-MM-DD') as string,
+        // createdAt: dayjs(item.createdAt).format('YYYY-MM-DD') as string,
         like: item.like.length,
       };
     }),

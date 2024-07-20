@@ -68,6 +68,7 @@ defineProps({
       <p class="tw_text-xs sm:tw_text-sm tw_flex tw_items-center tw_gap-1">
         <q-icon name="o_calendar_month" class="tw_hidden sm:tw_block" />
         {{ $dayjs(item.takenAt).format('MMM D, YYYY') }}
+        {{ item.dateEstimate ? '(est.)' : '' }}
       </p>
       <p class="tw_text-xs sm:tw_text-sm tw_line-clamp-2">{{ item.description }}</p>
     </div>
