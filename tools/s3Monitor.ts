@@ -9,8 +9,6 @@ const prisma = new PrismaClient();
 const s3 = new S3();
 
 async function waitForReset() {
-  console.log('Waiting for 60 seconds before checking again');
-  console.log('');
   // wait for 60 seconds
   await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
 }
@@ -33,7 +31,7 @@ async function main() {
     // get all files from s3
     const allFiles = await s3.getAllFiles();
 
-    console.log(`Found ${allFiles.length} files`);
+    // console.log(`Found ${allFiles.length} files`);
 
     // // filter files that are newer than last updated time
     // const newFiles = allFiles.filter((file) =>

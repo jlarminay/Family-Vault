@@ -55,6 +55,7 @@
             'curl',
             'ffmpeg',
             'webp',
+            'imagemagick',
           ]
         state: present
         update_cache: true

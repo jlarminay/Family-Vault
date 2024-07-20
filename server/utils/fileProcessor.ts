@@ -118,9 +118,12 @@ export default {
       }
 
       // convert image to webp using cwebp and resize to width of 400px
-      shell.exec(`cwebp -q 80 -resize 400 0 ${newPath} -o "${targetDir}/${name}.thumbnail.webp"`, {
-        silent: true,
-      });
+      shell.exec(
+        `convert "${newPath}" -auto-orient -resize 400x "${targetDir}/${name}.thumbnail.webp"`,
+        {
+          silent: true,
+        },
+      );
 
       // return path
       return {
