@@ -11,9 +11,11 @@ import mimeOptions from './mimeOptions.js';
 import dayjs from 'dayjs';
 
 export default class S3 {
-  private client: S3Client;
+  private client: S3Client | null = null;
 
   constructor() {
+    if (!this.client) return;
+
     console.log({
       region: process.env.S3_REGION || '',
       endpoint: process.env.S3_ENDPOINT || '',
@@ -33,6 +35,7 @@ export default class S3 {
   }
 
   async upload(opts: { targetPath: string; localPath: string }): Promise<boolean> {
+    if (!this.client) return false;
     try {
       const { targetPath, localPath } = opts;
       // get stream body
@@ -68,6 +71,7 @@ export default class S3 {
       contentType: string;
     }[]
   > {
+    if (!this.client) return [];
     try {
       const key = process.env.ENVIRONMENT ? `${process.env.ENVIRONMENT}/` : '';
       const command = new ListObjectsV2Command({
@@ -111,6 +115,7 @@ export default class S3 {
   }
 
   async updateFilePermissions(key: string): Promise<boolean> {
+    if (!this.client) return false;
     try {
       const command = new PutObjectAclCommand({
         Bucket: process.env.S3_BUCKET,
@@ -132,6 +137,7 @@ export default class S3 {
     contentType: string;
     fullPath: string;
   } | null> {
+    if (!this.client) return null;
     try {
       const command = new HeadObjectCommand({
         Bucket: process.env.S3_BUCKET,
