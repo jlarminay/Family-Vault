@@ -8,7 +8,14 @@ const loading = ref(false);
 
 async function forceRecheckS3Storage() {
   loading.value = true;
-  await adminStore.forceRecheckS3Bucket();
+  const response = await adminStore.forceRecheckS3Bucket();
+  console.log(response);
+  loading.value = false;
+}
+async function getAllFiles() {
+  loading.value = true;
+  const response = await adminStore.getAllFiles();
+  console.log(response);
   loading.value = false;
 }
 </script>
@@ -30,6 +37,15 @@ async function forceRecheckS3Storage() {
         :loading="loading"
         :disabled="loading"
         @click="forceRecheckS3Storage"
+      />
+      <q-btn
+        label="Get All Files"
+        unelevated
+        no-caps
+        color="primary"
+        :loading="loading"
+        :disabled="loading"
+        @click="getAllFiles"
       />
     </main>
   </NuxtLayout>

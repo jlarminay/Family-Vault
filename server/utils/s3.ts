@@ -14,6 +14,14 @@ export default class S3 {
   private client: S3Client;
 
   constructor() {
+    console.log({
+      region: process.env.S3_REGION || '',
+      endpoint: process.env.S3_ENDPOINT || '',
+      credentials: {
+        accessKeyId: process.env.S3_ACCESS_KEY || '',
+        secretAccessKey: process.env.S3_SECRET_KEY || '',
+      },
+    });
     this.client = new S3Client({
       region: process.env.S3_REGION || '',
       endpoint: process.env.S3_ENDPOINT || '',

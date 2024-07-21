@@ -1,6 +1,7 @@
 import { adminProcedure, router } from '@/server/trpc/trpc';
 import { z } from 'zod';
 import { checkFileChanges } from '@/server/utils/checkFileChanges';
+import S3 from '@/server/utils/s3';
 
 export const adminRouter = router({
   // item (R)
@@ -63,6 +64,14 @@ export const adminRouter = router({
 
   // force recheck s3 bucket
   ...{
+    getAllFiles: adminProcedure.query(async ({ ctx }) => {
+      try {
+        const s3 = new S3();
+        return await s3.getAllFiles();
+      } catch (error) {
+        return error;
+      }
+    }),
     forceRecheckS3Bucket: adminProcedure.query(async ({ ctx }) => {
       try {
         return await checkFileChanges();
