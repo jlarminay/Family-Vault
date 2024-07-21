@@ -14,7 +14,8 @@ export default class S3 {
   private client: S3Client | null = null;
 
   constructor() {
-    if (!this.client) return;
+    console.log('S3 constructor');
+    if (this.client !== null) return;
 
     console.log({
       region: process.env.S3_REGION || '',
