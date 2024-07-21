@@ -66,8 +66,10 @@ export default class S3 {
         Bucket: process.env.S3_BUCKET,
         Prefix: key,
       });
+      console.log('command: ', command);
 
       const response = await this.client.send(command);
+      console.log('response: ', response);
 
       const files =
         response.Contents?.filter((item) => {
