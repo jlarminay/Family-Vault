@@ -42,6 +42,7 @@ export default class S3 {
   }
 
   public static getInstance(): S3 {
+    console.log('want to make');
     if (!S3.instance) {
       S3.instance = new S3();
     }
@@ -75,15 +76,16 @@ export default class S3 {
   }
 
   async getAllFiles(): Promise<
-    {
-      key: string;
-      fullPath: string;
-      lastModified: string;
-      eTag: string;
-      size: number;
-      storageClass: string;
-      contentType: string;
-    }[]
+    | {
+        key: string;
+        fullPath: string;
+        lastModified: string;
+        eTag: string;
+        size: number;
+        storageClass: string;
+        contentType: string;
+      }[]
+    | []
   > {
     if (!this.client) return [];
     try {
@@ -94,8 +96,14 @@ export default class S3 {
       });
       console.log('command: ', command);
 
-      const response = await this.client.send(command);
-      console.log('response: ', response);
+      let response;
+      try {
+        response = await this.client.send(command);
+        console.log('response: ', response);
+      } catch (err) {
+        console.log(err);
+        return [];
+      }
 
       const files =
         response.Contents?.filter((item) => {
