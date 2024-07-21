@@ -56,6 +56,7 @@ function manageGallery() {
       galleryId: 'gallery',
       hash: false,
       download: false,
+      keyPress: false,
       autoplayFirstVideo: false,
     });
     // add event listeners
