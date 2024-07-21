@@ -3,7 +3,6 @@ import { statSync } from 'fs';
 import { resolve } from 'path';
 import sizeOf from 'image-size';
 import fs from 'fs';
-import os from 'os';
 
 export default {
   video: {

@@ -29,5 +29,13 @@ export const useAdminStore = defineStore('admin', {
         return await $trpc.admin.userUpdate.mutate(user);
       },
     },
+
+    // force recheck s3 bucket
+    ...{
+      async forceRecheckS3Bucket() {
+        const { $trpc } = useNuxtApp();
+        return await $trpc.admin.forceRecheckS3Bucket.query();
+      },
+    },
   },
 });

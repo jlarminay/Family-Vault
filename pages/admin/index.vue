@@ -2,6 +2,15 @@
 definePageMeta({
   middleware: 'admin-authorized-only',
 });
+
+const adminStore = useAdminStore();
+const loading = ref(false);
+
+async function forceRecheckS3Storage() {
+  loading.value = true;
+  await adminStore.forceRecheckS3Bucket();
+  loading.value = false;
+}
 </script>
 
 <template>
@@ -13,7 +22,15 @@ definePageMeta({
     <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1000px] tw_mx-auto">
       <AdminSectionHeader />
 
-      <div>Body goes here</div>
+      <q-btn
+        label="Force Recheck S3 Storage"
+        unelevated
+        no-caps
+        color="primary"
+        :loading="loading"
+        :disabled="loading"
+        @click="forceRecheckS3Storage"
+      />
     </main>
   </NuxtLayout>
 </template>
