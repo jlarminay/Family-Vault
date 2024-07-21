@@ -14,24 +14,23 @@ export default class S3 {
   private static instance: S3 | null = null;
   private client: S3Client | null = null;
 
-  constructor() {
+  constructor(opts: {
+    region: string;
+    endpoint: string;
+    accessKeyId: string;
+    secretAccessKey: string;
+  }) {
     console.log('S3 constructor');
     if (this.client !== null) return;
 
-    console.log({
-      region: process.env.S3_REGION || '',
-      endpoint: process.env.S3_ENDPOINT || '',
-      credentials: {
-        accessKeyId: process.env.S3_ACCESS_KEY || '',
-        secretAccessKey: process.env.S3_SECRET_KEY || '',
-      },
-    });
+    const { region, endpoint, accessKeyId, secretAccessKey } = opts;
+    console.log({ region, endpoint, accessKeyId, secretAccessKey });
     this.client = new S3Client({
-      region: process.env.S3_REGION || '',
-      endpoint: process.env.S3_ENDPOINT || '',
+      region,
+      endpoint,
       credentials: {
-        accessKeyId: process.env.S3_ACCESS_KEY || '',
-        secretAccessKey: process.env.S3_SECRET_KEY || '',
+        accessKeyId,
+        secretAccessKey,
       },
     });
 
@@ -41,10 +40,15 @@ export default class S3 {
     process.env.AWS_SDK_LOG_LEVEL = 'debug';
   }
 
-  public static getInstance(): S3 {
+  public static getInstance(opts: {
+    region: string;
+    endpoint: string;
+    accessKeyId: string;
+    secretAccessKey: string;
+  }): S3 {
     console.log('want to make');
     if (!S3.instance) {
-      S3.instance = new S3();
+      S3.instance = new S3(opts);
     }
     return S3.instance;
   }

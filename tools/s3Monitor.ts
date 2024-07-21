@@ -6,7 +6,12 @@ import shell from 'shelljs';
 import fs from 'fs';
 
 const prisma = new PrismaClient();
-const s3Instance = S3.getInstance();
+const s3Instance = S3.getInstance({
+  region: useRuntimeConfig().s3.region || '',
+  endpoint: useRuntimeConfig().s3.endpoint || '',
+  accessKeyId: useRuntimeConfig().s3.accessKey || '',
+  secretAccessKey: useRuntimeConfig().s3.secretKey || '',
+});
 let firstRun = true;
 
 async function waitForReset() {

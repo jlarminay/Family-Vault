@@ -66,7 +66,12 @@ export const adminRouter = router({
   ...{
     getAllFiles: adminProcedure.query(async ({ ctx }) => {
       try {
-        const s3Instance = S3.getInstance();
+        const s3Instance = S3.getInstance({
+          region: useRuntimeConfig().s3.region || '',
+          endpoint: useRuntimeConfig().s3.endpoint || '',
+          accessKeyId: useRuntimeConfig().s3.accessKey || '',
+          secretAccessKey: useRuntimeConfig().s3.secretKey || '',
+        });
         return await s3Instance.getAllFiles();
       } catch (error) {
         return error;

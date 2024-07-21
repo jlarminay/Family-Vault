@@ -7,7 +7,12 @@ import { faker } from '@faker-js/faker';
 import dayjs from 'dayjs';
 
 const prisma = new PrismaClient();
-const s3Instance = S3.getInstance();
+const s3Instance = S3.getInstance({
+  region: process.env.S3_REGION || '',
+  endpoint: process.env.S3_ENDPOINT || '',
+  accessKeyId: process.env.S3_ACCESS_KEY || '',
+  secretAccessKey: process.env.S3_SECRET_KEY || '',
+});
 
 export default async () => {
   // define seeds
