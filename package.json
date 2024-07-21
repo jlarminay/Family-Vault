@@ -62,6 +62,7 @@
     "@types/validator": "^13.11.10",
     "concurrently": "^8.2.2",
     "dayjs-nuxt": "^2.1.9",
+    "dotenv-cli": "^7.4.2",
     "next-auth": "4.22.5",
     "npm-check-updates": "^16.14.20",
     "nuxt": "^3.8.2",

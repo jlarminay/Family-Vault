@@ -11,8 +11,9 @@ let firstRun = true;
 
 async function waitForReset() {
   // wait for 60 seconds
-  // console.log('Waiting for 60 seconds');
-  await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
+  console.log('Waiting for 10 seconds');
+  console.log('---------------------------------');
+  await new Promise((resolve) => setTimeout(resolve, 10 * 1000));
 }
 
 async function main() {
@@ -29,15 +30,14 @@ async function main() {
     // get all files from s3
     const allFiles = await s3.getAllFiles();
 
-    // console.log(`Found ${allFiles.length} files`);
+    console.log(`Found ${allFiles.length} files`);
 
     // filter files that are newer than last updated time
-    const cleanedFiles = allFiles.filter(
-      (file) => true,
-      // dayjs(file.lastModified).startOf('second').isAfter(dayjs(checkDate)),
+    const cleanedFiles = allFiles.filter((file) =>
+      dayjs(file.lastModified).startOf('second').isAfter(dayjs(checkDate)),
     );
 
-    // console.log(`Found ${cleanedFiles.length} new files`);
+    console.log(`Found ${cleanedFiles.length} new files`);
 
     // format them as needed
     let count = 0;

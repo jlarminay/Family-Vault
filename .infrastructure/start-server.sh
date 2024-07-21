@@ -1,9 +1,7 @@
 cd ..
 
 # Export environment variables
-set -a
-source .env.production
-set +a
+export $(grep -v '^#' .env.production | xargs)
 
 # Install dependencies
 npm install --no-package-lock --ignore-scripts
