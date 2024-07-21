@@ -1,8 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import S3 from '../../server/utils/s3.js';
 
 const prisma = new PrismaClient();
-const s3 = new S3();
 
 export default async () => {
   // define seeds

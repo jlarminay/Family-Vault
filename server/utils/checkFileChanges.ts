@@ -6,19 +6,17 @@ import shell from 'shelljs';
 import fs from 'fs';
 
 const prisma = new PrismaClient();
-const s3 = new S3();
+const s3Instance = S3.getInstance();
 
 export async function checkFileChanges(): Promise<boolean> {
   console.log('Running s3 bucket check');
-
-  console.log('s3: ', s3);
 
   const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
   if (fs.existsSync(targetDir)) fs.rmSync(targetDir, { recursive: true });
   if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir);
 
   // get all files from s3
-  const allFiles = await s3.getAllFiles();
+  const allFiles = await s3Instance.getAllFiles();
 
   console.log(`Found ${allFiles.length} files`);
 
@@ -46,7 +44,7 @@ export async function checkFileChanges(): Promise<boolean> {
     const { stdout: canAccessFile } = shell.exec(`curl -I ${file.fullPath}`, { silent: true });
     if (/HTTP(?:\/\d(?:\.\d)?)? 403/.test(canAccessFile)) {
       // update privacy of file
-      await s3.updateFilePermissions(file.key);
+      await s3Instance.updateFilePermissions(file.key);
     }
 
     // check content type
@@ -63,7 +61,7 @@ export async function checkFileChanges(): Promise<boolean> {
       });
 
       // upload to s3
-      await s3.upload({
+      await s3Instance.upload({
         targetPath: file.key.replace(videoName, newVideoThumbnail.name),
         localPath: newVideoThumbnail.path,
       });
@@ -108,7 +106,7 @@ export async function checkFileChanges(): Promise<boolean> {
       });
 
       // upload to s3
-      await s3.upload({
+      await s3Instance.upload({
         targetPath: file.key.replace(imageName, newImageThumbnail.name),
         localPath: newImageThumbnail.path,
       });

@@ -7,7 +7,7 @@ import { faker } from '@faker-js/faker';
 import dayjs from 'dayjs';
 
 const prisma = new PrismaClient();
-const s3 = new S3();
+const s3Instance = S3.getInstance();
 
 export default async () => {
   // define seeds
@@ -16,7 +16,7 @@ export default async () => {
   if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir);
 
   let count = 0;
-  const allFiles = await s3.getAllFiles();
+  const allFiles = await s3Instance.getAllFiles();
 
   for (let i = 0; i < allFiles.length; i++) {
     const file = allFiles[i];
@@ -31,7 +31,7 @@ export default async () => {
     const { stdout: canAccessFile } = shell.exec(`curl -I ${file.fullPath}`, { silent: true });
     if (canAccessFile.includes('HTTP/1.1 403')) {
       // update privacy of file
-      await s3.updateFilePermissions(file.key);
+      await s3Instance.updateFilePermissions(file.key);
     }
 
     // check content type
@@ -48,7 +48,7 @@ export default async () => {
       });
 
       // upload to s3
-      await s3.upload({
+      await s3Instance.upload({
         targetPath: file.key.replace(videoName, newVideoThumbnail.name),
         localPath: newVideoThumbnail.path,
       });
@@ -102,7 +102,7 @@ export default async () => {
       });
 
       // upload to s3
-      await s3.upload({
+      await s3Instance.upload({
         targetPath: file.key.replace(imageName, newImageThumbnail.name),
         localPath: newImageThumbnail.path,
       });

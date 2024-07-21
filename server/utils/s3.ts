@@ -11,6 +11,7 @@ import mimeOptions from './mimeOptions.js';
 import dayjs from 'dayjs';
 
 export default class S3 {
+  private static instance: S3 | null = null;
   private client: S3Client | null = null;
 
   constructor() {
@@ -33,6 +34,18 @@ export default class S3 {
         secretAccessKey: process.env.S3_SECRET_KEY || '',
       },
     });
+
+    // Enable debug logging
+    process.env.AWS_SDK_LOAD_CONFIG = '1';
+    process.env.AWS_NODEJS_CONNECTION_REUSE_ENABLED = '1';
+    process.env.AWS_SDK_LOG_LEVEL = 'debug';
+  }
+
+  public static getInstance(): S3 {
+    if (!S3.instance) {
+      S3.instance = new S3();
+    }
+    return S3.instance;
   }
 
   async upload(opts: { targetPath: string; localPath: string }): Promise<boolean> {

@@ -6,7 +6,7 @@ import shell from 'shelljs';
 import fs from 'fs';
 
 const prisma = new PrismaClient();
-const s3 = new S3();
+const s3Instance = S3.getInstance();
 let firstRun = true;
 
 async function waitForReset() {
@@ -28,7 +28,7 @@ async function main() {
     const checkDate = firstRun ? dayjs('1900-01-01') : dayjs().subtract(1, 'day').startOf('day');
 
     // get all files from s3
-    const allFiles = await s3.getAllFiles();
+    const allFiles = await s3Instance.getAllFiles();
 
     console.log(`Found ${allFiles.length} files`);
 
@@ -56,7 +56,7 @@ async function main() {
       const { stdout: canAccessFile } = shell.exec(`curl -I ${file.fullPath}`, { silent: true });
       if (/HTTP(?:\/\d(?:\.\d)?)? 403/.test(canAccessFile)) {
         // update privacy of file
-        await s3.updateFilePermissions(file.key);
+        await s3Instance.updateFilePermissions(file.key);
       }
 
       // check content type
@@ -73,7 +73,7 @@ async function main() {
         });
 
         // upload to s3
-        await s3.upload({
+        await s3Instance.upload({
           targetPath: file.key.replace(videoName, newVideoThumbnail.name),
           localPath: newVideoThumbnail.path,
         });
@@ -118,7 +118,7 @@ async function main() {
         });
 
         // upload to s3
-        await s3.upload({
+        await s3Instance.upload({
           targetPath: file.key.replace(imageName, newImageThumbnail.name),
           localPath: newImageThumbnail.path,
         });

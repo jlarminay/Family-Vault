@@ -66,8 +66,8 @@ export const adminRouter = router({
   ...{
     getAllFiles: adminProcedure.query(async ({ ctx }) => {
       try {
-        const s3 = new S3();
-        return await s3.getAllFiles();
+        const s3Instance = S3.getInstance();
+        return await s3Instance.getAllFiles();
       } catch (error) {
         return error;
       }
