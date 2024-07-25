@@ -117,7 +117,7 @@ export default {
         newPath = resolve(localPath);
       }
 
-      // convert image to webp using imagemagick and resize to width of 400px
+      // convert image to webp using ffmpeg and resize to width of 400px
       shell.exec(
         `ffmpeg -i "${newPath}" -vf "scale=200:200:force_original_aspect_ratio=increase" -q:v 90 "${targetDir}/${name}.thumbnail.webp"`,
         {

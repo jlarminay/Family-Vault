@@ -12,12 +12,12 @@ async function forceRecheckS3Storage() {
   console.log(response);
   loading.value = false;
 }
-async function getAllFiles() {
-  loading.value = true;
-  const response = await adminStore.getAllFiles();
-  console.log(response);
-  loading.value = false;
-}
+// async function getAllFiles() {
+//   loading.value = true;
+//   const response = await adminStore.getAllFiles();
+//   console.log(response);
+//   loading.value = false;
+// }
 </script>
 
 <template>
@@ -39,7 +39,7 @@ async function getAllFiles() {
           :disabled="loading"
           @click="forceRecheckS3Storage"
         />
-        <q-btn
+        <!-- <q-btn
           label="Get All Files"
           unelevated
           no-caps
@@ -47,7 +47,7 @@ async function getAllFiles() {
           :loading="loading"
           :disabled="loading"
           @click="getAllFiles"
-        />
+        /> -->
       </div>
     </main>
   </NuxtLayout>

@@ -20,8 +20,8 @@ export default class S3 {
     accessKeyId: string;
     secretAccessKey: string;
   }) {
-    console.log('S3 constructor');
-    console.log(opts);
+    // console.log('S3 constructor');
+    // console.log(opts);
     if (this.client !== null) return;
 
     const { region, endpoint, accessKeyId, secretAccessKey } = opts;

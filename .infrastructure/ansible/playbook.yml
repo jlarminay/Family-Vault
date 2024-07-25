@@ -44,22 +44,44 @@
     - name: Install dependencies
       apt:
         name:
-          [
-            'docker.io',
-            'docker-compose',
-            'rsync',
-            'net-tools',
-            'debian-keyring',
-            'debian-archive-keyring',
-            'apt-transport-https',
-            'curl',
-            'ffmpeg',
-            'webp',
-          ]
+          - docker.io
+          - docker-compose
+          - rsync
+          - net-tools
+          - debian-keyring
+          - debian-archive-keyring
+          - apt-transport-https
+          - curl
+          - autoconf
+          - automake
+          - build-essential
+          - cmake
+          - git
+          - libtool
+          - pkg-config
+          - yasm
+          - zlib1g-dev
+          - webp
         state: present
-        update_cache: true
-      retries: 5
-      delay: 10
+        update_cache: yes
+
+    ## ----------------------------------------
+    ## Install FFmpeg
+    - name: Check if FFmpeg is installed
+      command: which ffmpeg
+      register: ffmpeg_check
+      ignore_errors: yes
+    - name: Download and build FFmpeg
+      shell: |
+        git clone https://git.ffmpeg.org/ffmpeg.git /tmp/ffmpeg
+        cd /tmp/ffmpeg
+        ./configure
+        make
+        make install
+        cd / && rm -rf /tmp/ffmpeg
+      args:
+        creates: /usr/local/bin/ffmpeg
+      when: ffmpeg_check.rc != 0
 
     ## ----------------------------------------
     ## Mount volume if not mounted
