@@ -1,4 +1,6 @@
 $DOMAIN {
+        bind 0.0.0.0
+
         reverse_proxy /* {
                 to http://127.0.0.1:3000
                 header_up Host {host}

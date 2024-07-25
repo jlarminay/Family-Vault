@@ -41,7 +41,6 @@ export default class S3 {
     accessKeyId: string;
     secretAccessKey: string;
   }): S3 {
-    console.log('want to make');
     if (!S3.instance) {
       S3.instance = new S3(opts);
     }
@@ -93,12 +92,10 @@ export default class S3 {
         Bucket: process.env.S3_BUCKET,
         Prefix: key,
       });
-      console.log('command');
 
       let response;
       try {
         response = await this.client.send(command);
-        console.log('response', response.KeyCount, response.Contents?.[0]);
       } catch (err) {
         console.log(err);
         return [];
