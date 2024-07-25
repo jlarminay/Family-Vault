@@ -3,31 +3,37 @@ import { S3Client, ListObjectsV2Command } from '@aws-sdk/client-s3';
 async function listS3Objects() {
   console.log('Starting S3 connection...');
 
+  const s3Endpoint = process.env.S3_ENDPOINT || '';
+  const s3AccessKey = process.env.S3_ACCESS_KEY || '';
+  const s3SecretKey = process.env.S3_SECRET_KEY || '';
+  const s3Bucket = process.env.S3_BUCKET || '';
+  const environment = process.env.ENVIRONMENT || '';
+
   console.log({
-    region: process.env.S3_REGION || '',
-    endpoint: process.env.S3_ENDPOINT || '',
-    credentials: {
-      accessKeyId: process.env.S3_ACCESS_KEY || '',
-      secretAccessKey: process.env.S3_SECRET_KEY || '',
-    },
+    s3Endpoint,
+    s3AccessKey,
+    s3SecretKey,
+    s3Bucket,
+    environment,
   });
 
   const client = new S3Client({
     forcePathStyle: false,
-    logger: console,
+    // logger: console,
     region: 'us-east-1',
-    endpoint: process.env.S3_ENDPOINT || '',
+    endpoint: s3Endpoint,
     credentials: {
-      accessKeyId: process.env.S3_ACCESS_KEY || '',
-      secretAccessKey: process.env.S3_SECRET_KEY || '',
+      accessKeyId: s3AccessKey,
+      secretAccessKey: s3SecretKey,
     },
+    requestTimeout: 30000,
   });
 
   console.log('S3 client created.');
 
   const command = new ListObjectsV2Command({
-    Bucket: process.env.S3_BUCKET || '',
-    // Prefix: process.env.ENVIRONMENT ? `${process.env.ENVIRONMENT}/` : '',
+    Bucket: s3Bucket,
+    Prefix: environment ? `${environment}/` : '',
   });
 
   console.log('ListObjectsV2Command created:', command);

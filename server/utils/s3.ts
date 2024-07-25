@@ -21,10 +21,10 @@ export default class S3 {
     secretAccessKey: string;
   }) {
     console.log('S3 constructor');
+    console.log(opts);
     if (this.client !== null) return;
 
     const { region, endpoint, accessKeyId, secretAccessKey } = opts;
-    console.log({ region, endpoint, accessKeyId, secretAccessKey });
     this.client = new S3Client({
       region,
       endpoint,
@@ -33,11 +33,6 @@ export default class S3 {
         secretAccessKey,
       },
     });
-
-    // Enable debug logging
-    process.env.AWS_SDK_LOAD_CONFIG = '1';
-    process.env.AWS_NODEJS_CONNECTION_REUSE_ENABLED = '1';
-    process.env.AWS_SDK_LOG_LEVEL = 'debug';
   }
 
   public static getInstance(opts: {
@@ -98,12 +93,12 @@ export default class S3 {
         Bucket: process.env.S3_BUCKET,
         Prefix: key,
       });
-      console.log('command: ', command);
+      console.log('command');
 
       let response;
       try {
         response = await this.client.send(command);
-        console.log('response: ', response);
+        console.log('response', response.KeyCount, response.Contents?.[0]);
       } catch (err) {
         console.log(err);
         return [];
