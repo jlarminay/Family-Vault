@@ -138,7 +138,6 @@ export async function checkFileChanges(): Promise<boolean> {
       });
 
       // cleanup
-      fileProcessor.image.delete(imageName);
       fileProcessor.image.delete(newImageThumbnail.name);
 
       // cleanup

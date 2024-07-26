@@ -70,6 +70,15 @@
         @apply tw_hidden;
       }
     }
+
+    .lg-img-wrap {
+      .lg-dummy-img {
+        @apply !tw_w-full !tw_h-full !tw_top-0 !tw_left-0 !tw_object-contain !tw_m-0 !tw_block;
+      }
+      .lg-image {
+        @apply !tw_w-full !tw_h-full tw_object-contain;
+      }
+    }
   }
   .lg-has-html5 img {
     @apply !tw_object-contain;

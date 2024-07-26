@@ -156,10 +156,8 @@ async function refreshLikes() {
           We apologize for the inconvenience.
         </div>
 
-        <div class="tw_flex tw_justify-between sm:tw_justify-start tw_items-center sm:tw_gap-4">
-          <h1 class="h1">
-            Dashboard <span class="tw_text-lg">({{ allItemsCount }})</span>
-          </h1>
+        <div class="tw_flex tw_justify-between sm:tw_justify-start tw_items-center sm:tw_gap-6">
+          <h1 class="h1">Dashboard</h1>
           <div class="tw_mr-3">
             <q-btn
               round

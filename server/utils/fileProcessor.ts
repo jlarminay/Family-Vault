@@ -105,21 +105,33 @@ export default {
     }): Promise<{ name: string; path: string }> => {
       const { name, path } = opts;
       const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
-      let newPath = path;
 
-      // check if file is local or remote
-      if (path.startsWith('http')) {
-        // download file
-        const remotePath = path;
-        const localPath = `${targetDir}/${name}`;
+      // Extract rotation metadata
+      const rotationResult = shell.exec(
+        `ffmpeg -i "${path}" 2>&1 | grep -oP 'rotate\\s*:\\s*\\K\\d+'`,
+        { silent: true },
+      );
+      const rotation = parseInt(rotationResult.stdout.trim(), 10) || 0;
 
-        shell.exec(`curl -o "${localPath}" "${remotePath}"`, { silent: true });
-        newPath = resolve(localPath);
+      // Determine the appropriate transpose filter based on rotation
+      let transpose = '';
+      switch (rotation) {
+        case 90:
+          transpose = 'transpose=1';
+          break;
+        case 180:
+          transpose = 'transpose=2,transpose=2';
+          break;
+        case 270:
+          transpose = 'transpose=2';
+          break;
       }
 
-      // convert image to webp using ffmpeg and resize to width of 400px
+      // Convert image to webp using ffmpeg and resize to width of 200px
       shell.exec(
-        `ffmpeg -i "${newPath}" -vf "scale=200:200:force_original_aspect_ratio=increase,auto-orient" -q:v 90 "${targetDir}/${name}.thumbnail.webp"`,
+        `ffmpeg -i "${path}" -vf "${transpose}${
+          transpose ? ',' : ''
+        }scale=200:200:force_original_aspect_ratio=increase" -q:v 90 "${targetDir}/${name}.thumbnail.webp"`,
         {
           silent: true,
         },
