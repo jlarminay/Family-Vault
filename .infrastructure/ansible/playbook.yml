@@ -65,23 +65,23 @@
         state: present
         update_cache: yes
 
-    ## ----------------------------------------
-    ## Install FFmpeg
-    - name: Check if FFmpeg is installed
-      command: which ffmpeg
-      register: ffmpeg_check
-      ignore_errors: yes
-    - name: Download and build FFmpeg
-      shell: |
-        git clone https://git.ffmpeg.org/ffmpeg.git /tmp/ffmpeg
-        cd /tmp/ffmpeg
-        ./configure
-        make
-        make install
-        cd / && rm -rf /tmp/ffmpeg
-      args:
-        creates: /usr/local/bin/ffmpeg
-      when: ffmpeg_check.rc != 0
+    # ## ----------------------------------------
+    # ## Install FFmpeg
+    # - name: Check if FFmpeg is installed
+    #   command: which ffmpeg
+    #   register: ffmpeg_check
+    #   ignore_errors: yes
+    # - name: Download and build FFmpeg
+    #   shell: |
+    #     git clone https://git.ffmpeg.org/ffmpeg.git /tmp/ffmpeg
+    #     cd /tmp/ffmpeg
+    #     ./configure
+    #     make
+    #     make install
+    #     cd / && rm -rf /tmp/ffmpeg
+    #   args:
+    #     creates: /usr/local/bin/ffmpeg
+    #   when: ffmpeg_check.rc != 0
 
     ## ----------------------------------------
     ## Mount volume if not mounted
