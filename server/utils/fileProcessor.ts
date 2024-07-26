@@ -117,21 +117,25 @@ export default {
       let transpose = '';
       switch (rotation) {
         case 90:
-          transpose = 'transpose=1';
+          console.log('90');
+          transpose = 'transpose=1,';
           break;
         case 180:
-          transpose = 'transpose=2,transpose=2';
+          console.log('180');
+          transpose = 'transpose=2,transpose=2,';
           break;
         case 270:
-          transpose = 'transpose=2';
+          console.log('270');
+          transpose = 'transpose=2,';
           break;
       }
 
       // Convert image to webp using ffmpeg and resize to width of 200px
+      console.log(
+        `ffmpeg -i "${path}" -vf "${transpose}scale=200:200:force_original_aspect_ratio=increase" -q:v 90 "${targetDir}/${name}.thumbnail.webp"`,
+      );
       shell.exec(
-        `ffmpeg -i "${path}" -vf "${transpose}${
-          transpose ? ',' : ''
-        }scale=200:200:force_original_aspect_ratio=increase" -q:v 90 "${targetDir}/${name}.thumbnail.webp"`,
+        `ffmpeg -i "${path}" -vf "${transpose}scale=200:200:force_original_aspect_ratio=increase" -q:v 90 "${targetDir}/${name}.thumbnail.webp"`,
         {
           silent: true,
         },
