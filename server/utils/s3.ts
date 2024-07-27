@@ -106,7 +106,7 @@ export default class S3 {
           // filter out directories
           if (item.Key?.endsWith('/')) return false;
           // filter out thumbnails
-          if (item.Key?.endsWith('.thumbnail.webp')) return false;
+          if (item.Key?.endsWith('.thumbnail.jpg')) return false;
           // return all other files
           return true;
         }).map((item) => {

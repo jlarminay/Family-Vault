@@ -2,7 +2,6 @@ import shell from 'shelljs';
 import { statSync } from 'fs';
 import { resolve } from 'path';
 import sizeOf from 'image-size';
-import fs from 'fs';
 
 export default {
   video: {
@@ -50,20 +49,13 @@ export default {
 
       // create thumbnail
       shell.exec(
-        `ffmpeg -y -i "${videoPath}" -ss ${targetTime} -vframes 1 -vf scale=200:-1 "${targetDir}/${videoName}.thumbnail.webp"`,
+        `ffmpeg -y -i "${videoPath}" -ss ${targetTime} -vframes 1 -vf scale=200:-1 "${targetDir}/${videoName}.thumbnail.jpg"`,
         { silent: true },
       );
-      // resize thumbnail
-      // shell.exec(
-      //   `cwebp -q 80 -resize 200 0 "${targetDir}/${videoName}.thumbnail.webp" -o "${targetDir}/${videoName}.thumbnail.webp"`,
-      //   {
-      //     silent: true,
-      //   },
-      // );
 
       return {
-        name: `${videoName}.thumbnail.webp`,
-        path: `${targetDir}/${videoName}.thumbnail.webp`,
+        name: `${videoName}.thumbnail.jpg`,
+        path: `${targetDir}/${videoName}.thumbnail.jpg`,
       };
     },
   },
@@ -105,37 +97,21 @@ export default {
     }): Promise<{ name: string; path: string }> => {
       const { name, path } = opts;
       const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+      let newPath = path;
 
-      // Extract rotation metadata
-      const rotationResult = shell.exec(
-        `ffmpeg -i "${path}" 2>&1 | grep -oP 'rotate\\s*:\\s*\\K\\d+'`,
-        { silent: true },
-      );
-      const rotation = parseInt(rotationResult.stdout.trim(), 10) || 0;
+      // check if file is local or remote
+      if (path.startsWith('http')) {
+        // download file
+        const remotePath = path;
+        const localPath = `${targetDir}/${name}`;
 
-      // Determine the appropriate transpose filter based on rotation
-      let transpose = '';
-      switch (rotation) {
-        case 90:
-          console.log('90');
-          transpose = 'transpose=1,';
-          break;
-        case 180:
-          console.log('180');
-          transpose = 'transpose=2,transpose=2,';
-          break;
-        case 270:
-          console.log('270');
-          transpose = 'transpose=2,';
-          break;
+        shell.exec(`curl -o "${localPath}" "${remotePath}"`, { silent: true });
+        newPath = resolve(localPath);
       }
 
-      // Convert image to webp using ffmpeg and resize to width of 200px
-      console.log(
-        `ffmpeg -i "${path}" -vf "${transpose}scale=200:200:force_original_aspect_ratio=increase" -q:v 90 "${targetDir}/${name}.thumbnail.webp"`,
-      );
+      // create thumbnail
       shell.exec(
-        `ffmpeg -i "${path}" -vf "${transpose}scale=200:200:force_original_aspect_ratio=increase" -q:v 90 "${targetDir}/${name}.thumbnail.webp"`,
+        `ffmpeg -i "${newPath}" -vf "scale=200:200:force_original_aspect_ratio=increase" "${targetDir}/${name}.thumbnail.jpg"`,
         {
           silent: true,
         },
@@ -143,8 +119,8 @@ export default {
 
       // return path
       return {
-        name: `${name}.thumbnail.webp`,
-        path: `${targetDir}/${name}.thumbnail.webp`,
+        name: `${name}.thumbnail.jpg`,
+        path: `${targetDir}/${name}.thumbnail.jpg`,
       };
     },
     delete: async (fileName: string): Promise<void> => {
@@ -153,8 +129,8 @@ export default {
       const targetPath2 = resolve(`${targetDir}/${fileName}`);
 
       // check if file exists
-      if (fs.existsSync(targetPath1)) fs.rmSync(targetPath1);
-      if (fs.existsSync(targetPath2)) fs.rmSync(targetPath2);
+      // if (fs.existsSync(targetPath1)) fs.rmSync(targetPath1);
+      // if (fs.existsSync(targetPath2)) fs.rmSync(targetPath2);
 
       return;
     },

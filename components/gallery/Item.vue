@@ -31,12 +31,12 @@ defineProps({
         ? `{&quot;source&quot;: [{&quot;src&quot;:&quot;${item.path}&quot;, &quot;type&quot;:&quot;video/mp4&quot;}], &quot;attributes&quot;: {&quot;preload&quot;: true, &quot;controls&quot;: true}}`
         : null
     "
-    :data-poster="item.type === 'video' ? `${item.path}.thumbnail.webp` : null"
+    :data-poster="item.type === 'video' ? `${item.path}.thumbnail.jpg` : null"
     :ariaDescribedby="item.description"
   >
     <div class="tw_relative tw_rounded">
       <img
-        :src="`${item.path}.thumbnail.webp`"
+        :src="`${item.path}.thumbnail.jpg`"
         class="tw_w-full tw_aspect-video tw_object-cover tw_rounded"
       />
       <span
