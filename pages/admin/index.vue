@@ -6,18 +6,12 @@ definePageMeta({
 const adminStore = useAdminStore();
 const loading = ref(false);
 
-async function forceRecheckS3Storage() {
+async function performS3Check(type: string) {
   loading.value = true;
-  const response = await adminStore.forceRecheckS3Bucket();
+  const response = await adminStore.s3Action(type);
   console.log(response);
   loading.value = false;
 }
-// async function getAllFiles() {
-//   loading.value = true;
-//   const response = await adminStore.getAllFiles();
-//   console.log(response);
-//   loading.value = false;
-// }
 </script>
 
 <template>
@@ -37,7 +31,16 @@ async function forceRecheckS3Storage() {
           color="primary"
           :loading="loading"
           :disabled="loading"
-          @click="forceRecheckS3Storage"
+          @click="performS3Check('forceRecheckS3Bucket')"
+        />
+        <q-btn
+          label="Recreate Thumbnails"
+          unelevated
+          no-caps
+          color="primary"
+          :loading="loading"
+          :disabled="loading"
+          @click="performS3Check('updateThumbnail')"
         />
         <!-- <q-btn
           label="Get All Files"

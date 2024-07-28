@@ -32,13 +32,17 @@ export const useAdminStore = defineStore('admin', {
 
     // force recheck s3 bucket
     ...{
-      async getAllFiles() {
+      async s3Action(type: string) {
         const { $trpc } = useNuxtApp();
-        return await $trpc.admin.getAllFiles.query();
-      },
-      async forceRecheckS3Bucket() {
-        const { $trpc } = useNuxtApp();
-        return await $trpc.admin.forceRecheckS3Bucket.query();
+
+        switch (type) {
+          case 'forceRecheckS3Bucket':
+            return await $trpc.admin.forceRecheckS3Bucket.query();
+          case 'getAllFiles':
+            return await $trpc.admin.getAllFiles.query();
+          case 'updateThumbnail':
+            return await $trpc.admin.refreshAllThumbnails.query();
+        }
       },
     },
   },

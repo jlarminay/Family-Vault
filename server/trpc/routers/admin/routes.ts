@@ -84,6 +84,13 @@ export const adminRouter = router({
         return error;
       }
     }),
+    refreshAllThumbnails: adminProcedure.query(async ({ ctx }) => {
+      try {
+        return await checkFileChanges({ updateThumbnailOnly: true });
+      } catch (error) {
+        return error;
+      }
+    }),
   },
 });
 

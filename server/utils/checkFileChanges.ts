@@ -13,8 +13,16 @@ const s3Instance = S3.getInstance({
   secretAccessKey: useRuntimeConfig().s3.secretKey || '',
 });
 
-export async function checkFileChanges(): Promise<boolean> {
-  console.log('Running s3 bucket check');
+export async function checkFileChanges(
+  opts: { updateThumbnailOnly: boolean } = { updateThumbnailOnly: false },
+): Promise<boolean> {
+  const { updateThumbnailOnly } = opts;
+
+  if (updateThumbnailOnly) {
+    console.log('Running thumbnail update only');
+  } else {
+    console.log('Running full file check');
+  }
 
   const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
   if (fs.existsSync(targetDir)) fs.rmSync(targetDir, { recursive: true });
@@ -26,10 +34,12 @@ export async function checkFileChanges(): Promise<boolean> {
   console.log(`Found ${allFiles.length} files`);
 
   // check file count
-  const itemCount = await prisma.item.count();
-  if (allFiles.length === itemCount) {
-    console.log('No new files to process');
-    return true;
+  if (!updateThumbnailOnly) {
+    const itemCount = await prisma.item.count();
+    if (allFiles.length === itemCount) {
+      console.log('No new files to process');
+      return true;
+    }
   }
 
   // format them as needed
@@ -38,10 +48,12 @@ export async function checkFileChanges(): Promise<boolean> {
     const file = allFiles[i];
 
     // check if already processed
-    const existingFile = await prisma.item.findFirst({
-      where: { path: file.fullPath },
-    });
-    if (existingFile) continue;
+    if (!updateThumbnailOnly) {
+      const existingFile = await prisma.item.findFirst({
+        where: { path: file.fullPath },
+      });
+      if (existingFile) continue;
+    }
 
     console.log(`Processing file ${file.key}`);
 
@@ -71,30 +83,31 @@ export async function checkFileChanges(): Promise<boolean> {
         localPath: newVideoThumbnail.path,
       });
 
-      // insert item into db
-      await prisma.item.create({
-        data: {
-          // item data
-          description: '',
-          people: '',
-          dateEstimate: true,
-          takenAt: dayjs().toISOString().split('T')[0],
-          type: 'video',
-          // file data
-          name: videoName,
-          path: file.fullPath,
-          size: file.size.toString(),
-          metadata: videoMetadata,
-          // privacy
-          published: 'private',
-          // owner
-          owner: { connect: { email: 'j.larminay@gmail.com' } },
-        },
-      });
+      if (!updateThumbnailOnly) {
+        // insert item into db
+        await prisma.item.create({
+          data: {
+            // item data
+            description: '',
+            people: '',
+            dateEstimate: true,
+            takenAt: dayjs().toISOString().split('T')[0],
+            type: 'video',
+            // file data
+            name: videoName,
+            path: file.fullPath,
+            size: file.size.toString(),
+            metadata: videoMetadata,
+            // privacy
+            published: 'private',
+            // owner
+            owner: { connect: { email: 'j.larminay@gmail.com' } },
+          },
+        });
+      }
 
       // cleanup
       fileProcessor.image.delete(newVideoThumbnail.name);
-
       count++;
     }
     // if image
@@ -116,31 +129,31 @@ export async function checkFileChanges(): Promise<boolean> {
         localPath: newImageThumbnail.path,
       });
 
-      // insert item into db
-      await prisma.item.create({
-        data: {
-          // item data
-          description: '',
-          people: '',
-          dateEstimate: true,
-          takenAt: dayjs().toISOString().split('T')[0],
-          type: 'image',
-          // file data
-          name: imageName,
-          path: file.fullPath,
-          size: file.size.toString(),
-          metadata: imageMetadata,
-          // privacy
-          published: 'private',
-          // owner
-          owner: { connect: { email: 'j.larminay@gmail.com' } },
-        },
-      });
+      if (!updateThumbnailOnly) {
+        // insert item into db
+        await prisma.item.create({
+          data: {
+            // item data
+            description: '',
+            people: '',
+            dateEstimate: true,
+            takenAt: dayjs().toISOString().split('T')[0],
+            type: 'image',
+            // file data
+            name: imageName,
+            path: file.fullPath,
+            size: file.size.toString(),
+            metadata: imageMetadata,
+            // privacy
+            published: 'private',
+            // owner
+            owner: { connect: { email: 'j.larminay@gmail.com' } },
+          },
+        });
+      }
 
       // cleanup
       fileProcessor.image.delete(newImageThumbnail.name);
-
-      // cleanup
       count++;
     }
 
