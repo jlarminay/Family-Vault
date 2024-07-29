@@ -1,5 +1,5 @@
 import shell from 'shelljs';
-import { statSync } from 'fs';
+import fs from 'fs';
 import { resolve } from 'path';
 import sizeOf from 'image-size';
 
@@ -84,7 +84,7 @@ export default {
       // get metadata
       const dimensions = sizeOf(newPath);
       const resolution = `${dimensions.width}x${dimensions.height}`;
-      const size = statSync(newPath).size;
+      const size = fs.statSync(newPath).size;
 
       return {
         resolution,
@@ -123,14 +123,31 @@ export default {
         path: `${targetDir}/${name}.thumbnail.jpg`,
       };
     },
+    getMajorColor: async (opts: { name: string; path: string }): Promise<string> => {
+      const { name, path } = opts;
+      const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+      let newPath = path;
+
+      // check if file is local or remote
+      if (path.startsWith('http')) {
+        // download file
+        const remotePath = path;
+        const localPath = `${targetDir}/${name}`;
+
+        shell.exec(`curl -o "${localPath}" "${remotePath}"`, { silent: true });
+        newPath = resolve(localPath);
+      }
+
+      return '#ff6666';
+    },
     delete: async (fileName: string): Promise<void> => {
       const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
       const targetPath1 = resolve(`${targetDir}/${fileName}`);
       const targetPath2 = resolve(`${targetDir}/${fileName}`);
 
       // check if file exists
-      // if (fs.existsSync(targetPath1)) fs.rmSync(targetPath1);
-      // if (fs.existsSync(targetPath2)) fs.rmSync(targetPath2);
+      if (fs.existsSync(targetPath1)) fs.rmSync(targetPath1);
+      if (fs.existsSync(targetPath2)) fs.rmSync(targetPath2);
 
       return;
     },
