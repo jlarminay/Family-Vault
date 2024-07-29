@@ -35,10 +35,7 @@ defineProps({
     :ariaDescribedby="item.description"
   >
     <div class="tw_relative tw_rounded">
-      <img
-        :src="`${item.path}.thumbnail.jpg`"
-        class="tw_w-full tw_aspect-video sm:tw_aspect-video tw_object-cover tw_rounded"
-      />
+      <GalleryItemImage :thumbnailPath="`${item.path}.thumbnail.jpg`" :metadata="item.metadata" />
       <span
         v-if="item.status !== 'processing' && item.type === 'video'"
         class="tw_text-xs sm:tw_text-sm tw_py-1 tw_absolute tw_bottom-0 tw_right-0 tw_px-2 tw_p-0.5 tw_bg-black tw_bg-opacity-60 tw_text-white tw_rounded-tl tw_rounded-br"
