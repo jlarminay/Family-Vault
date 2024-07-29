@@ -10,6 +10,8 @@ export const itemRouter = router({
     const page = input.page || 1;
     const limit = 30;
 
+    console.log(input);
+
     const items = await ctx.prisma.item.findMany({
       where: {
         OR: [
@@ -51,6 +53,20 @@ export const itemRouter = router({
     // filter and sort items
     const cleanedItems = items
       .filter((item) => {
+        // filter by likes
+        if (input.filterBy === 'liked' && !item.like.some((like) => like.userId === session?.id)) {
+          return false;
+        }
+        // filter by private
+        if (input.filterBy === 'private' && item.published === 'public') {
+          return false;
+        }
+
+        // filter by type
+        if (input.type.length > 0 && !input.type.includes(item.type)) {
+          return false;
+        }
+
         // search field
         if (input.search) {
           // check if search is for file name
@@ -79,15 +95,6 @@ export const itemRouter = router({
           ) {
             return false;
           }
-        }
-
-        // filter by likes
-        if (input.filterBy === 'liked' && !item.like.some((like) => like.userId === session?.id)) {
-          return false;
-        }
-        // filter by private
-        if (input.filterBy === 'private' && item.published === 'public') {
-          return false;
         }
 
         return true;

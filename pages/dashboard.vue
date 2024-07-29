@@ -19,6 +19,7 @@ const page = ref(1);
 const filters = ref({
   search: '',
   sortBy: 'date-added-desc',
+  type: ['video', 'image'],
   filterBy: 'all',
 });
 
@@ -94,7 +95,7 @@ const cleanedAllItems = computed(() => {
 });
 
 watch(
-  () => [filters.value.sortBy, filters.value.filterBy, route.query.search],
+  () => [filters.value.sortBy, filters.value.filterBy, filters.value.type, route.query.search],
   async (newValue, oldValue) => {
     if (
       !oldValue ||
@@ -116,7 +117,7 @@ watch(
 async function search() {
   // scroll to top
   loading.value = true;
-  allLikes.value = await likeStore.getAllMine();
+  refreshLikes();
   const result = await itemStore.search({
     ...filters.value,
     page: page.value,
@@ -169,43 +170,80 @@ async function refreshLikes() {
             />
             <q-btn round flat class="!tw_p-0" icon="o_filter_list" color="dark" :loading="loading">
               <q-menu>
-                <q-list>
-                  <q-item
-                    v-for="option in [
-                      { label: 'Date Added (Newest)', value: 'date-added-desc' },
-                      { label: 'Date Taken (Newest)', value: 'date-taken-desc' },
-                    ]"
-                    :key="option.value"
-                    clickable
-                    v-ripple
-                    v-close-popup
-                    :active="filters.sortBy === option.value"
-                    @click="filters.sortBy = option.value"
+                <div class="tw_flex tw_flex-col sm:tw_flex-row">
+                  <!-- Sort By -->
+                  <div
+                    class="tw_flex tw_flex-col tw_py-2 tw_pl-2 tw_pr-5 tw_border-t sm:tw_border-t-0"
                   >
-                    <q-item-section>{{ option.label }}</q-item-section>
-                  </q-item>
-                </q-list>
+                    <span class="tw_ml-3 tw_text-gray-500">Sort By</span>
+                    <q-radio
+                      v-model="filters.sortBy"
+                      val="date-added-desc"
+                      label="Date Added"
+                      v-close-popup
+                      class="tw_whitespace-nowrap"
+                    />
+                    <q-radio
+                      v-model="filters.sortBy"
+                      val="date-taken-desc"
+                      label="Date Taken"
+                      v-close-popup
+                      class="tw_whitespace-nowrap"
+                    />
+                  </div>
+
+                  <!-- File Type -->
+                  <div
+                    class="tw_flex tw_flex-col tw_py-2 tw_pl-2 tw_pr-5 tw_border-t sm:tw_border-t-0"
+                  >
+                    <span class="tw_ml-3 tw_text-gray-500">File Type</span>
+                    <q-checkbox
+                      v-model="filters.type"
+                      val="video"
+                      label="Videos"
+                      v-close-popup
+                      class="tw_whitespace-nowrap"
+                    />
+                    <q-checkbox
+                      v-model="filters.type"
+                      val="image"
+                      label="Images"
+                      v-close-popup
+                      class="tw_whitespace-nowrap"
+                    />
+                  </div>
+
+                  <!-- Filter Type -->
+                  <div
+                    class="tw_flex tw_flex-col tw_py-2 tw_pl-2 tw_pr-5 tw_border-t sm:tw_border-t-0"
+                  >
+                    <span class="tw_ml-3 tw_text-gray-500">Filter By</span>
+                    <q-radio
+                      v-model="filters.filterBy"
+                      val="all"
+                      label="All Items"
+                      v-close-popup
+                      class="tw_whitespace-nowrap"
+                    />
+                    <q-radio
+                      v-model="filters.filterBy"
+                      val="liked"
+                      label="Liked Items"
+                      v-close-popup
+                      class="tw_whitespace-nowrap"
+                    />
+                    <q-radio
+                      v-if="authData?.hasPrivateVideos"
+                      v-model="filters.filterBy"
+                      val="private"
+                      label="Private Items"
+                      v-close-popup
+                      class="tw_whitespace-nowrap"
+                    />
+                  </div>
+                </div>
               </q-menu>
             </q-btn>
-            <q-btn
-              round
-              flat
-              class="!tw_p-0"
-              icon="o_favorite_border"
-              :color="filters.filterBy === 'liked' ? 'primary' : 'dark'"
-              :loading="loading"
-              @click="filters.filterBy = filters.filterBy === 'liked' ? 'all' : 'liked'"
-            />
-            <q-btn
-              v-if="authData?.hasPrivateVideos"
-              round
-              flat
-              class="!tw_p-0"
-              icon="o_lock"
-              :color="filters.filterBy === 'private' ? 'primary' : 'dark'"
-              :loading="loading"
-              @click="filters.filterBy = filters.filterBy === 'private' ? 'all' : 'private'"
-            />
           </div>
         </div>
 
