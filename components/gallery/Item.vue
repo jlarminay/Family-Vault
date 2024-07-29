@@ -37,32 +37,32 @@ defineProps({
     <div class="tw_relative tw_rounded">
       <img
         :src="`${item.path}.thumbnail.jpg`"
-        class="tw_w-full tw_aspect-video tw_object-cover tw_rounded"
+        class="tw_w-full tw_aspect-video sm:tw_aspect-video tw_object-cover tw_rounded"
       />
       <span
         v-if="item.status !== 'processing' && item.type === 'video'"
-        class="tw_absolute tw_bottom-0 tw_right-0 tw_px-2 tw_p-0.5 tw_bg-black tw_bg-opacity-60 tw_text-white tw_rounded-tl tw_rounded-br"
+        class="tw_text-xs sm:tw_text-sm tw_py-1 tw_absolute tw_bottom-0 tw_right-0 tw_px-2 tw_p-0.5 tw_bg-black tw_bg-opacity-60 tw_text-white tw_rounded-tl tw_rounded-br"
       >
         {{ formatDuration(item.metadata?.duration) }}
       </span>
       <div v-if="item.published !== 'public'" class="tw_absolute tw_top-1 tw_left-1">
         <q-icon
           name="lock"
-          class="tw_absolute tw_text-white tw_blur-[2px] tw_opacity-30 tw_text-2xl tw_rounded-full tw_p-0.5"
+          class="tw_absolute tw_text-black tw_blur-[2px] tw_opacity-30 tw_text-xl sm:tw_text-2xl tw_rounded-full tw_p-0.5"
         />
         <q-icon
           name="lock"
-          class="tw_absolute tw_text-primary tw_text-2xl tw_rounded-full tw_p-0.5"
+          class="tw_absolute tw_text-primary tw_text-xl sm:tw_text-2xl tw_rounded-full tw_p-0.5"
         />
       </div>
       <div v-if="liked" class="tw_absolute tw_top-1 tw_right-1">
         <q-icon
           name="o_favorite"
-          class="tw_absolute tw_right-0 tw_text-white tw_blur-[2px] tw_opacity-30 tw_text-2xl tw_rounded-full tw_p-0.5"
+          class="tw_absolute tw_right-0 tw_text-black tw_blur-[2px] tw_opacity-30 tw_text-xl sm:tw_text-2xl tw_rounded-full tw_p-0.5"
         />
         <q-icon
           name="o_favorite"
-          class="tw_absolute tw_right-0 tw_text-red-600 tw_text-2xl tw_rounded-full tw_p-0.5"
+          class="tw_absolute tw_right-0 tw_text-red-600 tw_text-xl sm:tw_text-2xl tw_rounded-full tw_p-0.5"
         />
       </div>
     </div>
