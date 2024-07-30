@@ -62,9 +62,9 @@ async function saveUser() {
             { name: 'role', label: 'Role', field: 'role', align: 'left', sortable: true },
             { name: 'views', label: 'Views', field: 'views', align: 'left', sortable: true },
             {
-              name: 'lastLogin',
-              label: 'Last Login',
-              field: 'lastLogin',
+              name: 'lastActive',
+              label: 'Last Active',
+              field: 'lastActive',
               align: 'left',
               sortable: true,
             },
@@ -121,11 +121,11 @@ async function saveUser() {
           <template #body-cell-views="props">
             <q-td :props="props">{{ props.row.views }} views</q-td>
           </template>
-          <template #body-cell-lastLogin="props">
+          <template #body-cell-lastActive="props">
             <q-td :props="props">
               {{
-                props.row.lastLogin
-                  ? dayjs(props.row.lastLogin).format('MMM D, YYYY h:mm A')
+                props.row.lastActive
+                  ? dayjs(props.row.lastActive).format('MMM D, YYYY h:mm A')
                   : 'Never'
               }}
             </q-td>

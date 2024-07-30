@@ -214,6 +214,7 @@ export const itemRouter = router({
           views: {
             increment: 1,
           },
+          lastActive: new Date(),
         },
       });
 
