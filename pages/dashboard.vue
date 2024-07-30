@@ -31,6 +31,7 @@ const cleanedAllItems = computed(() => {
     const finalGrouping = [
       { label: 'Today', items: [] as any[] },
       { label: 'Yesterday', items: [] as any[] },
+      { label: 'This Week', items: [] as any[] },
       { label: 'This Month', items: [] as any[] },
       { label: 'This Year', items: [] as any[] },
       { label: 'Older', items: [] as any[] },
@@ -39,19 +40,33 @@ const cleanedAllItems = computed(() => {
       const itemDate = dayjs(item.createdAt);
       const today = dayjs();
       const yesterday = today.subtract(1, 'day');
+      const thisWeek = today.subtract(7, 'days');
       const thisMonth = today.subtract(30, 'days');
       const thisYear = today.subtract(365, 'days');
 
+      // if today
       if (itemDate.isSame(today, 'day')) {
         finalGrouping[0].items.push(item);
-      } else if (itemDate.isSame(yesterday, 'day')) {
+      }
+      // if yesterday
+      else if (itemDate.isSame(yesterday, 'day')) {
         finalGrouping[1].items.push(item);
-      } else if (itemDate.isAfter(thisMonth)) {
+      }
+      // if this week
+      else if (itemDate.isAfter(thisWeek)) {
         finalGrouping[2].items.push(item);
-      } else if (itemDate.isAfter(thisYear)) {
+      }
+      // if this month
+      else if (itemDate.isAfter(thisMonth)) {
         finalGrouping[3].items.push(item);
-      } else {
+      }
+      // if this year
+      else if (itemDate.isAfter(thisYear)) {
         finalGrouping[4].items.push(item);
+      }
+      // if older
+      else {
+        finalGrouping[5].items.push(item);
       }
     });
 
