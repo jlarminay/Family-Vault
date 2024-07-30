@@ -1,13 +1,14 @@
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  name      String
-  provider  String
-  role      String    @default("user")
-  avatar    String?
-  lastLogin DateTime?
-  views     Int       @default(0)
-  active    Boolean   @default(true)
+  id         Int       @id @default(autoincrement())
+  email      String    @unique
+  name       String
+  provider   String
+  role       String    @default("user")
+  avatar     String?
+  lastLogin  DateTime?
+  lastActive DateTime?
+  views      Int       @default(0)
+  active     Boolean   @default(true)
 
   comment   Comment[] @relation()
   like      Like[]    @relation()

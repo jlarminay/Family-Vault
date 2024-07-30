@@ -149,9 +149,6 @@ export default async () => {
       // cleanup
       count++;
     }
-
-    // add delay of 0.5s
-    await new Promise((resolve) => setTimeout(resolve, 500));
   }
 
   console.log('Insert file: ', count);

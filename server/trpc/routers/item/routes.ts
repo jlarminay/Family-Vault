@@ -8,7 +8,7 @@ export const itemRouter = router({
   search: protectedProcedure.input(searchSchema).query(async ({ input, ctx }) => {
     const session = await getServerSession(ctx.event);
     const page = input.page || 1;
-    const limit = 500;
+    const limit = 100;
 
     const items = await ctx.prisma.item.findMany({
       where: {
@@ -109,12 +109,12 @@ export const itemRouter = router({
         if (input.sortBy === 'date-taken-desc') {
           const dateDiff = dayjs(b.takenAt).diff(dayjs(a.takenAt));
           if (dateDiff !== 0) return dateDiff;
-          return a.name.localeCompare(b.name);
+          return b.name.localeCompare(a.name);
         }
         if (input.sortBy === 'date-added-desc') {
           const dateDiff = dayjs(b.createdAt).diff(dayjs(a.createdAt));
           if (dateDiff !== 0) return dateDiff;
-          return a.name.localeCompare(b.name);
+          return b.name.localeCompare(a.name);
         }
       });
 
@@ -214,6 +214,7 @@ export const itemRouter = router({
           views: {
             increment: 1,
           },
+          lastActive: new Date(),
         },
       });
 
