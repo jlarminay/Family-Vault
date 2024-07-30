@@ -109,12 +109,12 @@ export const itemRouter = router({
         if (input.sortBy === 'date-taken-desc') {
           const dateDiff = dayjs(b.takenAt).diff(dayjs(a.takenAt));
           if (dateDiff !== 0) return dateDiff;
-          return a.name.localeCompare(b.name);
+          return b.name.localeCompare(a.name);
         }
         if (input.sortBy === 'date-added-desc') {
           const dateDiff = dayjs(b.createdAt).diff(dayjs(a.createdAt));
           if (dateDiff !== 0) return dateDiff;
-          return a.name.localeCompare(b.name);
+          return b.name.localeCompare(a.name);
         }
       });
 
