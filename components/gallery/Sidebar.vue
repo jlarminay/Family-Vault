@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
 
+const { data: authData } = useAuth();
+const emits = defineEmits(['edit']);
 const props = defineProps<{
   selectedItem: any;
   showInfoData: boolean;
@@ -72,6 +74,15 @@ const displayInfo = computed(() => {
             <p class="tw_text-base">{{ selectedItem.owner.name }}</p>
           </div>
         </div>
+
+        <q-btn
+          v-if="authData?.role === 'admin'"
+          unelevated
+          no-caps
+          label="Edit Info"
+          color="primary"
+          @click="emits('edit')"
+        />
       </div>
     </div>
 

@@ -8,7 +8,7 @@ export const itemRouter = router({
   search: protectedProcedure.input(searchSchema).query(async ({ input, ctx }) => {
     const session = await getServerSession(ctx.event);
     const page = input.page || 1;
-    const limit = 500;
+    const limit = 100;
 
     const items = await ctx.prisma.item.findMany({
       where: {
