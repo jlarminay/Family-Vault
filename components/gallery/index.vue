@@ -126,7 +126,9 @@ onUnmounted(() => {
 
     <div id="lightGallery">
       <div v-for="(group, i) in allItems" :key="i" class="tw_my-4">
-        <h2 class="h2 tw_ml-0.5 sm:tw_ml-2 sm:tw_mb-1">{{ group.label }}</h2>
+        <h2 class="h2 tw_ml-0.5 sm:tw_ml-2 sm:tw_mb-1">
+          {{ group.label === 'January 1900' ? 'Unknown Date' : group.label }}
+        </h2>
 
         <div class="tw_flex tw_gap-0 tw_justify-start tw_flex-wrap tw_items-start tw_@container">
           <GalleryItem
