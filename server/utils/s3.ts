@@ -86,20 +86,19 @@ export default class S3 {
     | []
   > {
     if (!this.client) return [];
-    try {
-      const key = process.env.ENVIRONMENT ? `${process.env.ENVIRONMENT}/` : '';
+
+    const key = process.env.ENVIRONMENT ? `${process.env.ENVIRONMENT}/` : '';
+    let continuationToken: string = '';
+    const allFiles: any[] = [];
+
+    do {
       const command = new ListObjectsV2Command({
         Bucket: process.env.S3_BUCKET,
         Prefix: key,
+        ContinuationToken: continuationToken,
       });
 
-      let response;
-      try {
-        response = await this.client.send(command);
-      } catch (err) {
-        console.log(err);
-        return [];
-      }
+      const response = await this.client.send(command);
 
       const files =
         response.Contents?.filter((item) => {
@@ -125,11 +124,11 @@ export default class S3 {
           };
         }) || [];
 
-      return files;
-    } catch (err) {
-      console.log(err);
-      return [];
-    }
+      allFiles.push(...files);
+      continuationToken = response.NextContinuationToken || '';
+    } while (continuationToken);
+
+    return allFiles;
   }
 
   async updateFilePermissions(key: string): Promise<boolean> {
