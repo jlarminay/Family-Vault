@@ -63,7 +63,7 @@ export const useImageLoaderStore = defineStore('imageLoader', {
             resolve(true);
           };
         });
-        // await new Promise((resolve) => setTimeout(resolve, 250)); // Simulate loading time
+        await new Promise((resolve) => setTimeout(resolve, 10));
       }
     },
   },
