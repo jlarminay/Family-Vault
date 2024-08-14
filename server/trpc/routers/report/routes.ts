@@ -18,9 +18,23 @@ export const reportRouter = router({
           report,
         },
       });
+
       // send webhook
       const item = await ctx.prisma.item.findUnique({ where: { id: itemId } });
       webhooks.discord({ item, user: session, report });
+
+      // write to logger
+      const headers = Object.fromEntries(ctx.event.headers.entries());
+      await logger.writeToLog({
+        ip: headers['x-real-ip'] || headers['x-forwarded-for'] || headers['x-amzn-trace-id'] || '',
+        route: ctx.event.context.params.trpc || '',
+        method: ctx.event._method || '',
+        responseSize: JSON.stringify(response).length || 0,
+        requestBody: input,
+        userId: session?.id || null,
+        userAgent: headers['user-agent'] || '',
+      });
+
       // return response
       return response;
     }),

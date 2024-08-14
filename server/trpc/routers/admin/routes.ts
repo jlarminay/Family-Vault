@@ -1,5 +1,6 @@
 import { adminProcedure, router } from '@/server/trpc/trpc';
 import { z } from 'zod';
+import { getServerSession } from '#auth';
 import { checkFileChanges } from '@/server/utils/checkFileChanges';
 import S3 from '@/server/utils/s3';
 
@@ -25,7 +26,8 @@ export const adminRouter = router({
         }),
       )
       .mutation(async ({ ctx, input }) => {
-        return await ctx.prisma.user.create({
+        const session = await getServerSession(ctx.event);
+        const response = await ctx.prisma.user.create({
           data: {
             name: input.name,
             email: input.email,
@@ -33,6 +35,21 @@ export const adminRouter = router({
             role: input.role,
           },
         });
+
+        // write to logger
+        const headers = Object.fromEntries(ctx.event.headers.entries());
+        await logger.writeToLog({
+          ip:
+            headers['x-real-ip'] || headers['x-forwarded-for'] || headers['x-amzn-trace-id'] || '',
+          route: ctx.event.context.params.trpc || '',
+          method: ctx.event._method || '',
+          responseSize: JSON.stringify(response).length || 0,
+          requestBody: input,
+          userId: session?.id || null,
+          userAgent: headers['user-agent'] || '',
+        });
+
+        return response;
       }),
     userRead: adminProcedure.query(async ({ ctx }) => {
       return await ctx.prisma.user.findMany();
@@ -49,7 +66,8 @@ export const adminRouter = router({
         }),
       )
       .mutation(async ({ ctx, input }) => {
-        return await ctx.prisma.user.update({
+        const session = await getServerSession(ctx.event);
+        const response = await ctx.prisma.user.update({
           where: { id: input.id },
           data: {
             name: input.name,
@@ -59,7 +77,40 @@ export const adminRouter = router({
             active: input.active,
           },
         });
+
+        // write to logger
+        const headers = Object.fromEntries(ctx.event.headers.entries());
+        await logger.writeToLog({
+          ip:
+            headers['x-real-ip'] || headers['x-forwarded-for'] || headers['x-amzn-trace-id'] || '',
+          route: ctx.event.context.params.trpc || '',
+          method: ctx.event._method || '',
+          responseSize: JSON.stringify(response).length || 0,
+          requestBody: input,
+          userId: session?.id || null,
+          userAgent: headers['user-agent'] || '',
+        });
+
+        return response;
       }),
+  },
+
+  // system logs (R)
+  ...{
+    systemLogRead: adminProcedure.query(async ({ ctx }) => {
+      return await ctx.prisma.systemLog.findMany({
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 200, // only return last 200 items
+      });
+    }),
   },
 
   // force recheck s3 bucket

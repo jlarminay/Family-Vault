@@ -27,7 +27,11 @@ watch(
   () => props.allItems,
   async () => {
     await nextTick();
-    manageGallery();
+    try {
+      manageGallery();
+    } catch (error) {
+      console.error(error);
+    }
   },
   { immediate: true },
 );

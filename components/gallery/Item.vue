@@ -34,6 +34,7 @@ defineProps({
     :poster="item.type === 'video' ? `${item.path}.thumbnail.jpg` : null"
     :data-poster="item.type === 'video' ? `${item.path}.thumbnail.jpg` : null"
     :ariaDescribedby="item.description"
+    :alt="item.name"
   >
     <div class="tw_relative tw_rounded">
       <GalleryItemImage :thumbnailPath="`${item.path}.thumbnail.jpg`" :metadata="item.metadata" />

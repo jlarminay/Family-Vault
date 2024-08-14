@@ -30,13 +30,27 @@ export const commentRouter = router({
       const session = await getServerSession(ctx.event);
       const { itemId, text } = input;
 
-      return await ctx.prisma.comment.create({
+      const response = await ctx.prisma.comment.create({
         data: {
           itemId,
           userId: session?.id || 0,
           text,
         },
       });
+
+      // write to logger
+      const headers = Object.fromEntries(ctx.event.headers.entries());
+      await logger.writeToLog({
+        ip: headers['x-real-ip'] || headers['x-forwarded-for'] || headers['x-amzn-trace-id'] || '',
+        route: ctx.event.context.params.trpc || '',
+        method: ctx.event._method || '',
+        responseSize: JSON.stringify(response).length || 0,
+        requestBody: input,
+        userId: session?.id || null,
+        userAgent: headers['user-agent'] || '',
+      });
+
+      return response;
     }),
 });
 

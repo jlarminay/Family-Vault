@@ -30,6 +30,14 @@ export const useAdminStore = defineStore('admin', {
       },
     },
 
+    // system logs (R)
+    ...{
+      async systemLogsRead() {
+        const { $trpc } = useNuxtApp();
+        return await $trpc.admin.systemLogRead.query();
+      },
+    },
+
     // force recheck s3 bucket
     ...{
       async s3Action(type: string) {
