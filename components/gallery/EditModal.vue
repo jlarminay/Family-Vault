@@ -5,7 +5,7 @@ const itemStore = useItemStore();
 const { data: authData } = useAuth();
 const emits = defineEmits(['update', 'close']);
 const props = defineProps<{
-  itemId: number;
+  item: object;
 }>();
 
 const form = ref<any>(null);
@@ -22,16 +22,12 @@ const cleanedAllowList = computed(() => {
   });
 });
 
-watch(
-  () => props.itemId,
-  async () => {
-    if (props.itemId === 0) return;
-    loading.value = true;
-    itemEdit.value = await itemStore.getSingle(props.itemId.toString());
-    allUsers.value = await userStore.getAll();
-    loading.value = false;
-  },
-);
+onMounted(async () => {
+  loading.value = true;
+  itemEdit.value = JSON.parse(JSON.stringify(props.item));
+  allUsers.value = await userStore.getAll();
+  loading.value = false;
+});
 
 async function updateVideo() {
   if (!(await form.value.validate())) return;
@@ -105,8 +101,10 @@ async function updateVideo() {
         </div>
 
         <!-- Security -->
-        <div class="tw_mt-4">
-          <h3 class="h3 tw_font-bold tw_mb-2">Security</h3>
+        <div v-if="authData?.role === 'admin'" class="tw_mt-4">
+          <h3 class="h3 tw_font-bold tw_mb-2">
+            Security <span class="tw_text-xs">(Admin Only)</span>
+          </h3>
           <q-select
             behavior="menu"
             outlined

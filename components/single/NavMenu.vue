@@ -15,6 +15,7 @@ watch(
 );
 
 function handleSearch() {
+  if (search.value === '') return navigateTo('/dashboard');
   navigateTo(`/dashboard?search=${search.value}`);
 }
 </script>
@@ -55,7 +56,7 @@ function handleSearch() {
         >
           <template v-slot:append>
             <q-btn
-              v-if="search !== ''"
+              v-if="!!search"
               round
               dense
               flat

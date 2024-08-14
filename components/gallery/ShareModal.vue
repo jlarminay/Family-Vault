@@ -3,6 +3,7 @@ const props = defineProps<{
   item: {
     id: number;
     name: string;
+    allowList: Array<{ id: number; name: string }>;
   } | null;
 }>();
 
@@ -29,7 +30,9 @@ function copyUrl() {
   <Modal class="tw_w-full" @hide="showConfirmation = false">
     <template #title>Share</template>
     <template #body>
-      <p class="tw_text-center tw_mb-4">
+      <GalleryLockWarning :item="item || {}" class="tw_mb-4" />
+
+      <p class="tw_text-center tw_mb-6">
         You can share this URL with others to view this file. The user must have access to the
         system to view the file.
       </p>

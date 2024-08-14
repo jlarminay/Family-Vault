@@ -23,6 +23,14 @@ const filters = ref({
   filterBy: 'all',
 });
 
+watch(
+  () => route.query.search,
+  (_newValue, _oldValue) => {
+    newSearch();
+  },
+  { immediate: true },
+);
+
 const cleanedAllItems = computed(() => {
   if (!allItems.value) return [];
 
@@ -109,27 +117,16 @@ const cleanedAllItems = computed(() => {
   return [];
 });
 
-watch(
-  () => [filters.value.sortBy, filters.value.filterBy, filters.value.type, route.query.search],
-  async (newValue, oldValue) => {
-    if (
-      !oldValue ||
-      newValue[0] !== oldValue[0] ||
-      newValue[1] !== oldValue[1] ||
-      newValue[2] !== oldValue[2]
-    ) {
-      // clean filter
-      page.value = 1;
-      filters.value.search = ((route.query.search as string) || '').toLowerCase();
-      // send filter
-      allItems.value = [];
-      await search();
-    }
-  },
-  { immediate: true },
-);
-
+async function newSearch() {
+  // clean filter
+  page.value = 1;
+  filters.value.search = ((route.query.search as string) || '').toLowerCase();
+  // send filter
+  allItems.value = [];
+  search();
+}
 async function search() {
+  console.log('searching');
   // scroll to top
   loading.value = true;
   refreshLikes();
@@ -197,6 +194,7 @@ async function refreshLikes() {
                       label="Date Added"
                       v-close-popup
                       class="tw_whitespace-nowrap"
+                      @click="search"
                     />
                     <q-radio
                       v-model="filters.sortBy"
@@ -204,6 +202,7 @@ async function refreshLikes() {
                       label="Date Taken"
                       v-close-popup
                       class="tw_whitespace-nowrap"
+                      @click="search"
                     />
                   </div>
 
@@ -218,6 +217,7 @@ async function refreshLikes() {
                       label="Videos"
                       v-close-popup
                       class="tw_whitespace-nowrap"
+                      @click="search"
                     />
                     <q-checkbox
                       v-model="filters.type"
@@ -225,6 +225,7 @@ async function refreshLikes() {
                       label="Images"
                       v-close-popup
                       class="tw_whitespace-nowrap"
+                      @click="search"
                     />
                   </div>
 
@@ -239,6 +240,7 @@ async function refreshLikes() {
                       label="All Items"
                       v-close-popup
                       class="tw_whitespace-nowrap"
+                      @click="search"
                     />
                     <q-radio
                       v-model="filters.filterBy"
@@ -246,6 +248,7 @@ async function refreshLikes() {
                       label="Liked Items"
                       v-close-popup
                       class="tw_whitespace-nowrap"
+                      @click="search"
                     />
                     <q-radio
                       v-if="authData?.hasPrivateVideos"
@@ -254,7 +257,16 @@ async function refreshLikes() {
                       label="Private Items"
                       v-close-popup
                       class="tw_whitespace-nowrap"
+                      @click="search"
                     />
+                    <!-- <q-radio
+                      v-model="filters.filterBy"
+                      val="unknown"
+                      label="Unknown Items"
+                      v-close-popup
+                      class="tw_whitespace-nowrap"
+                      @click="search"
+                    /> -->
                   </div>
                 </div>
               </q-menu>

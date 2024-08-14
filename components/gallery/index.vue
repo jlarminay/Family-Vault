@@ -5,7 +5,6 @@ import lgHash from 'lightgallery/plugins/hash';
 import 'lightgallery/css/lightgallery.css';
 import 'lightgallery/css/lg-video.css';
 
-const { data: authData } = useAuth();
 const emits = defineEmits(['loadMore', 'updateLike']);
 const props = defineProps<{
   allItems: Array<any>;
@@ -20,16 +19,17 @@ const gallery = ref<any>(null);
 const currentSelectedItem = ref<any>(null);
 const showCommentData = ref<boolean>(false);
 const showInfoData = ref<boolean>(false);
-const showEditModal = ref<boolean>(false);
 const showShareModal = ref<boolean>(false);
 
 // watch items to refresh gallery
 watch(
   () => props.allItems,
   async () => {
+    console.log('allItems changed');
     await nextTick();
     manageGallery();
   },
+  { immediate: true },
 );
 
 // watch for sidemenu
@@ -146,13 +146,6 @@ onUnmounted(() => {
     <!-- Custom Icons -->
     <div id="customButtons" class="tw_hidden">
       <div class="tw_flex tw_items-center tw_pr-[20px] tw_gap-1">
-        <!-- <q-btn
-          v-if="authData?.role === 'admin'"
-          round
-          flat
-          icon="o_edit"
-          @click="showEditModal = true"
-        /> -->
         <q-btn round flat icon="o_share" @click="showShareModal = true" />
         <LikeButton
           v-if="currentSelectedItem"
@@ -200,16 +193,10 @@ onUnmounted(() => {
         'tw_w-[300px]': showCommentData || showInfoData,
       }"
       v-touch-swipe.mouse.right="closeSidebar"
-      @edit="showEditModal = true"
     />
 
     <!-- Edit Modal -->
-    <GalleryEditModal
-      v-model="showEditModal"
-      :itemId="currentSelectedItem?.id || 0"
-      @update="showEditModal = false"
-      @close="showEditModal = false"
-    />
+
     <GalleryShareModal :item="currentSelectedItem" v-model="showShareModal" />
   </div>
 </template>

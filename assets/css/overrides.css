@@ -79,6 +79,10 @@
         @apply !tw_w-full !tw_h-full tw_object-contain;
       }
     }
+
+    .lg-video-cont {
+      @apply !tw_max-w-full !tw_h-auto;
+    }
   }
   .lg-has-html5 img {
     @apply !tw_object-contain;

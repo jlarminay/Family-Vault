@@ -59,6 +59,10 @@ export const itemRouter = router({
         if (input.filterBy === 'private' && item.published === 'public') {
           return false;
         }
+        // filter by unknown
+        if (input.filterBy === 'unknown' && item.takenAt !== '1900-01-01') {
+          return false;
+        }
 
         // filter by type
         if (input.type.length > 0 && !input.type.includes(item.type)) {
