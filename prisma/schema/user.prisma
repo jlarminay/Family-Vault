@@ -10,11 +10,12 @@ model User {
   views      Int       @default(0)
   active     Boolean   @default(true)
 
-  comment   Comment[] @relation()
-  like      Like[]    @relation()
-  report    Report[]  @relation()
+  comment   Comment[]   @relation()
+  like      Like[]      @relation()
+  report    Report[]    @relation()
   history   History[]
-  allowed   Item[]    @relation(name: "AllowList")
-  blocked   Item[]    @relation(name: "BlockList")
-  ownedItem Item[]    @relation(name: "OwnedVideo")
+  allowed   Item[]      @relation(name: "AllowList")
+  blocked   Item[]      @relation(name: "BlockList")
+  ownedItem Item[]      @relation(name: "OwnedVideo")
+  systemLog SystemLog[]
 }

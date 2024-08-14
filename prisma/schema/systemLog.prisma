@@ -1,0 +1,13 @@
+model SystemLog {
+  id Int @id @default(autoincrement())
+
+  ip           String
+  route        String
+  method       String
+  responseCode Int
+  requestBody  Json?
+  datetime     DateTime @default(now())
+
+  userId Int?
+  user   User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}

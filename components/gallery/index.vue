@@ -25,7 +25,6 @@ const showShareModal = ref<boolean>(false);
 watch(
   () => props.allItems,
   async () => {
-    console.log('allItems changed');
     await nextTick();
     manageGallery();
   },

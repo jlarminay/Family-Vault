@@ -126,7 +126,6 @@ async function newSearch() {
   search();
 }
 async function search() {
-  console.log('searching');
   // scroll to top
   loading.value = true;
   refreshLikes();
