@@ -11,10 +11,10 @@ const props = defineProps<{
 
 <template>
   <div
-    class="tw_fixed tw_top-0 tw_right-0 tw_h-screen tw_z-[12003] tw_w-0 tw_bg-white tw_transition-[width] tw_overflow-x-hidden tw_overflow-y-scroll"
+    class="tw_fixed tw_top-0 tw_right-0 tw_h-svh tw_z-[12003] tw_w-0 tw_bg-white tw_transition-[width] tw_overflow-x-hidden tw_overflow-y-scroll"
   >
     <!-- Info Block -->
-    <div v-if="selectedItem && showInfoData" class="tw_p-4 tw_h-full">
+    <div v-if="selectedItem && showInfoData" class="tw_p-4">
       <GalleryItemDetails :itemId="selectedItem.id" />
     </div>
 

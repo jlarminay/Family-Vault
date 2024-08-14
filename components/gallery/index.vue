@@ -12,6 +12,7 @@ const props = defineProps<{
   loading: boolean;
   expandedView: boolean;
 }>();
+const route = useRoute();
 
 const $q = useQuasar();
 const itemStore = useItemStore();
@@ -46,6 +47,15 @@ watch(
   },
 );
 
+// watch for url change
+watch(
+  () => route.fullPath,
+  (newUrl, oldUrl) => {
+    console.log('URL changed from:', oldUrl, 'to:', newUrl);
+    watchForUrlChange();
+  },
+);
+
 function manageGallery() {
   const element = document.getElementById('lightGallery');
   if (element && !gallery.value) {
@@ -61,6 +71,8 @@ function manageGallery() {
     });
     // add event listeners
     element.addEventListener('lgBeforeSlide', (event: any) => {
+      // update url hash
+      pushToHistory(event.detail.index);
       // get current item
       const index = event.detail.index;
       const allItems = props.allItems.flatMap((group) => group.items);
@@ -79,6 +91,8 @@ function manageGallery() {
       }
     });
     element.addEventListener('lgBeforeClose', (event: any) => {
+      // update url hash
+      pushToHistory(false);
       // hide sidebar
       showCommentData.value = false;
       showInfoData.value = false;
@@ -87,8 +101,16 @@ function manageGallery() {
       // allow body to scroll
       document.body.style.overflow = 'auto';
     });
+    ['hashchange', 'popstate'].forEach((event) => {
+      window.addEventListener(event, watchForUrlChange);
+    });
     // add custom controls
     moveCustomControls();
+    // open if id is in url
+    const id = route.query.id as string | undefined;
+    if (id) {
+      gallery.value.openGallery(parseInt(id));
+    }
   } else {
     gallery.value.refresh();
   }
@@ -105,6 +127,33 @@ function moveCustomControls() {
 function closeSidebar() {
   showCommentData.value = false;
   showInfoData.value = false;
+}
+
+function pushToHistory(id: string | false) {
+  const urlObj = new URL(location.href);
+  const searchParams = urlObj.searchParams;
+
+  if (id === false) {
+    searchParams.delete('id');
+  } else {
+    if (searchParams.has('search')) {
+      searchParams.delete('id');
+      searchParams.append('id', id);
+    } else {
+      searchParams.set('id', id);
+    }
+  }
+
+  history.pushState({}, '', urlObj.toString());
+  return;
+}
+function watchForUrlChange() {
+  const id = route.query.id as string | undefined;
+  if (id) {
+    gallery.value.openGallery(parseInt(id));
+  } else {
+    gallery.value.closeGallery();
+  }
 }
 
 onUnmounted(() => {

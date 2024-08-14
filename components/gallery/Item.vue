@@ -31,6 +31,7 @@ defineProps({
         ? `{&quot;source&quot;: [{&quot;src&quot;:&quot;${item.path}&quot;, &quot;type&quot;:&quot;video/mp4&quot;}], &quot;attributes&quot;: {&quot;preload&quot;: true, &quot;controls&quot;: true}}`
         : null
     "
+    :poster="item.type === 'video' ? `${item.path}.thumbnail.jpg` : null"
     :data-poster="item.type === 'video' ? `${item.path}.thumbnail.jpg` : null"
     :ariaDescribedby="item.description"
   >

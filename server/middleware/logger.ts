@@ -1,30 +1,33 @@
 export default defineEventHandler(async (event) => {
-  const session = event.context; // Adjust based on your session management
-  console.log('session', session);
-  const user = session?.user || 'unknown';
-  console.log('user', user);
+  return;
 
-  const ip = event.node.req.headers['x-forwarded-for'] || event.node.req.connection.remoteAddress;
-  const method = event.node.req.method;
-  const url = getRequestURL(event).pathname;
-  const body = method === 'POST' || method === 'PUT' ? await readBody(event) : null;
+  // const ip = event.node.req.headers['x-forwarded-for'] || event.node.req.connection.remoteAddress;
+  // const method = event.node.req.method;
+  // const url = getRequestURL(event).pathname;
+  // const body = method === 'POST' || method === 'PUT' ? await readBody(event) : null;
 
-  // ignore all auth requests
-  if (url.includes('/api/auth')) {
-    return;
-  }
+  // // get user
+  // const cookies = event.node.req.headers['cookie']?.split(';').map((c) => c.trim()) || [];
+  // const token = cookies.find((c) => c.includes('csrf-token'))?.split('=')[1];
 
-  // ignore all GET requests
-  // if (method === 'GET') {
+  // // ignore all auth requests
+  // if (url.includes('/api/auth')) {
   //   return;
   // }
 
-  console.log('-------------------------------');
-  console.log({
-    ip,
-    method,
-    url,
-    body,
-    user,
-  });
+  // // ignore all GET requests
+  // // if (method === 'GET') {
+  // //   return;
+  // // }
+
+  // console.log('-------------------------------');
+
+  // console.log('token', token);
+
+  // console.log({
+  //   ip,
+  //   method,
+  //   url,
+  //   body,
+  // });
 });
