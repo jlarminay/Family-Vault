@@ -15,7 +15,6 @@ export const statsRouter = router({
       videos: {
         count: 0,
         totalLength: 0,
-        averageLength: 0,
       },
       images: {
         count: 0,
@@ -66,8 +65,8 @@ export const statsRouter = router({
       }
     }
 
-    // calculate average video length
-    results.videos.averageLength = Math.floor(results.videos.totalLength / results.videos.count);
+    // remove the year 1900
+    delete results.year['1900'];
 
     // add year without images or videos
     const years = Object.keys(results.year).sort();
