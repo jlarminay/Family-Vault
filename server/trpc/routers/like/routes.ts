@@ -20,7 +20,11 @@ export const likeRouter = router({
 
     return await ctx.prisma.like.findMany({
       where: { userId: session?.id },
-      include: { item: true },
+      include: {
+        item: {
+          select: { id: true, type: true, name: true, path: true },
+        },
+      },
     });
   }),
 

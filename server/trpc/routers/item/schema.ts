@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const searchSchema = z.object({
   search: z.string().max(128),
-  filterBy: z.string(z.enum(['all', 'liked', 'mine'])),
+  filterBy: z.string(z.enum(['all', 'liked', 'mine', 'unknown'])),
   sortBy: z.string(
     z.enum([
       'title-asc',

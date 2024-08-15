@@ -5,7 +5,6 @@ import lgHash from 'lightgallery/plugins/hash';
 import 'lightgallery/css/lightgallery.css';
 import 'lightgallery/css/lg-video.css';
 
-const { data: authData } = useAuth();
 const emits = defineEmits(['loadMore', 'updateLike']);
 const props = defineProps<{
   allItems: Array<any>;
@@ -13,6 +12,7 @@ const props = defineProps<{
   loading: boolean;
   expandedView: boolean;
 }>();
+const route = useRoute();
 
 const $q = useQuasar();
 const itemStore = useItemStore();
@@ -20,7 +20,6 @@ const gallery = ref<any>(null);
 const currentSelectedItem = ref<any>(null);
 const showCommentData = ref<boolean>(false);
 const showInfoData = ref<boolean>(false);
-const showEditModal = ref<boolean>(false);
 const showShareModal = ref<boolean>(false);
 
 // watch items to refresh gallery
@@ -30,6 +29,7 @@ watch(
     await nextTick();
     manageGallery();
   },
+  { immediate: true },
 );
 
 // watch for sidemenu
@@ -44,6 +44,14 @@ watch(
     } else {
       lgOuter.classList.remove('!tw_w-[calc(100vw-300px)]');
     }
+  },
+);
+
+// watch for url change
+watch(
+  () => route.fullPath,
+  (newUrl, oldUrl) => {
+    watchForUrlChange();
   },
 );
 
@@ -62,6 +70,8 @@ function manageGallery() {
     });
     // add event listeners
     element.addEventListener('lgBeforeSlide', (event: any) => {
+      // update url hash
+      pushToHistory(event.detail.index);
       // get current item
       const index = event.detail.index;
       const allItems = props.allItems.flatMap((group) => group.items);
@@ -80,6 +90,8 @@ function manageGallery() {
       }
     });
     element.addEventListener('lgBeforeClose', (event: any) => {
+      // update url hash
+      pushToHistory(false);
       // hide sidebar
       showCommentData.value = false;
       showInfoData.value = false;
@@ -88,10 +100,25 @@ function manageGallery() {
       // allow body to scroll
       document.body.style.overflow = 'auto';
     });
+    ['hashchange', 'popstate'].forEach((event) => {
+      window.addEventListener(event, watchForUrlChange);
+    });
     // add custom controls
     moveCustomControls();
+    // open if id is in url
+    const id = route.query.id as string | undefined;
+    const totalLength = props.allItems.flatMap((group) => group.items).length;
+    if (id && parseInt(id) < totalLength) {
+      gallery.value.openGallery(parseInt(id));
+    }
   } else {
     gallery.value.refresh();
+    // open if id is in url
+    const id = route.query.id as string | undefined;
+    const totalLength = props.allItems.flatMap((group) => group.items).length;
+    if (id && parseInt(id) < totalLength) {
+      gallery.value.openGallery(parseInt(id));
+    }
   }
 }
 function moveCustomControls() {
@@ -106,6 +133,33 @@ function moveCustomControls() {
 function closeSidebar() {
   showCommentData.value = false;
   showInfoData.value = false;
+}
+
+function pushToHistory(id: string | false) {
+  const urlObj = new URL(location.href);
+  const searchParams = urlObj.searchParams;
+
+  if (id === false) {
+    searchParams.delete('id');
+  } else {
+    if (searchParams.has('search')) {
+      searchParams.delete('id');
+      searchParams.append('id', id);
+    } else {
+      searchParams.set('id', id);
+    }
+  }
+
+  history.pushState({}, '', urlObj.toString());
+  return;
+}
+function watchForUrlChange() {
+  const id = route.query.id as string | undefined;
+  if (id) {
+    gallery.value.openGallery(parseInt(id));
+  } else {
+    gallery.value.closeGallery();
+  }
 }
 
 onUnmounted(() => {
@@ -146,13 +200,6 @@ onUnmounted(() => {
     <!-- Custom Icons -->
     <div id="customButtons" class="tw_hidden">
       <div class="tw_flex tw_items-center tw_pr-[20px] tw_gap-1">
-        <!-- <q-btn
-          v-if="authData?.role === 'admin'"
-          round
-          flat
-          icon="o_edit"
-          @click="showEditModal = true"
-        /> -->
         <q-btn round flat icon="o_share" @click="showShareModal = true" />
         <LikeButton
           v-if="currentSelectedItem"
@@ -200,16 +247,10 @@ onUnmounted(() => {
         'tw_w-[300px]': showCommentData || showInfoData,
       }"
       v-touch-swipe.mouse.right="closeSidebar"
-      @edit="showEditModal = true"
     />
 
     <!-- Edit Modal -->
-    <GalleryEditModal
-      v-model="showEditModal"
-      :itemId="currentSelectedItem?.id || 0"
-      @update="showEditModal = false"
-      @close="showEditModal = false"
-    />
+
     <GalleryShareModal :item="currentSelectedItem" v-model="showShareModal" />
   </div>
 </template>

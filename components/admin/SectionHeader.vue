@@ -22,6 +22,7 @@ defineProps({
         <q-btn no-caps outline to="/admin/users" label="Users" />
         <q-btn no-caps outline to="/admin/items" label="Items" />
         <q-btn no-caps outline to="/admin/settings" label="Settings" />
+        <q-btn no-caps outline to="/admin/systemLogs" label="System Logs" />
       </div>
     </div>
   </div>

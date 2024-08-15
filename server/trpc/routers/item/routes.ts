@@ -59,6 +59,10 @@ export const itemRouter = router({
         if (input.filterBy === 'private' && item.published === 'public') {
           return false;
         }
+        // filter by unknown
+        if (input.filterBy === 'unknown' && item.takenAt !== '1900-01-01') {
+          return false;
+        }
 
         // filter by type
         if (input.type.length > 0 && !input.type.includes(item.type)) {
@@ -241,7 +245,7 @@ export const itemRouter = router({
       input.allowList = [];
     }
 
-    return await ctx.prisma.item.update({
+    const response = await ctx.prisma.item.update({
       where: { id: input.id },
       data: {
         description: input.description,
@@ -254,6 +258,20 @@ export const itemRouter = router({
         },
       },
     });
+
+    // write to logger
+    const headers = Object.fromEntries(ctx.event.headers.entries());
+    await logger.writeToLog({
+      ip: headers['x-real-ip'] || headers['x-forwarded-for'] || headers['x-amzn-trace-id'] || '',
+      route: ctx.event.context.params.trpc || '',
+      method: ctx.event._method || '',
+      responseSize: JSON.stringify(response).length || 0,
+      requestBody: input,
+      userId: session?.id || null,
+      userAgent: headers['user-agent'] || '',
+    });
+
+    return response;
   }),
 });
 

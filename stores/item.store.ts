@@ -24,10 +24,7 @@ export const useItemStore = defineStore('item', {
     async getSingle(id: string) {
       const { $trpc } = useNuxtApp();
 
-      let results = await $trpc.item.getSingle.query({ id: parseInt(id) });
-      return {
-        ...results,
-      };
+      return await $trpc.item.getSingle.query({ id: parseInt(id) });
     },
 
     async incrementViewCount(id: number) {

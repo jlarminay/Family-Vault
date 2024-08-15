@@ -6,6 +6,9 @@ import shell from 'shelljs';
 import { faker } from '@faker-js/faker';
 import dayjs from 'dayjs';
 
+// TESTING CODE
+const generateThumbnail = false;
+
 const prisma = new PrismaClient();
 const s3Instance = S3.getInstance({
   region: process.env.S3_REGION || '',
@@ -45,18 +48,20 @@ export default async () => {
       // get metadata
       const videoName = file.key.split('/').pop() || '';
       const videoMetadata = await fileProcessor.video.getMetadata({ videoPath: file.fullPath });
-      const newVideoThumbnail = await fileProcessor.video.getThumbnailAt({
-        videoName: videoName,
-        videoPath: file.fullPath,
-        duration: videoMetadata.duration,
-        timePercentage: 10,
-      });
 
-      // upload to s3
-      await s3Instance.upload({
-        targetPath: file.key.replace(videoName, newVideoThumbnail.name),
-        localPath: newVideoThumbnail.path,
-      });
+      if (generateThumbnail) {
+        const newVideoThumbnail = await fileProcessor.video.getThumbnailAt({
+          videoName: videoName,
+          videoPath: file.fullPath,
+          duration: videoMetadata.duration,
+          timePercentage: 10,
+        });
+        await s3Instance.upload({
+          targetPath: file.key.replace(videoName, newVideoThumbnail.name),
+          localPath: newVideoThumbnail.path,
+        });
+        fileProcessor.image.delete(newVideoThumbnail.name);
+      }
 
       // insert files into db
       await prisma.item.create({
@@ -88,9 +93,6 @@ export default async () => {
         },
       });
 
-      // cleanup
-      fileProcessor.image.delete(newVideoThumbnail.name);
-
       count++;
     }
     // if image
@@ -101,16 +103,18 @@ export default async () => {
         name: imageName,
         path: file.fullPath,
       });
-      const newImageThumbnail = await fileProcessor.image.getThumbnail({
-        name: imageName,
-        path: file.fullPath,
-      });
 
-      // upload to s3
-      await s3Instance.upload({
-        targetPath: file.key.replace(imageName, newImageThumbnail.name),
-        localPath: newImageThumbnail.path,
-      });
+      if (generateThumbnail) {
+        const newImageThumbnail = await fileProcessor.image.getThumbnail({
+          name: imageName,
+          path: file.fullPath,
+        });
+        await s3Instance.upload({
+          targetPath: file.key.replace(imageName, newImageThumbnail.name),
+          localPath: newImageThumbnail.path,
+        });
+        fileProcessor.image.delete(newImageThumbnail.name);
+      }
 
       // insert file into db
       await prisma.item.create({
@@ -144,7 +148,6 @@ export default async () => {
 
       // cleanup
       fileProcessor.image.delete(imageName);
-      fileProcessor.image.delete(newImageThumbnail.name);
 
       // cleanup
       count++;

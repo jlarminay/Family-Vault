@@ -5,7 +5,7 @@ const itemStore = useItemStore();
 const { data: authData } = useAuth();
 const emits = defineEmits(['update', 'close']);
 const props = defineProps<{
-  itemId: number;
+  item: object;
 }>();
 
 const form = ref<any>(null);
@@ -22,18 +22,14 @@ const cleanedAllowList = computed(() => {
   });
 });
 
-watch(
-  () => props.itemId,
-  async () => {
-    if (props.itemId === 0) return;
-    loading.value = true;
-    itemEdit.value = await itemStore.getSingle(props.itemId.toString());
-    allUsers.value = await userStore.getAll();
-    loading.value = false;
-  },
-);
+onMounted(async () => {
+  loading.value = true;
+  itemEdit.value = JSON.parse(JSON.stringify(props.item));
+  allUsers.value = await userStore.getAll();
+  loading.value = false;
+});
 
-async function updateVideo() {
+async function updateItem() {
   if (!(await form.value.validate())) return;
   //
   loading.value = true;
@@ -43,7 +39,7 @@ async function updateVideo() {
     toaster({ type: 'error', message: 'Something went wrong.<br/>Please try again later.' });
     return;
   }
-  toaster({ type: 'success', message: 'Successfully edited video.' });
+  toaster({ type: 'success', message: 'Successfully edited gallery item.' });
   emits('update');
 }
 </script>
@@ -52,10 +48,10 @@ async function updateVideo() {
   <Modal class="tw_w-full">
     <template #title>Edit Gallery Item</template>
     <template #body>
-      <q-form ref="form" greedy @submit="updateVideo">
-        <!-- Video Content -->
+      <q-form ref="form" greedy @submit="updateItem">
+        <!-- Item Content -->
         <div>
-          <h3 class="h3 tw_font-bold tw_mb-2">Item Content</h3>
+          <h3 class="h3 tw_font-bold tw_mb-2">Gallery Item Content</h3>
           <q-input
             outlined
             no-error-icon
@@ -70,7 +66,7 @@ async function updateVideo() {
             outlined
             no-error-icon
             v-model="itemEdit.people"
-            label="Who's in the video?"
+            label="Who's in the video/image?"
             maxlength="1024"
             autogrow
             counter
@@ -105,8 +101,10 @@ async function updateVideo() {
         </div>
 
         <!-- Security -->
-        <div class="tw_mt-4">
-          <h3 class="h3 tw_font-bold tw_mb-2">Security</h3>
+        <div v-if="authData?.role === 'admin'" class="tw_mt-4">
+          <h3 class="h3 tw_font-bold tw_mb-2">
+            Security <span class="tw_text-xs">(Admin Only)</span>
+          </h3>
           <q-select
             behavior="menu"
             outlined
@@ -116,9 +114,9 @@ async function updateVideo() {
             emit-value
             map-options
             :options="[
-              { label: 'Video is private to me', value: 'private' },
-              { label: 'Video is public to everyone', value: 'public' },
-              { label: 'Video is public to only a few', value: 'allow-few' },
+              { label: 'Item is private to me', value: 'private' },
+              { label: 'Item is public to everyone', value: 'public' },
+              { label: 'Item is public to only a few', value: 'allow-few' },
             ]"
             required
             :rules="[(val: string) => !!val || 'Required']"
@@ -129,7 +127,7 @@ async function updateVideo() {
             outlined
             no-error-icon
             v-model="itemEdit.allowList"
-            label="Who can see the video?"
+            label="Who can see the video/image?"
             map-options
             multiple
             use-chips
@@ -153,9 +151,9 @@ async function updateVideo() {
             no-caps
             unelevated
             color="primary"
-            label="Save Video"
+            label="Save Item"
             :loading="loading"
-            @click="updateVideo"
+            @click="updateItem"
           />
         </div>
       </q-form>
