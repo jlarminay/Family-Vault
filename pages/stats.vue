@@ -17,25 +17,23 @@ const stats = ref(await statsStore.getAll());
       <h1 class="h1">Stats</h1>
 
       <div class="tw_mt-4">
-        <div class="tw_flex tw_items-start tw_flex-col sm:tw_flex-row tw_gap-4 tw_mt-4">
+        <div class="tw_flex tw_items-start tw_flex-col sm:tw_flex-row tw_gap-4">
           <StatsSummary
             v-if="stats"
             :stats="stats"
-            class="tw_w-full tw_border tw_rounded tw_px-4 tw_py-2"
+            class="tw_w-full sm:tw_min-w-[250px] sm:tw_w-[250px] tw_border tw_rounded tw_p-4"
           />
-        </div>
-        <div class="tw_flex tw_items-start tw_flex-col sm:tw_flex-row tw_gap-4 tw_mt-4">
           <StatsLine
             v-if="stats"
             :stats="stats.year"
-            class="tw_border tw_rounded tw_px-4 tw_py-2 tw_w-full tw_aspect-video"
+            class="tw_border tw_rounded tw_p-4 tw_w-full tw_aspect-video"
           />
         </div>
         <div class="tw_flex tw_items-start tw_flex-col sm:tw_flex-row tw_gap-4 tw_mt-4">
           <StatsWordCloud
             v-if="stats"
             :stats="stats.people"
-            class="tw_w-full tw_border tw_rounded tw_px-4 tw_py-2"
+            class="tw_w-full tw_border tw_rounded tw_p-4"
           />
         </div>
       </div>
