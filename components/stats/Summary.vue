@@ -6,6 +6,7 @@ const props = defineProps<{
     videos: {
       count: number;
       totalLength: number;
+      averageLength: number;
     };
     images: {
       count: number;
@@ -27,10 +28,10 @@ const props = defineProps<{
       <p class="tw_text-base tw_text-gray-500 tw_leading-none">Total File Size</p>
       <p class="tw_text-xl">{{ formatSize(stats.totalFileSize) }}</p>
     </div>
-    <div>
+    <!-- <div>
       <p class="tw_text-base tw_text-gray-500 tw_leading-none">Total Views</p>
       <p class="tw_text-xl">{{ stats.views }}</p>
-    </div>
+    </div> -->
 
     <!-- Videos -->
     <div class="tw_pt-4 tw_border-t">
@@ -39,8 +40,12 @@ const props = defineProps<{
     </div>
     <div>
       <p class="tw_text-base tw_text-gray-500 tw_leading-none">Total Videos Length</p>
-      <p class="tw_text-xl">{{ formatDuration(Math.floor(stats.videos.totalLength), 'string') }}</p>
+      <p class="tw_text-xl">{{ formatDuration(stats.videos.totalLength, 'string') }}</p>
     </div>
+    <!-- <div>
+      <p class="tw_text-base tw_text-gray-500 tw_leading-none">Average Videos Length</p>
+      <p class="tw_text-xl">{{ formatDuration(stats.videos.averageLength, 'string') }}</p>
+    </div> -->
 
     <!-- Images -->
     <div class="tw_pt-4 tw_border-t">
