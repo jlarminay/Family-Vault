@@ -27,11 +27,7 @@ watch(
   () => props.allItems,
   async () => {
     await nextTick();
-    try {
-      manageGallery();
-    } catch (error) {
-      console.error(error);
-    }
+    manageGallery();
   },
   { immediate: true },
 );
@@ -55,7 +51,6 @@ watch(
 watch(
   () => route.fullPath,
   (newUrl, oldUrl) => {
-    console.log('URL changed from:', oldUrl, 'to:', newUrl);
     watchForUrlChange();
   },
 );
@@ -112,11 +107,18 @@ function manageGallery() {
     moveCustomControls();
     // open if id is in url
     const id = route.query.id as string | undefined;
-    if (id) {
+    const totalLength = props.allItems.flatMap((group) => group.items).length;
+    if (id && parseInt(id) < totalLength) {
       gallery.value.openGallery(parseInt(id));
     }
   } else {
     gallery.value.refresh();
+    // open if id is in url
+    const id = route.query.id as string | undefined;
+    const totalLength = props.allItems.flatMap((group) => group.items).length;
+    if (id && parseInt(id) < totalLength) {
+      gallery.value.openGallery(parseInt(id));
+    }
   }
 }
 function moveCustomControls() {
