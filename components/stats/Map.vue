@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import L from 'leaflet';
-import 'https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.min.js';
+import 'leaflet.heat';
 import 'leaflet/dist/leaflet.css';
-import { faker } from '@faker-js/faker';
 
 const props = defineProps<{
   stats: { lat: number; lng: number }[];
