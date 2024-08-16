@@ -29,7 +29,10 @@ function color(scope: any) {
 
 <template>
   <div>
-    <h3 class="h2 tw_text-center tw_mb-4">People Word Cloud</h3>
+    <h3 class="h2 tw_text-center tw_mb-4">
+      People Word Cloud
+      <span class="tw_text-sm">({{ Object.entries(stats).length }} people)</span>
+    </h3>
     <div class="tw_flex tw_justify-center">
       <VueWordCloud
         style="height: 480px; width: 100%"

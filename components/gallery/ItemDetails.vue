@@ -16,7 +16,7 @@ const showEditModal = ref<boolean>(false);
 
 async function refreshData() {
   loading.value = true;
-  details.value = await itemStore.getSingle(props.itemId);
+  details.value = await itemStore.getSingle(props.itemId.toString());
   loading.value = false;
 }
 
@@ -40,10 +40,12 @@ watch(
         <div class="tw_flex tw_gap-4 tw_items-start">
           <q-icon size="24px" name="o_today" class="tw_mt-1.5" />
           <div class="tw_flex tw_flex-col">
-            <p class="tw_text-gray-500 tw_leading-none tw_text-sm">Date Taken</p>
+            <p class="tw_text-gray-500 tw_leading-none tw_text-sm">
+              Date Taken
+              <span v-if="details.dateEstimate" class="tw_text-xs"> (Estimate) </span>
+            </p>
             <p class="tw_text-base">
               {{ dayjs(details.takenAt).format('MMMM D, YYYY') }}
-              {{ details.dateEstimate ? '(est.)' : '' }}
             </p>
           </div>
         </div>
@@ -63,6 +65,27 @@ watch(
           <div class="tw_flex tw_flex-col">
             <p class="tw_text-gray-500 tw_leading-none tw_text-sm">People</p>
             <p class="tw_text-base">{{ details.people || '-' }}</p>
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="tw_flex tw_gap-4 tw_items-start">
+          <q-icon size="24px" name="o_location_on" class="tw_mt-1.5" />
+          <div class="tw_flex tw_flex-col">
+            <p class="tw_text-gray-500 tw_leading-none tw_text-sm">
+              Location
+              <span v-if="details.location && details.locationEstimate" class="tw_text-xs">
+                (Estimate)
+              </span>
+            </p>
+            <div v-if="details.location">
+              <p v-if="details.locationCity || details.locationCountry" class="tw_text-base">
+                {{ details.locationCity || '-' }}, {{ details.locationCountry || '-' }}
+              </p>
+              <p v-else class="tw_text-base tw_italic">No data available</p>
+              <p class="tw_text-xs tw_text-gray-400">({{ details.location || '-' }})</p>
+            </div>
+            <p v-else>-</p>
           </div>
         </div>
       </div>

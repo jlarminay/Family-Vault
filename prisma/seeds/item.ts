@@ -42,6 +42,33 @@ export default async () => {
       await s3Instance.updateFilePermissions(file.key);
     }
 
+    // new data
+    const hasLocation = Math.random() < 0.5 ? true : false;
+    const newData = {
+      // item data
+      description: faker.commerce.productDescription(),
+      people: Array.from({ length: Math.floor(Math.random() * 5) }, () =>
+        faker.person.firstName(),
+      ).join(', '),
+
+      // date
+      dateEstimate: Math.random() < 0.5 ? true : false,
+      takenAt: (count === 0
+        ? dayjs().toDate()
+        : dayjs()
+            .subtract(Math.floor(Math.random() * 400) + 1, 'day')
+            .toDate()
+      )
+        .toISOString()
+        .split('T')[0],
+
+      // location
+      location: hasLocation ? `${faker.location.latitude()}, ${faker.location.longitude()}` : null,
+      locationEstimate: hasLocation ? true : false,
+      locationCity: hasLocation ? faker.location.city() : null,
+      locationCountry: hasLocation ? faker.location.country() : null,
+    };
+
     // check content type
     // if video
     if (file.contentType.startsWith('video/')) {
@@ -66,20 +93,7 @@ export default async () => {
       // insert files into db
       await prisma.item.create({
         data: {
-          // item data
-          description: faker.commerce.productDescription(),
-          people: Array.from({ length: Math.floor(Math.random() * 5) }, () =>
-            faker.person.firstName(),
-          ).join(', '),
-          dateEstimate: Math.random() < 0.5 ? true : false,
-          takenAt: (count === 0
-            ? dayjs().toDate()
-            : dayjs()
-                .subtract(Math.floor(Math.random() * 400) + 1, 'day')
-                .toDate()
-          )
-            .toISOString()
-            .split('T')[0],
+          ...newData,
           type: 'video',
           // file data
           name: videoName,
@@ -119,20 +133,7 @@ export default async () => {
       // insert file into db
       await prisma.item.create({
         data: {
-          // item data
-          description: faker.commerce.productDescription(),
-          people: Array.from({ length: Math.floor(Math.random() * 5) }, () =>
-            faker.person.firstName(),
-          ).join(', '),
-          dateEstimate: Math.random() < 0.5 ? true : false,
-          takenAt: (count === 0
-            ? dayjs().toDate()
-            : dayjs()
-                .subtract(Math.floor(Math.random() * 400) + 1, 'day')
-                .toDate()
-          )
-            .toISOString()
-            .split('T')[0],
+          ...newData,
           type: 'image',
           // file data
           name: imageName,

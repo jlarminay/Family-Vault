@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import validator from 'validator';
 const userStore = useUserStore();
 const itemStore = useItemStore();
 
@@ -51,7 +52,7 @@ async function updateItem() {
       <q-form ref="form" greedy @submit="updateItem">
         <!-- Item Content -->
         <div>
-          <h3 class="h3 tw_font-bold tw_mb-2">Gallery Item Content</h3>
+          <h3 class="h3 tw_font-bold tw_mb-2">Item Content</h3>
           <q-input
             outlined
             no-error-icon
@@ -72,32 +73,67 @@ async function updateItem() {
             counter
             :rules="[(val: string) => !val || val.length <= 1024 || 'Max 1024 characters']"
           />
-          <q-input
-            outlined
-            no-error-icon
-            v-model="itemEdit.takenAt"
-            label="Date Taken"
-            required
-            mask="####-##-##"
-            :rules="[
-              (val: string) => !!val || 'Required',
-              (val: string) => val.length <= 64 || 'Max 64 characters',
-            ]"
-            class="tw_mb-0"
-          >
-            <template v-slot:append>
-              <q-icon name="o_event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="itemEdit.takenAt" mask="YYYY-MM-DD">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-          <q-checkbox v-model="itemEdit.dateEstimate" label="Is this date an estimate?" />
+          <div class="tw_flex tw_justify-between tw_items-center tw_gap-4">
+            <q-input
+              outlined
+              no-error-icon
+              v-model="itemEdit.takenAt"
+              label="Date Taken"
+              required
+              mask="####-##-##"
+              :rules="[(val: string) => !!val || 'Required']"
+              class="tw_mb-0 tw_grow"
+            >
+              <template v-slot:append>
+                <q-icon name="o_event" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-date v-model="itemEdit.takenAt" mask="YYYY-MM-DD">
+                      <div class="row items-center justify-end">
+                        <q-btn v-close-popup label="Close" color="primary" flat />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+            <q-checkbox
+              v-model="itemEdit.dateEstimate"
+              label="Estimate"
+              class="tw_mb-[28px] tw_pr-4"
+            />
+          </div>
+          <div class="tw_flex tw_justify-between tw_items-center tw_gap-4">
+            <q-input
+              outlined
+              no-error-icon
+              v-model="itemEdit.location"
+              label="Location"
+              :rules="[
+                (val: string) =>
+                  !val ||
+                  validator.isLatLong(val) ||
+                  'Must be in the format of Latitude, Longitude',
+              ]"
+              class="tw_mb-0 tw_grow"
+            >
+              <template v-slot:append>
+                <q-icon name="o_info" class="cursor-pointer">
+                  <q-menu anchor="bottom end" self="top end" class="tw_p-4 tw_w-[250px]">
+                    <p class="tw_mb-2">
+                      This field must be in the format of Latitude, Longitude (Ex. 48.42821,
+                      -123.37333).
+                    </p>
+                    <p>This can be gotten from Google Maps.</p>
+                  </q-menu>
+                </q-icon>
+              </template>
+            </q-input>
+            <q-checkbox
+              v-model="itemEdit.locationEstimate"
+              label="Estimate"
+              class="tw_mb-[28px] tw_pr-4"
+            />
+          </div>
         </div>
 
         <!-- Security -->

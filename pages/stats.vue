@@ -36,6 +36,13 @@ const stats = ref(await statsStore.getAll());
             class="tw_w-full tw_border tw_rounded tw_p-4"
           />
         </div>
+        <div class="tw_flex tw_items-start tw_flex-col sm:tw_flex-row tw_gap-4 tw_mt-4">
+          <StatsMap
+            v-if="stats"
+            :stats="stats.locations"
+            class="tw_w-full tw_border tw_rounded tw_p-4"
+          />
+        </div>
       </div>
     </main>
   </NuxtLayout>

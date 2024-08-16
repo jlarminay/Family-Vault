@@ -22,6 +22,7 @@ export const statsRouter = router({
       },
       people: {} as { [key: string]: number },
       year: {} as { [key: string]: { images: number; videos: number } },
+      locations: [] as { lat: number; lng: number }[],
     };
 
     for (const item of items) {
@@ -63,6 +64,14 @@ export const statsRouter = router({
           images: item.type === 'image' ? 1 : 0,
           videos: item.type === 'video' ? 1 : 0,
         };
+      }
+
+      // update locations
+      if (item.location) {
+        const location = item.location.split(',');
+        const lat = parseFloat(location[0]);
+        const lng = parseFloat(location[1]);
+        results.locations.push({ lat, lng });
       }
     }
 
