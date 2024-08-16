@@ -39,8 +39,10 @@ export const useItemStore = defineStore('item', {
         id: itemData.id,
         description: itemData.description,
         people: itemData.people,
-        dateEstimate: itemData.dateEstimate,
         takenAt: itemData.takenAt,
+        dateEstimate: itemData.dateEstimate,
+        location: itemData.location,
+        locationEstimate: itemData.locationEstimate,
         published: itemData.published,
         allowList: itemData.allowList ? itemData.allowList.map((user: any) => user.value) : [],
       };

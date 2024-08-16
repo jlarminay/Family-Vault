@@ -245,13 +245,31 @@ export const itemRouter = router({
       input.allowList = [];
     }
 
+    // check if location was changed
+    let locationResponse: any = null;
+    if (input.location && item && item.location !== input.location) {
+      // get location data
+      const cleanedData = input.location.split(',').map((item) => item.trim());
+      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${cleanedData[0]}&lon=${cleanedData[1]}`;
+      locationResponse = await fetch(url).then((res) => res.json());
+    }
+
     const response = await ctx.prisma.item.update({
       where: { id: input.id },
       data: {
         description: input.description,
         people: input.people,
-        dateEstimate: input.dateEstimate || false,
         takenAt: input.takenAt,
+        dateEstimate: input.dateEstimate || false,
+        location: input.location,
+        locationEstimate: input.locationEstimate || false,
+        locationCity:
+          locationResponse?.address?.city ||
+          locationResponse?.address?.town ||
+          locationResponse?.address?.village ||
+          locationResponse?.address?.municipality ||
+          null,
+        locationCountry: locationResponse?.address?.country || null,
         published: input.published,
         allowList: {
           set: input.allowList?.map((user: any) => ({ id: user })) || [],

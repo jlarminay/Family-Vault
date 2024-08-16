@@ -11,8 +11,12 @@ model Item {
   size     String
   metadata Json?
 
-  dateEstimate Boolean @default(false)
-  takenAt      String
+  takenAt          String
+  dateEstimate     Boolean @default(false)
+  location         String?
+  locationEstimate Boolean @default(false)
+  locationCity     String?
+  locationCountry  String?
 
   ownerId Int
   owner   User @relation(name: "OwnedVideo", fields: [ownerId], references: [id])

@@ -25,6 +25,8 @@ export const editItemSchema = z.object({
   people: z.string().max(1024).nullable().optional(),
   dateEstimate: z.boolean().nullable().optional(),
   takenAt: z.string().max(16),
+  location: z.string().max(100).nullable().optional(),
+  locationEstimate: z.boolean().nullable().optional(),
   published: z.string(z.enum(['public', 'private', 'allow-few', 'deny-few'])),
   allowList: z.array(z.number()).nullable().optional(),
   blockList: z.array(z.number()).nullable().optional(),
