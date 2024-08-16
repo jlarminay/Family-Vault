@@ -117,6 +117,37 @@ async function updateItem() {
               class="tw_mb-0 tw_grow"
             >
               <template v-slot:append>
+                <q-icon name="o_home" class="cursor-pointer tw_pr-2">
+                  <q-menu anchor="bottom end" self="top end">
+                    <q-list>
+                      <q-item
+                        v-for="(location, i) in [
+                          {
+                            label: 'Mireille\'s House',
+                            value: '48.45050868490577, -123.36516816965117',
+                          },
+                          {
+                            label: 'Cindi\'s House',
+                            value: '48.45247192226103, -123.39886027226653',
+                          },
+                          {
+                            label: 'Quadra School',
+                            value: '48.44598351009871, -123.36055427827353',
+                          },
+                          {
+                            label: 'Forest Museum',
+                            value: '48.802224154212766, -123.71536180445196',
+                          },
+                        ]"
+                        clickable
+                        @click="itemEdit.location = location.value"
+                        v-close-popup
+                      >
+                        <q-item-section>{{ location.label }}</q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-menu>
+                </q-icon>
                 <q-icon name="o_info" class="cursor-pointer">
                   <q-menu anchor="bottom end" self="top end" class="tw_p-4 tw_w-[250px]">
                     <p class="tw_mb-2">
