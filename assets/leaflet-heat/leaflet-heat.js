@@ -246,12 +246,12 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
       if (bounds.contains(point)) {
         const gridX = Math.floor((point.x - xOffset) / halfRadius) + 2;
         const gridY = Math.floor((point.y - yOffset) / halfRadius) + 2;
-        const value =
-          this._latlngs[i].alt !== undefined
-            ? this._latlngs[i].alt
-            : this._latlngs[i][2] !== undefined
-              ? +this._latlngs[i][2]
-              : 1;
+        // const value =
+        //   this._latlngs[i].alt !== undefined
+        //     ? this._latlngs[i].alt
+        //     : this._latlngs[i][2] !== undefined
+        //       ? +this._latlngs[i][2]
+        //       : 1;
         // const weight = value * scale;
         const weight = this._latlngs[i][2];
 

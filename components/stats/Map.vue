@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import L from 'leaflet';
-import '@/assets/leaflet-heat.js';
-// import 'leaflet.heat';
+import '@/assets/leaflet-heat/leaflet-heat.js';
 import 'leaflet/dist/leaflet.css';
 
 const props = defineProps<{
@@ -44,9 +43,6 @@ onMounted(() => {
       <span class="tw_text-sm">({{ stats.length }} locations)</span>
     </h3>
     <div id="map" class="tw_h-[500px] tw_max-h-[80vh]"></div>
-    <pre>{{
-      stats.map((location) => [location.lat, location.lng, location.count / maxValue])
-    }}</pre>
   </div>
 </template>
 

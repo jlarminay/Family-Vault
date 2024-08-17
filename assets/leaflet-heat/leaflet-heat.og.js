@@ -176,7 +176,7 @@
               : void 0 !== this._latlngs[t][2]
                 ? +this._latlngs[t][2]
                 : 1;
-          (r = x * f),
+          (r = this._latlngs[t][2]),
             (p[n] = p[n] || []),
             (s = p[n][e]),
             s
