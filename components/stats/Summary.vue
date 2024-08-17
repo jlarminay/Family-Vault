@@ -13,6 +13,7 @@ const props = defineProps<{
     };
     people?: { [key: string]: number };
     years?: { [key: string]: { images: number; videos: number } };
+    locations?: { lat: number; lng: number }[];
   };
 }>();
 </script>

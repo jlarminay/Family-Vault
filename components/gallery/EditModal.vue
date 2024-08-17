@@ -72,20 +72,20 @@ async function updateItem() {
             no-error-icon
             v-model="itemEdit.description"
             label="Description"
-            maxlength="1024"
+            maxlength="500"
             autogrow
             counter
-            :rules="[(val: string) => !val || val.length <= 1024 || 'Max 1024 characters']"
+            :rules="[(val: string) => !val || val.length <= 500 || 'Max 500 characters']"
           />
           <q-input
             outlined
             no-error-icon
             v-model="itemEdit.people"
             label="Who's in the video/image?"
-            maxlength="1024"
+            maxlength="200"
             autogrow
             counter
-            :rules="[(val: string) => !val || val.length <= 1024 || 'Max 1024 characters']"
+            :rules="[(val: string) => !val || val.length <= 200 || 'Max 200 characters']"
           />
         </div>
 

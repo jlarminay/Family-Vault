@@ -55,7 +55,7 @@ watch(
           <q-icon size="24px" name="o_description" class="tw_mt-1.5" />
           <div class="tw_flex tw_flex-col">
             <p class="tw_text-gray-500 tw_leading-none tw_text-sm">Description</p>
-            <p class="tw_text-base">{{ details.description || '-' }}</p>
+            <p class="tw_text-base tw_leading-tight">{{ details.description || '-' }}</p>
           </div>
         </div>
 
@@ -64,7 +64,15 @@ watch(
           <q-icon size="24px" name="o_people" class="tw_mt-1.5" />
           <div class="tw_flex tw_flex-col">
             <p class="tw_text-gray-500 tw_leading-none tw_text-sm">People</p>
-            <p class="tw_text-base">{{ details.people || '-' }}</p>
+            <p v-if="details.people" class="tw_text-base tw_leading-tight">
+              <span v-for="(person, i) in details.people.split(',')" :key="i">
+                <span>{{ person }}</span>
+                <span>{{ i === details.people.split(',').length - 1 ? '' : ', ' }}</span>
+              </span>
+            </p>
+            <p v-else class="tw_text-base tw_leading-tight">
+              <span>-</span>
+            </p>
           </div>
         </div>
 
