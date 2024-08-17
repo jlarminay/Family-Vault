@@ -5,6 +5,7 @@ import { settingRouter } from './setting/routes';
 import { itemRouter } from './item/routes';
 import { commentRouter } from './comment/routes';
 import { likeRouter } from './like/routes';
+import { locationRouter } from './location/routes';
 import { reportRouter } from './report/routes';
 import { userRouter } from './user/routes';
 import { statsRouter } from './stats/routes';
@@ -15,6 +16,7 @@ export const appRouter = router({
   item: itemRouter,
   comment: commentRouter,
   like: likeRouter,
+  location: locationRouter,
   report: reportRouter,
   user: userRouter,
   stats: statsRouter,

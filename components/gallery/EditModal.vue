@@ -2,6 +2,7 @@
 import validator from 'validator';
 const userStore = useUserStore();
 const itemStore = useItemStore();
+const locationStore = useLocationStore();
 
 const { data: authData } = useAuth();
 const emits = defineEmits(['update', 'close']);
@@ -11,7 +12,10 @@ const props = defineProps<{
 
 const form = ref<any>(null);
 const allUsers = ref<any>([]);
+const allLocations = ref<any>([]);
 const itemEdit = ref<any>({});
+const showNewLocation = ref(false);
+const newLocation = ref<any>({});
 const loading = ref(false);
 
 const cleanedAllowList = computed(() => {
@@ -27,14 +31,24 @@ onMounted(async () => {
   loading.value = true;
   itemEdit.value = JSON.parse(JSON.stringify(props.item));
   allUsers.value = await userStore.getAll();
+  allLocations.value = await locationStore.getAll({ named: true });
   loading.value = false;
 });
+
+function closeModal() {
+  itemEdit.value = JSON.parse(JSON.stringify(props.item));
+  showNewLocation.value = false;
+  newLocation.value = {};
+}
 
 async function updateItem() {
   if (!(await form.value.validate())) return;
   //
   loading.value = true;
-  let response = await itemStore.update(itemEdit.value);
+  let response = await itemStore.update({
+    ...itemEdit.value,
+    newLocation: newLocation.value,
+  });
   loading.value = false;
   if (!response) {
     toaster({ type: 'error', message: 'Something went wrong.<br/>Please try again later.' });
@@ -46,7 +60,7 @@ async function updateItem() {
 </script>
 
 <template>
-  <Modal class="tw_w-full">
+  <Modal class="tw_w-full" @hide="closeModal">
     <template #title>Edit Gallery Item</template>
     <template #body>
       <q-form ref="form" greedy @submit="updateItem">
@@ -73,6 +87,11 @@ async function updateItem() {
             counter
             :rules="[(val: string) => !val || val.length <= 1024 || 'Max 1024 characters']"
           />
+        </div>
+
+        <!-- Date -->
+        <div class="tw_mt-2">
+          <h3 class="h3 tw_font-bold tw_mb-2">Date</h3>
           <div class="tw_flex tw_justify-between tw_items-center tw_gap-4">
             <q-input
               outlined
@@ -102,11 +121,67 @@ async function updateItem() {
               class="tw_mb-[28px] tw_pr-4"
             />
           </div>
+        </div>
+
+        <!-- Location -->
+        <div class="tw_mt-2 tw_mb-[20px]">
+          <h3 class="h3 tw_font-bold tw_mb-2">Location</h3>
           <div class="tw_flex tw_justify-between tw_items-center tw_gap-4">
+            <q-select
+              behavior="menu"
+              outlined
+              no-error-icon
+              v-model="itemEdit.locationId"
+              option-value="id"
+              option-label="name"
+              label="Location"
+              :disable="showNewLocation"
+              emit-value
+              map-options
+              clearable
+              :options="allLocations"
+              class="tw_grow"
+            >
+              <template #selected-item="scope">
+                <span v-if="scope.opt.name">{{ scope.opt.name }}</span>
+                <span v-else class="tw_text-gray-400 tw_italic">
+                  {{ itemEdit.location.city }}, {{ itemEdit.location.country }}
+                </span>
+              </template>
+            </q-select>
+            <q-btn
+              no-caps
+              unelevated
+              color="primary"
+              :label="!showNewLocation ? '+ New Location' : 'Cancel'"
+              class="tw_mb-2"
+              @click="showNewLocation = !showNewLocation"
+            />
+          </div>
+          <div v-if="showNewLocation" class="tw_border tw_px-4 tw_pt-2 tw_rounded tw_bg-gray-50">
+            <p class="tw_text-sm tw_mb-2 tw_text-center tw_text-gray-500">
+              If a name is given, it will be added to the above list.
+            </p>
+            <q-input outlined no-error-icon v-model="newLocation.name" label="Location Name" />
+            <q-input
+              v-if="showNewLocation"
+              outlined
+              no-error-icon
+              v-model="newLocation.latLong"
+              label="Latitude and Longitude"
+              required
+              :rules="[
+                (val: string) => !!val || 'Required',
+                (val: string) =>
+                  validator.isLatLong(val) || 'Must be in the format of Latitude, Longitude',
+              ]"
+            />
+          </div>
+          <!-- <div class="tw_flex tw_justify-between tw_items-center tw_gap-4">
             <q-input
               outlined
               no-error-icon
-              v-model="itemEdit.location"
+              v-model="itemEdit.locationId"
               label="Location"
               :rules="[
                 (val: string) =>
@@ -159,16 +234,11 @@ async function updateItem() {
                 </q-icon>
               </template>
             </q-input>
-            <q-checkbox
-              v-model="itemEdit.locationEstimate"
-              label="Estimate"
-              class="tw_mb-[28px] tw_pr-4"
-            />
-          </div>
+          </div> -->
         </div>
 
         <!-- Security -->
-        <div v-if="authData?.role === 'admin'" class="tw_mt-4">
+        <div v-if="authData?.role === 'admin'" class="tw_mt-2">
           <h3 class="h3 tw_font-bold tw_mb-2">
             Security <span class="tw_text-xs">(Admin Only)</span>
           </h3>

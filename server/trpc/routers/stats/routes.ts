@@ -4,6 +4,9 @@ import dayjs from 'dayjs';
 export const statsRouter = router({
   getAll: protectedProcedure.query(async ({ ctx }) => {
     const items = await ctx.prisma.item.findMany({
+      include: {
+        location: true,
+      },
       orderBy: {
         takenAt: 'asc',
       },
@@ -68,7 +71,7 @@ export const statsRouter = router({
 
       // update locations
       if (item.location) {
-        const location = item.location.split(',');
+        const location = item.location.latLong.split(',');
         const lat = parseFloat(location[0]);
         const lng = parseFloat(location[1]);
         results.locations.push({ lat, lng });
