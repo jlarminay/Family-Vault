@@ -27,7 +27,15 @@ export const statsRouter = router({
       },
       people: {} as { [key: string]: number },
       year: {} as { [key: string]: { images: number; videos: number } },
-      locations: [] as { id: number; lat: number; lng: number; count: number }[],
+      locations: [] as {
+        id: number;
+        name: string | null;
+        city: string | null;
+        country: string | null;
+        lat: number;
+        lng: number;
+        count: number;
+      }[],
     };
 
     for (const item of items) {
@@ -70,14 +78,6 @@ export const statsRouter = router({
           videos: item.type === 'video' ? 1 : 0,
         };
       }
-
-      // // update locations
-      // if (item.location) {
-      //   const location = item.location.latLong.split(',');
-      //   const lat = parseFloat(location[0]);
-      //   const lng = parseFloat(location[1]);
-      //   results.locations.push({ lat, lng });
-      // }
     }
 
     // calculate average video length
@@ -120,6 +120,9 @@ export const statsRouter = router({
       const lng = parseFloat(cleaned[1].trim());
       results.locations.push({
         id: location.id,
+        name: location.name,
+        city: location.city,
+        country: location.country,
         lat: lat,
         lng: lng,
         count: location._count.item,
