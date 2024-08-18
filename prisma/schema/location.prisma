@@ -1,0 +1,8 @@
+model Location {
+  id      Int     @id @default(autoincrement())
+  name    String?
+  latLong String
+  city    String?
+  country String?
+  item    Item[]
+}

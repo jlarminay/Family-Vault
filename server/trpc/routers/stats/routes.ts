@@ -3,12 +3,17 @@ import dayjs from 'dayjs';
 
 export const statsRouter = router({
   getAll: protectedProcedure.query(async ({ ctx }) => {
+    // get all items
     const items = await ctx.prisma.item.findMany({
+      include: {
+        location: true,
+      },
       orderBy: {
         takenAt: 'asc',
       },
     });
 
+    // define results output
     const results = {
       views: 0,
       totalFileSize: 0,
@@ -22,7 +27,7 @@ export const statsRouter = router({
       },
       people: {} as { [key: string]: number },
       year: {} as { [key: string]: { images: number; videos: number } },
-      locations: [] as { lat: number; lng: number }[],
+      locations: [] as { id: number; lat: number; lng: number; count: number }[],
     };
 
     for (const item of items) {
@@ -66,13 +71,13 @@ export const statsRouter = router({
         };
       }
 
-      // update locations
-      if (item.location) {
-        const location = item.location.split(',');
-        const lat = parseFloat(location[0]);
-        const lng = parseFloat(location[1]);
-        results.locations.push({ lat, lng });
-      }
+      // // update locations
+      // if (item.location) {
+      //   const location = item.location.latLong.split(',');
+      //   const lat = parseFloat(location[0]);
+      //   const lng = parseFloat(location[1]);
+      //   results.locations.push({ lat, lng });
+      // }
     }
 
     // calculate average video length
@@ -92,6 +97,33 @@ export const statsRouter = router({
           videos: 0,
         };
       }
+    }
+
+    // sort locations by count
+    const locations = await ctx.prisma.location.findMany({
+      include: {
+        _count: {
+          select: {
+            item: true,
+          },
+        },
+      },
+    });
+
+    // update locations
+    for (const location of locations) {
+      // skip if no items
+      if (location._count.item === 0) continue;
+      // add location to results
+      const cleaned = location.latLong.split(',');
+      const lat = parseFloat(cleaned[0].trim());
+      const lng = parseFloat(cleaned[1].trim());
+      results.locations.push({
+        id: location.id,
+        lat: lat,
+        lng: lng,
+        count: location._count.item,
+      });
     }
 
     return results;

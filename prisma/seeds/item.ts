@@ -43,7 +43,6 @@ export default async () => {
     }
 
     // new data
-    const hasLocation = Math.random() < 0.5 ? true : false;
     const newData = {
       // item data
       description: faker.commerce.productDescription(),
@@ -63,10 +62,9 @@ export default async () => {
         .split('T')[0],
 
       // location
-      location: hasLocation ? `${faker.location.latitude()}, ${faker.location.longitude()}` : null,
-      locationEstimate: hasLocation ? true : false,
-      locationCity: hasLocation ? faker.location.city() : null,
-      locationCountry: hasLocation ? faker.location.country() : null,
+      location: {
+        connect: { id: Math.floor(Math.random() * 10) + 1 },
+      },
     };
 
     // check content type

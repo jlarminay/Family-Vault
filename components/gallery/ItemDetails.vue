@@ -55,7 +55,7 @@ watch(
           <q-icon size="24px" name="o_description" class="tw_mt-1.5" />
           <div class="tw_flex tw_flex-col">
             <p class="tw_text-gray-500 tw_leading-none tw_text-sm">Description</p>
-            <p class="tw_text-base">{{ details.description || '-' }}</p>
+            <p class="tw_text-base tw_leading-tight">{{ details.description || '-' }}</p>
           </div>
         </div>
 
@@ -64,7 +64,15 @@ watch(
           <q-icon size="24px" name="o_people" class="tw_mt-1.5" />
           <div class="tw_flex tw_flex-col">
             <p class="tw_text-gray-500 tw_leading-none tw_text-sm">People</p>
-            <p class="tw_text-base">{{ details.people || '-' }}</p>
+            <p v-if="details.people" class="tw_text-base tw_leading-tight">
+              <span v-for="(person, i) in details.people.split(',')" :key="i">
+                <span>{{ person }}</span>
+                <span>{{ i === details.people.split(',').length - 1 ? '' : ', ' }}</span>
+              </span>
+            </p>
+            <p v-else class="tw_text-base tw_leading-tight">
+              <span>-</span>
+            </p>
           </div>
         </div>
 
@@ -72,18 +80,17 @@ watch(
         <div class="tw_flex tw_gap-4 tw_items-start">
           <q-icon size="24px" name="o_location_on" class="tw_mt-1.5" />
           <div class="tw_flex tw_flex-col">
-            <p class="tw_text-gray-500 tw_leading-none tw_text-sm">
-              Location
-              <span v-if="details.location && details.locationEstimate" class="tw_text-xs">
-                (Estimate)
-              </span>
-            </p>
+            <p class="tw_text-gray-500 tw_leading-none tw_text-sm">Location</p>
             <div v-if="details.location">
-              <p v-if="details.locationCity || details.locationCountry" class="tw_text-base">
-                {{ details.locationCity || '-' }}, {{ details.locationCountry || '-' }}
+              <div v-if="details.location.name" class="tw_text-base">
+                <p>{{ details.location.name || '-' }}</p>
+                <p class="tw_text-xs tw_text-gray-400">
+                  {{ details.location.city || '-' }}, {{ details.location.country || '-' }}
+                </p>
+              </div>
+              <p v-else class="tw_text-base">
+                {{ details.location.city || '-' }}, {{ details.location.country || '-' }}
               </p>
-              <p v-else class="tw_text-base tw_italic">No data available</p>
-              <p class="tw_text-xs tw_text-gray-400">({{ details.location || '-' }})</p>
             </div>
             <p v-else>-</p>
           </div>

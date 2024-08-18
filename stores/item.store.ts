@@ -35,14 +35,19 @@ export const useItemStore = defineStore('item', {
     async update(itemData: any) {
       const { $trpc } = useNuxtApp();
 
+      // check if new location is empty
+      if (itemData.newLocation && !itemData.newLocation.name && !itemData.newLocation.latLong) {
+        itemData.newLocation = null;
+      }
+
       const newVideoData = {
         id: itemData.id,
         description: itemData.description,
         people: itemData.people,
         takenAt: itemData.takenAt,
         dateEstimate: itemData.dateEstimate,
-        location: itemData.location,
-        locationEstimate: itemData.locationEstimate,
+        locationId: itemData.locationId,
+        newLocation: itemData.newLocation,
         published: itemData.published,
         allowList: itemData.allowList ? itemData.allowList.map((user: any) => user.value) : [],
       };

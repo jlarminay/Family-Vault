@@ -180,6 +180,7 @@ export const itemRouter = router({
               name: true,
             },
           },
+          location: true,
         },
       });
 
@@ -245,13 +246,28 @@ export const itemRouter = router({
       input.allowList = [];
     }
 
-    // check if location was changed
-    let locationResponse: any = null;
-    if (input.location && item && item.location !== input.location) {
+    // create new location
+    if (input.newLocation) {
       // get location data
-      const cleanedData = input.location.split(',').map((item) => item.trim());
+      const cleanedData = input.newLocation.latLong.split(',').map((item) => item.trim());
       const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${cleanedData[0]}&lon=${cleanedData[1]}`;
-      locationResponse = await fetch(url).then((res) => res.json());
+      const locationResponse = await fetch(url).then((res) => res.json());
+
+      // insert into db
+      const location = await ctx.prisma.location.create({
+        data: {
+          name: input.newLocation.name,
+          latLong: input.newLocation.latLong,
+          city:
+            locationResponse?.address?.city ||
+            locationResponse?.address?.town ||
+            locationResponse?.address?.village ||
+            locationResponse?.address?.municipality ||
+            null,
+          country: locationResponse?.address?.country || null,
+        },
+      });
+      input.locationId = location.id;
     }
 
     const response = await ctx.prisma.item.update({
@@ -261,15 +277,7 @@ export const itemRouter = router({
         people: input.people,
         takenAt: input.takenAt,
         dateEstimate: input.dateEstimate || false,
-        location: input.location,
-        locationEstimate: input.locationEstimate || false,
-        locationCity:
-          locationResponse?.address?.city ||
-          locationResponse?.address?.town ||
-          locationResponse?.address?.village ||
-          locationResponse?.address?.municipality ||
-          null,
-        locationCountry: locationResponse?.address?.country || null,
+        locationId: input.locationId,
         published: input.published,
         allowList: {
           set: input.allowList?.map((user: any) => ({ id: user })) || [],
