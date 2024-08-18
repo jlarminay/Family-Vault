@@ -93,7 +93,10 @@ export const itemRouter = router({
           else if (
             !(
               item.description?.toLowerCase().includes(input.search.toLowerCase()) ||
-              item.people?.toLowerCase().includes(input.search.toLowerCase())
+              item.people?.toLowerCase().includes(input.search.toLowerCase()) ||
+              item?.location?.name?.toLowerCase().includes(input.search.toLowerCase()) ||
+              item?.location?.city?.toLowerCase().includes(input.search.toLowerCase()) ||
+              item?.location?.country?.toLowerCase().includes(input.search.toLowerCase())
             )
           ) {
             return false;
