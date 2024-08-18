@@ -71,10 +71,13 @@ defineProps({
         {{ dayjs(item.takenAt).format('MMM D, YYYY') }}
         {{ item.dateEstimate ? '(est.)' : '' }}
       </p>
-      <p class="tw_text-xs sm:tw_text-sm tw_flex tw_items-center tw_gap-1 tw_text-gray-500">
+      <p
+        class="tw_text-xs sm:tw_text-sm tw_flex tw_items-center tw_gap-1 tw_text-gray-500 tw_truncate"
+      >
         <q-icon name="o_location_on" class="tw_hidden sm:tw_block" />
-        {{ item.locationCity || '-' }}
-        {{ item.locationCity && item.dateEstimate ? '(est.)' : '' }}
+        <span v-if="item.location && item.location.name">{{ item.location.name }}</span>
+        <span v-else-if="item.location">{{ item.location.city }}, {{ item.location.country }}</span>
+        <span v-else>-</span>
       </p>
       <p class="tw_text-xs sm:tw_text-sm tw_line-clamp-2">{{ item.description }}</p>
     </div>
