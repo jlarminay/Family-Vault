@@ -96,7 +96,8 @@ export const itemRouter = router({
               item.people?.toLowerCase().includes(input.search.toLowerCase()) ||
               item?.location?.name?.toLowerCase().includes(input.search.toLowerCase()) ||
               item?.location?.city?.toLowerCase().includes(input.search.toLowerCase()) ||
-              item?.location?.country?.toLowerCase().includes(input.search.toLowerCase())
+              item?.location?.country?.toLowerCase().includes(input.search.toLowerCase()) ||
+              item?.takenAt?.toLowerCase().includes(input.search.toLowerCase())
             )
           ) {
             return false;

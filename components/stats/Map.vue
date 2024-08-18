@@ -30,7 +30,7 @@ onMounted(() => {
   L.tileLayer(tileSets.value[0], {
     attribution:
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    maxZoom: 17,
+    maxZoom: 16,
   }).addTo(map.value);
 
   // add the Heatmap layer
