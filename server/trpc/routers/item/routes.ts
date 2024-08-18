@@ -26,6 +26,7 @@ export const itemRouter = router({
             userId: true,
           },
         },
+        location: true,
         allowList: {
           select: {
             id: true,
