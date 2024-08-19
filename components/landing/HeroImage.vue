@@ -3,12 +3,12 @@ import gsap from 'gsap';
 
 const interval = ref<any>(null);
 const images = ref([
-  'mireille_005.10.jpg',
-  'cindi_090.04.jpg',
-  'cindi_017.05.jpg',
-  'cindi_090.23.jpg',
-  'cindi_089.15.jpg',
-  'cindi_089.04.jpg',
+  'mireille_005.10.webp',
+  'cindi_090.04.webp',
+  'cindi_017.05.webp',
+  'cindi_090.23.webp',
+  'cindi_089.15.webp',
+  'cindi_089.04.webp',
 ]);
 const rotations = ref([1, 5, -1, 6, -4, 2]);
 const activeImage = ref(0);

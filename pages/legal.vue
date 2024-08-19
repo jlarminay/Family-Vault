@@ -3,9 +3,9 @@
 //   middleware: 'authorized-only',
 // });
 import VueMarkdown from 'vue-markdown-render';
-import copyright from '@/legal/copyright.md?raw';
-import privacyPolicy from '@/legal/privacy_policy.md?raw';
-import termsAndConditions from '@/legal/terms_and_conditions.md?raw';
+import copyright from '@/content/legal/copyright.md?raw';
+import privacyPolicy from '@/content/legal/privacy_policy.md?raw';
+import termsAndConditions from '@/content/legal/terms_and_conditions.md?raw';
 
 const { data: authData } = useAuth();
 const currentPage = ref<any>('copyright');

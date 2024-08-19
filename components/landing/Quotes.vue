@@ -3,7 +3,7 @@
 <template>
   <section class="tw_text-gray-600 tw_body-font">
     <div class="tw_container tw_px-5 tw_py-24 tw_mx-auto">
-      <div class="tw_xl:w-1/2 tw_lg:w-3/4 tw_w-full tw_mx-auto tw_text-center">
+      <div class="tw_xl:w-1/2 tw_w-3/4 tw_mx-auto tw_text-center">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="currentColor"
@@ -15,15 +15,18 @@
           ></path>
         </svg>
 
-        <p class="tw_leading-relaxed tw_text-xl">Look at that! That's when you still loved me!</p>
-        <span class="tw_inline-block tw_h-1 tw_w-10 tw_rounded tw_bg-primary tw_mt-8 tw_mb-6" />
+        <p class="tw_leading-relaxed tw_text-2xl tw_italic">
+          This might be the greatest product I've ever used. The insights I've gained from viewing
+          old family photos are simply astounding!
+        </p>
+        <span class="tw_inline-block tw_h-1 tw_w-10 tw_rounded tw_bg-primary tw_my-4" />
 
         <h2
-          class="tw_text-gray-900 tw_font-medium tw_title-font tw_tracking-wider tw_text-lg tw_uppercase"
+          class="tw_text-gray-900 tw_font-medium tw_title-font tw_tracking-wider tw_text-xl tw_uppercase"
         >
-          Latarrah Larminay
+          John Smith
         </h2>
-        <p class="tw_text-gray-500 tw_text-base">Older Sister</p>
+        <p class="tw_text-gray-500 tw_text-base">A Real Human</p>
       </div>
     </div>
   </section>

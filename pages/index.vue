@@ -13,7 +13,7 @@
       <LandingFeatures />
       <LandingQuotes class="tw_bg-secondary tw_bg-opacity-10" />
       <LandingGithub />
-      <LandingFooter />
+      <LandingFooter class="tw_bg-gray-50" />
     </main>
   </div>
 </template>
