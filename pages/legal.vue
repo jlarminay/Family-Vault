@@ -1,13 +1,9 @@
 <script setup lang="ts">
-// definePageMeta({
-//   middleware: 'authorized-only',
-// });
 import VueMarkdown from 'vue-markdown-render';
 import copyright from '@/content/legal/copyright.md?raw';
 import privacyPolicy from '@/content/legal/privacy_policy.md?raw';
 import termsAndConditions from '@/content/legal/terms_and_conditions.md?raw';
 
-const { data: authData } = useAuth();
 const currentPage = ref<any>('copyright');
 
 onMounted(() => {
@@ -34,22 +30,13 @@ function changePage(page: string) {
     <title>Legal | Larminay Vault</title>
   </Head>
 
-  <NuxtLayout name="app">
-    <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1000px] tw_mx-auto">
-      <h1 v-if="!!authData" class="h1">Legal</h1>
+  <main>
+    <LandingHeader />
+
+    <div class="tw_pt-[80px] tw_pb-10 sm:tw_px-6 tw_max-w-[1000px] tw_mx-auto">
+      <h1 class="h1">Legal</h1>
       <div class="tw_flex tw_flex-col sm:tw_flex-row tw_gap-4 tw_mt-6">
         <div class="tw_w-full sm:tw_w-[250px] sm:tw_min-w-[250px] tw_flex tw_flex-col tw_gap-2">
-          <q-btn
-            v-if="!authData"
-            flat
-            no-caps
-            color="dark"
-            class="tw_w-full !tw_no-underline"
-            align="left"
-            icon="o_arrow_back"
-            label="Back To Login"
-            to="/login"
-          />
           <q-btn
             v-for="option in [
               {
@@ -76,7 +63,7 @@ function changePage(page: string) {
             @click="changePage(option.code)"
           />
         </div>
-        <div>
+        <div id="page-content">
           <VueMarkdown
             :source="
               currentPage === 'copyright'
@@ -88,12 +75,12 @@ function changePage(page: string) {
           />
         </div>
       </div>
-    </main>
-  </NuxtLayout>
+    </div>
+  </main>
 </template>
 
 <style scoped lang="postcss">
-:deep(*) {
+:deep(#page-content) {
   h1 {
     @apply tw_text-2xl sm:tw_text-3xl tw_font-medium tw_font-montserrat;
     @apply tw_mb-6;

@@ -22,9 +22,6 @@ watch(
 );
 
 async function changeNumber(newNumber: number) {
-  // add delay for first load
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
   if (newNumber >= 0) slider.value.classList.remove('tw_w-0');
   else slider.value.classList.add('tw_w-0');
 
@@ -49,7 +46,7 @@ async function changeNumber(newNumber: number) {
       <div
         ref="slider"
         class="tw_flex tw_flex-col tw_justify-center tw_transition-[width] tw_duration-300"
-        style="margin-top: 0px"
+        style="margin-top: 60px"
       >
         <div class="digit">0</div>
         <div class="digit">1</div>

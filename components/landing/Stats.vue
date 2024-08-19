@@ -21,15 +21,19 @@ onMounted(async () => {
           <LandingStatsCounter label="Images" :count="stats.images" />
         </div>
         <div class="tw_p-4 sm:tw_w-1/3 tw_w-full">
+          <LandingStatsCounter label="Videos" :count="stats.videos" />
+        </div>
+        <div class="tw_p-4 sm:tw_w-1/3 tw_w-full">
           <LandingStatsCounter
             :label="`${stats.videosLength > 3600 ? 'Hours' : 'Minutes'} of Video`"
             :count="stats.videosLength > 3600 ? stats.videosLength / 3600 : stats.videosLength / 60"
           />
         </div>
-        <div class="tw_p-4 sm:tw_w-1/3 tw_w-full">
+        <!-- <div class="tw_p-4 sm:tw_w-1/3 tw_w-full">
           <LandingStatsCounter label="Views" :count="stats.views" />
-        </div>
+        </div> -->
       </div>
+      <div class="tw_text-center tw_text-xl">More are being added every day!</div>
     </div>
   </section>
 </template>
