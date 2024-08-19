@@ -1,10 +1,27 @@
 import os
-from PIL import Image
+from PIL import Image, ExifTags
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, NEXT_IMAGE_PATH
 
 def resize_and_pad_image(image_path, output_path):
-    """Resize and pad image to fit screen dimensions"""
+    """Resize, pad image to fit screen dimensions, and handle EXIF rotation."""
     with Image.open(image_path) as img:
+        # Handle EXIF orientation
+        try:
+            exif = img._getexif()
+            if exif:
+                for tag, value in exif.items():
+                    if tag in ExifTags.TAGS and ExifTags.TAGS[tag] == 'Orientation':
+                        if value == 3:
+                            img = img.rotate(180, expand=True)
+                        elif value == 6:
+                            img = img.rotate(270, expand=True)
+                        elif value == 8:
+                            img = img.rotate(90, expand=True)
+        except (AttributeError, KeyError, IndexError):
+            # Handle cases where EXIF data is missing or invalid
+            pass
+        
+        # Resize and pad image
         img_ratio = img.width / img.height
         screen_ratio = SCREEN_WIDTH / SCREEN_HEIGHT
 

@@ -8,9 +8,11 @@ def fetch_images():
     """Fetch images from API and save to JSON file"""
     try:
       # Fetch images from API
-      response = requests.get(API_URL, headers={})
+      response = requests.get(API_URL, headers={
+        'x-api-token': API_KEY
+      })
       response.raise_for_status()
-      images = response.json().images
+      images = response.json()['images']
       
       if not os.path.isfile(IMAGES_JSON_PATH):
           with open(IMAGES_JSON_PATH, 'w') as f:
