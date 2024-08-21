@@ -4,7 +4,7 @@
   <section class="tw_grid tw_grid-cols-1 tw_relative tw_overflow-hidden">
     <!-- Background Image -->
     <div
-      class="tw_bg-[url('landing/topography.svg')] tw_bg-no-repeat tw_bg-cover tw_opacity-5 tw_w-full tw_h-full tw_absolute tw_inset-0"
+      class="tw_bg-[url('/landing/topography.svg')] tw_bg-no-repeat tw_bg-cover tw_opacity-5 tw_w-full tw_h-full tw_absolute tw_inset-0"
       style="
         filter: invert(22%) sepia(76%) saturate(3727%) hue-rotate(256deg) brightness(91%)
           contrast(101%);
