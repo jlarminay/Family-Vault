@@ -2,14 +2,13 @@
 
 <template>
   <Head>
-    <title>Dashboard | Larminay Vault</title>
+    <title>Privacy Policy | Legal | Larminay Vault</title>
   </Head>
 
   <NuxtLayout name="legal">
+    <template #title>Privacy Policy</template>
     <template #default>
       <div class="markdown">
-        <h1>Privacy Policy</h1>
-
         <div id="introduction">
           <h2>Introduction</h2>
           <p>

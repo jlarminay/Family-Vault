@@ -2,14 +2,15 @@
 
 <template>
   <Head>
-    <title>Dashboard | Larminay Vault</title>
+    <Head>
+      <title>Terms and Conditions | Legal | Larminay Vault</title>
+    </Head>
   </Head>
 
   <NuxtLayout name="legal">
+    <template #title>Terms and Conditions</template>
     <template #default>
       <div class="markdown">
-        <h1>Terms and Conditions</h1>
-
         <div id="acceptance-of-terms">
           <h2>1. Acceptance of Terms</h2>
           <p>

@@ -2,16 +2,8 @@
 const route = useRoute();
 const menuOptions = ref([
   {
-    title: 'Terms and Conditions',
-    code: '/legal/terms-and-conditions',
-  },
-  {
-    title: 'Privacy Policy',
-    code: '/legal/privacy-policy',
-  },
-  {
-    title: 'Copyright',
-    code: '/legal/copyright',
+    title: 'Introduction',
+    code: '/process',
   },
 ]);
 </script>
@@ -19,7 +11,7 @@ const menuOptions = ref([
 <template>
   <NuxtLayout name="documentation">
     <template #left-column>
-      <p class="tw_uppercase tw_text-gray-500 tw_font-bold tw_pb-2">Legal</p>
+      <p class="tw_uppercase tw_text-gray-500 tw_font-bold tw_pb-2">Process</p>
       <q-btn
         v-for="option in menuOptions"
         :key="option.code"
