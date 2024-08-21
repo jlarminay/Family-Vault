@@ -9,10 +9,6 @@ fi
 # List of packages to check and install
 packages=("libwebp-dev" "fbi" "python3" "python3-pip")
 
-# Update package list
-echo "Updating package list..."
-apt-get update
-
 # Loop through the packages and install if not already installed
 for pkg in "${packages[@]}"; do
   if ! dpkg -l | grep -qw $pkg; then

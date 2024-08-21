@@ -93,23 +93,32 @@ function handleSearch() {
           <!-- Dropdown Menu -->
           <q-menu class="tw_min-w-[160px]" :offset="[0, 4]">
             <q-list>
+              <q-item clickable v-close-popup to="/">
+                <q-item-section avatar>
+                  <q-icon name="o_house" />
+                </q-item-section>
+                <q-item-section>Return Home</q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup to="/process">
+                <q-item-section avatar>
+                  <q-icon name="o_construction" />
+                </q-item-section>
+                <q-item-section>Process</q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup to="/legal">
+                <q-item-section avatar>
+                  <q-icon name="o_policy" />
+                </q-item-section>
+                <q-item-section>Legal</q-item-section>
+              </q-item>
+
+              <q-separator />
               <q-item clickable v-close-popup to="/account">
                 <q-item-section avatar>
                   <q-icon name="o_face" />
                 </q-item-section>
                 <q-item-section>My Profile</q-item-section>
               </q-item>
-              <!-- <q-item
-                v-if="authData?.role === 'admin'"
-                clickable
-                v-close-popup
-                @click="itemStore.showUploadModal = true"
-              >
-                <q-item-section avatar>
-                  <q-icon name="o_cloud_upload" />
-                </q-item-section>
-                <q-item-section>Upload Video</q-item-section>
-              </q-item> -->
 
               <q-separator />
               <q-item
@@ -128,12 +137,6 @@ function handleSearch() {
                   <q-icon name="o_query_stats" />
                 </q-item-section>
                 <q-item-section>Stats</q-item-section>
-              </q-item>
-              <q-item clickable v-close-popup to="/legal">
-                <q-item-section avatar>
-                  <q-icon name="o_policy" />
-                </q-item-section>
-                <q-item-section>Legal</q-item-section>
               </q-item>
               <q-item v-if="authData?.role === 'admin'" clickable v-close-popup to="/admin">
                 <q-item-section avatar>

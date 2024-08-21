@@ -1,4 +1,4 @@
-import { protectedProcedure, router } from '@/server/trpc/trpc';
+import { protectedProcedure, publicProcedure, router } from '@/server/trpc/trpc';
 import dayjs from 'dayjs';
 
 export const statsRouter = router({
@@ -127,6 +127,88 @@ export const statsRouter = router({
         lng: lng,
         count: location._count.item,
       });
+    }
+
+    return results;
+  }),
+  getPublic: publicProcedure.query(async ({ ctx }) => {
+    // get all items
+    const items = await ctx.prisma.item.findMany({
+      include: {
+        location: true,
+      },
+      orderBy: {
+        takenAt: 'asc',
+      },
+    });
+
+    // define results output
+    const results = {
+      views: 0,
+      videos: 0,
+      videosLength: 0,
+      images: 0,
+    };
+
+    for (const item of items) {
+      // update results
+      results.views += item.view;
+
+      // update videos and images count
+      if (item.type === 'video') {
+        results.videos += 1;
+        results.videosLength += Math.floor((item.metadata as any)?.duration || 0);
+      } else {
+        results.images += 1;
+      }
+    }
+
+    // round video count
+    if (results.videos > 1000) {
+      // round to closest 1000
+      results.videos = Math.floor(results.videos / 1000) * 1000;
+    } else if (results.videos > 100) {
+      // round to closest 100
+      results.videos = Math.floor(results.videos / 100) * 100;
+    } else if (results.videos > 10) {
+      // round to closest 10
+      results.videos = Math.floor(results.videos / 10) * 10;
+    }
+
+    // round image count
+    if (results.images > 2000) {
+      // round to closest 1000
+      results.images = Math.floor(results.images / 1000) * 1000;
+    } else if (results.images > 200) {
+      // round to closest 100
+      results.images = Math.floor(results.images / 100) * 100;
+    } else if (results.images > 20) {
+      // round to closest 10
+      results.images = Math.floor(results.images / 10) * 10;
+    }
+
+    // round views count
+    if (results.views > 1000000) {
+      // round to closest million
+      results.views = Math.floor(results.views / 1000000) * 1000000;
+    } else if (results.views > 2000) {
+      // round to closest thousand
+      results.views = Math.floor(results.views / 1000) * 1000;
+    } else if (results.views > 200) {
+      // round to closest hundred
+      results.views = Math.floor(results.views / 100) * 100;
+    } else if (results.views > 20) {
+      // round to closest ten
+      results.views = Math.floor(results.views / 10) * 10;
+    }
+
+    // round video length
+    if (results.videosLength > 3600) {
+      // round down closest hour
+      results.videosLength = Math.floor(results.videosLength / 3600) * 3600;
+    } else if (results.videosLength > 60) {
+      // round to closest minute
+      results.videosLength = Math.floor(results.videosLength / 60) * 60;
     }
 
     return results;

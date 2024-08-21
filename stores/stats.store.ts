@@ -10,5 +10,9 @@ export const useStatsStore = defineStore('stats', {
       const { $trpc } = useNuxtApp();
       return await $trpc.stats.getAll.query();
     },
+    async getPublic() {
+      const { $trpc } = useNuxtApp();
+      return await $trpc.stats.getPublic.query();
+    },
   },
 });
