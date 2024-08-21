@@ -166,50 +166,49 @@ export const statsRouter = router({
     // round video count
     if (results.videos > 1000) {
       // round to closest 1000
-      results.videos = Math.round(results.videos / 1000) * 1000;
+      results.videos = Math.floor(results.videos / 1000) * 1000;
     } else if (results.videos > 100) {
       // round to closest 100
-      results.videos = Math.round(results.videos / 100) * 100;
+      results.videos = Math.floor(results.videos / 100) * 100;
     } else if (results.videos > 10) {
       // round to closest 10
-      results.videos = Math.round(results.videos / 10) * 10;
+      results.videos = Math.floor(results.videos / 10) * 10;
     }
 
     // round image count
-    if (results.images > 1000) {
+    if (results.images > 2000) {
       // round to closest 1000
-      results.images = Math.round(results.images / 1000) * 1000;
-    } else if (results.images > 100) {
+      results.images = Math.floor(results.images / 1000) * 1000;
+    } else if (results.images > 200) {
       // round to closest 100
-      results.images = Math.round(results.images / 100) * 100;
-    } else if (results.images > 10) {
+      results.images = Math.floor(results.images / 100) * 100;
+    } else if (results.images > 20) {
       // round to closest 10
-      results.images = Math.round(results.images / 10) * 10;
+      results.images = Math.floor(results.images / 10) * 10;
     }
 
     // round views count
     if (results.views > 1000000) {
       // round to closest million
-      results.views = Math.round(results.views / 1000000) * 1000000;
-    } else if (results.views > 1000) {
+      results.views = Math.floor(results.views / 1000000) * 1000000;
+    } else if (results.views > 2000) {
       // round to closest thousand
-      results.views = Math.round(results.views / 1000) * 1000;
-    } else if (results.views > 100) {
+      results.views = Math.floor(results.views / 1000) * 1000;
+    } else if (results.views > 200) {
       // round to closest hundred
-      results.views = Math.round(results.views / 100) * 100;
-    } else if (results.views > 10) {
+      results.views = Math.floor(results.views / 100) * 100;
+    } else if (results.views > 20) {
       // round to closest ten
-      results.views = Math.round(results.views / 10) * 10;
+      results.views = Math.floor(results.views / 10) * 10;
     }
 
     // round video length
-    results.videosLength = 0.6 * 3600 + 200;
     if (results.videosLength > 3600) {
-      // round to closest hour
-      results.videosLength = Math.round(results.videosLength / 3600) * 3600;
+      // round down closest hour
+      results.videosLength = Math.floor(results.videosLength / 3600) * 3600;
     } else if (results.videosLength > 60) {
       // round to closest minute
-      results.videosLength = Math.round(results.videosLength / 60) * 60;
+      results.videosLength = Math.floor(results.videosLength / 60) * 60;
     }
 
     return results;

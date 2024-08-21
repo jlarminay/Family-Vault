@@ -28,3 +28,34 @@
     transform: scale3d(1, 1, 1);
   }
 }
+
+/* ----------------------------------- */
+/* Markdown */
+.markdown {
+  h1 {
+    @apply tw_text-2xl sm:tw_text-3xl tw_font-medium tw_font-montserrat;
+    @apply tw_mb-6;
+  }
+  h2 {
+    @apply tw_text-xl sm:tw_text-2xl tw_font-medium tw_font-montserrat;
+    @apply tw_mt-12 tw_mb-2;
+  }
+  h3 {
+    @apply tw_text-lg sm:tw_text-xl tw_font-medium tw_font-montserrat;
+    @apply tw_mt-6 tw_mb-2;
+  }
+  p,
+  li {
+    @apply tw_text-dark tw_text-base tw_font-maven-pro tw_font-normal tw_leading-tight;
+    @apply tw_mb-2;
+  }
+  ul {
+    @apply tw_list-disc tw_pl-6 tw_mb-2;
+  }
+  a {
+    @apply tw_text-blue-500 tw_underline hover:tw_opacity-80 tw_transition-opacity tw_duration-300 tw_cursor-pointer;
+  }
+  code {
+    @apply tw_text-sm tw_font-mono tw_bg-gray-100 tw_rounded tw_break-all tw_block tw_py-2 tw_px-4 tw_border-l-4 tw_border-primary tw_mb-4;
+  }
+}

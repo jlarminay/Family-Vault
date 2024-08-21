@@ -60,7 +60,7 @@ onBeforeUnmount(() => {
       `"
     >
       <div class="tw_aspect-[3/2] tw_border-[12px] tw_border-white tw_overflow-hidden">
-        <img :src="`images/${image}`" class="tw_object-cover" />
+        <img :src="`landing/${image}`" class="tw_object-cover" />
       </div>
     </div>
 

@@ -1,113 +1,66 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const features = ref([
+  {
+    title: 'Web App',
+    description:
+      'Built with Nuxt.js, the web app is a full-stack application that allows users to access a huge collection of photos and videos from any device. The app is designed to be responsive, user-friendly, and highly accessible.',
+    image: '/landing/web_app.webp',
+    blob: '/landing/blob_1.svg',
+  },
+  {
+    title: 'Photo Gallery',
+    description:
+      'Running on a Raspberry Pi, the photo gallery is a self-hosted solution that auto pulls images from the server to ensure the latest content is always available. This desk sized device is perfect for displaying photos in your home or office.',
+    image: '/landing/photo-album.webp',
+    blob: '/landing/blob_2.svg',
+  },
+  {
+    title: 'The Process',
+    description:
+      'The full process of organizing, scanning, editing, and uploading photos and videos is quite the task. This project is a labor of love and a way to preserve the past for future generations.',
+    image: '/landing/all_formats.webp',
+    blob: '/landing/blob_3.svg',
+  },
+]);
+</script>
 
 <template>
   <section class="tw_text-gray-600 tw_body-font">
     <div class="tw_container tw_px-5 tw_py-24 tw_mx-auto">
       <!-- Web App -->
       <div
-        class="tw_flex tw_items-center lg:tw_w-3/5 tw_mx-auto tw_pb-14 tw_mb-14 sm:tw_flex-row tw_flex-col"
+        v-for="(feature, i) in features"
+        :key="i"
+        class="tw_flex tw_items-center lg:tw_w-4/5 tw_mx-auto tw_pb-14 tw_mb-14 last:tw_mb-0 last:pb-0 sm:tw_flex-row tw_flex-col"
       >
         <div
-          class="sm:tw_w-32 sm:tw_h-32 tw_h-20 tw_w-20 sm:tw_mr-10 tw_inline-flex tw_items-center tw_justify-center tw_rounded-full tw_bg-indigo-100 tw_text-indigo-500 tw_flex-shrink-0"
+          class="tw_relative sm:tw_w-80 sm:tw_h-80 tw_h-40 tw_w-60 tw_inline-flex tw_items-center tw_justify-center tw_rounded-full tw_flex-shrink-0"
+          :class="`${i % 2 === 0 ? 'sm:tw_mr-10' : 'sm:tw_ml-10 sm:tw_order-last'}`"
         >
-          <svg
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            class="sm:tw_w-16 sm:tw_h-16 tw_w-10 tw_h-10"
-            viewBox="0 0 24 24"
-            data-darkreader-inline-stroke=""
-            style="--darkreader-inline-stroke: currentColor"
-          >
-            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-          </svg>
-        </div>
-        <div class="tw_flex-grow sm:tw_text-left tw_text-center tw_mt-6 sm:tw_mt-0">
-          <h2 class="h1">Web App</h2>
-          <p class="tw_text-lg">
-            Built with Nuxt.js, the web app is a full-stack application that allows users to access
-            a huge collection of photos and videos from any device. The app is designed to be
-            responsive, user-friendly. and highly accessible.
-          </p>
-        </div>
-      </div>
-
-      <!-- Photo Gallery -->
-      <div
-        class="tw_flex tw_items-center lg:tw_w-3/5 tw_mx-auto tw_pb-14 tw_mb-14 sm:tw_flex-row tw_flex-col"
-      >
-        <div class="tw_flex-grow sm:tw_text-left tw_text-center tw_mt-6 sm:tw_mt-0">
-          <h2 class="h1">Photo Gallery</h2>
-          <p class="tw_text-lg">
-            Running on a Raspberry Pi, the photo gallery is a self-hosted solution that auto pulls
-            images from the server to ensure the latest content is always available. This desk sized
-            device is perfect for displaying photos in your home or office.
-          </p>
-        </div>
-        <div
-          class="sm:tw_w-32 sm:tw_order-none tw_order-first sm:tw_h-32 tw_h-20 tw_w-20 sm:tw_ml-10 tw_inline-flex tw_items-center tw_justify-center tw_rounded-full tw_bg-indigo-100 tw_text-indigo-500 tw_flex-shrink-0"
-        >
-          <svg
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            class="sm:tw_w-16 sm:tw_h-16 tw_w-10 tw_h-10"
-            viewBox="0 0 24 24"
-            data-darkreader-inline-stroke=""
-            style="--darkreader-inline-stroke: currentColor"
-          >
-            <circle cx="6" cy="6" r="3"></circle>
-            <circle cx="6" cy="18" r="3"></circle>
-            <path d="M20 4L8.12 15.88M14.47 14.48L20 20M8.12 8.12L12 12"></path>
-          </svg>
-        </div>
-      </div>
-
-      <!-- Process -->
-      <div class="tw_flex tw_items-center lg:tw_w-3/5 tw_mx-auto sm:tw_flex-row tw_flex-col">
-        <div
-          class="sm:tw_w-32 sm:tw_h-32 tw_h-20 tw_w-20 sm:tw_mr-10 tw_inline-flex tw_items-center tw_justify-center tw_rounded-full tw_bg-indigo-100 tw_text-indigo-500 tw_flex-shrink-0"
-        >
-          <svg
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            class="sm:tw_w-16 sm:tw_h-16 tw_w-10 tw_h-10"
-            viewBox="0 0 24 24"
-            data-darkreader-inline-stroke=""
-            style="--darkreader-inline-stroke: currentColor"
-          >
-            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-          </svg>
-        </div>
-        <div class="tw_flex-grow sm:tw_text-left tw_text-center tw_mt-6 sm:tw_mt-0">
-          <h2 class="h1">The Process</h2>
-          <p class="tw_text-lg">
-            The full process of organizing, scanning, editing, and uploading photos and videos is
-            quite the task. This project is a labor of love and a way to preserve the past for
-            future generations.
-          </p>
-          <p class="tw_text-lg">
-            I have documented the entire process to hopefully inspire others to do the same.
-          </p>
-          <q-btn
-            label="Read More"
-            color="primary"
-            unelevated
-            no-caps
-            to="/process"
-            class="tw_my-4"
+          <img
+            :src="feature.blob"
+            class="tw_absolute tw_scale-[1.7] tw_opacity-20 tw_stroke-primary"
+            :svg-color="i % 2 === 0 ? 'primary' : 'secondary'"
           />
+          <img :src="feature.image" class="tw_relative" />
+        </div>
+
+        <div class="tw_relative tw_flex-grow sm:tw_text-left tw_text-center tw_mt-6 sm:tw_mt-0">
+          <h2 class="h1">{{ feature.title }}</h2>
+          <p class="tw_text-lg">
+            {{ feature.description }}
+          </p>
         </div>
       </div>
     </div>
   </section>
 </template>
 
-<style scoped lang="postcss"></style>
+<style scoped lang="postcss">
+img[svg-color='primary'] {
+  filter: invert(27%) sepia(84%) saturate(6733%) hue-rotate(242deg) brightness(88%) contrast(102%);
+}
+img[svg-color='secondary'] {
+  filter: invert(45%) sepia(79%) saturate(3889%) hue-rotate(329deg) brightness(96%) contrast(102%);
+}
+</style>

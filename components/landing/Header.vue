@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { on } from 'events';
+const { data: authData } = useAuth();
 
-// watch for scroll event
-// if not at top of page, add shadow to header
 const headerBg = ref(false);
 
 onMounted(() => {
@@ -49,7 +47,7 @@ function scrollToTop() {
         class="md:tw_ml-auto tw_flex tw_flex-wrap tw_items-center tw_text-base tw_justify-center tw_gap-2"
       >
         <q-btn flat no-caps label="Process" color="primary" />
-        <q-btn flat no-caps label="Legal" color="primary" to="/legal" />
+        <q-btn flat no-caps label="Legal" color="primary" to="/legal/terms-and-conditions" />
         <q-btn
           flat
           no-caps
@@ -57,7 +55,8 @@ function scrollToTop() {
           color="primary"
           href="https://github.com/jlarminay/Larminay-Vault"
         />
-        <q-btn unelevated no-caps label="Login" color="primary" to="/login" />
+        <q-btn v-if="!authData" unelevated no-caps label="Login" color="primary" to="/login" />
+        <q-btn v-else unelevated no-caps label="App Dashboard" color="primary" to="/dashboard" />
       </nav>
     </div>
   </header>

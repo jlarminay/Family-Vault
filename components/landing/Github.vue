@@ -7,7 +7,7 @@
       <p class="tw_text-xl">
         The source code for the Larminay Vault is available on Github. Feel free to clone the
         repository and make any changes you see fit. If you have any questions or need help, please
-        reach out to me on Github.
+        reach out to me on Github or by email.
       </p>
       <q-btn
         label="View on Github"
