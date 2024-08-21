@@ -1,12 +1,12 @@
 <script setup lang="ts">
 // redirect to the first child page
 const router = useRouter();
-router.push('/process/introduction');
+router.push('/legal/terms-and-conditions');
 </script>
 
 <template>
   <Head>
-    <title>Process | Larminay Vault</title>
+    <title>Legal | Larminay Vault</title>
   </Head>
 </template>
 
