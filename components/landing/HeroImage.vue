@@ -53,7 +53,7 @@ onBeforeUnmount(() => {
     <div
       v-for="(image, i) in images"
       :key="i"
-      class="image-wrapper tw_absolute tw_border tw_border-gray-300 tw_rounded-lg tw_overflow-hidden"
+      class="image-wrapper tw_absolute tw_border-2 tw_bg-gray-200 tw_border-gray-200 tw_rounded-lg tw_overflow-hidden tw_shadow-md"
       :style="`
       z-index: ${i < activeImage ? activeImage - i - 1 : images.length - i + activeImage};
       transform:rotate(${rotations[i]}deg);

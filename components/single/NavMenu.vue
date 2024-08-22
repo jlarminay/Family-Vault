@@ -2,7 +2,6 @@
 const { data: authData } = useAuth();
 const route = useRoute();
 
-const itemStore = useItemStore();
 const search = ref<string>('');
 const showSearchInput = ref(false);
 
@@ -18,13 +17,17 @@ function handleSearch() {
   if (search.value === '') return navigateTo('/dashboard');
   navigateTo(`/dashboard?search=${search.value}`);
 }
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 </script>
 
 <template>
   <nav
-    class="tw_py-1 sm:tw_py-2 tw_px-1 sm:tw_px-6 tw_border-b tw_sticky tw_top-0 tw_bg-white tw_z-10"
+    class="tw_py-1 sm:tw_py-2 tw_px-1 sm:tw_px-2 tw_border-b tw_sticky tw_top-0 tw_bg-white tw_z-10"
   >
-    <div class="tw_flex tw_justify-between tw_items-center tw_h-[52px]">
+    <div class="tw_container tw_mx-auto tw_flex tw_justify-between tw_items-center tw_h-[52px]">
       <!-- Logo -->
       <div class="sm:tw_min-w-[250px]">
         <q-btn
@@ -33,6 +36,7 @@ function handleSearch() {
           flat
           size="20px"
           class="tw_group tw_text-black tw_font-montserrat tw_font-bold"
+          @click="scrollToTop"
         >
           <img
             src="/logo/logo.svg"
@@ -99,11 +103,11 @@ function handleSearch() {
                 </q-item-section>
                 <q-item-section>Return Home</q-item-section>
               </q-item>
-              <q-item clickable v-close-popup to="/process">
+              <q-item clickable v-close-popup to="/document">
                 <q-item-section avatar>
                   <q-icon name="o_construction" />
                 </q-item-section>
-                <q-item-section>Process</q-item-section>
+                <q-item-section>Document</q-item-section>
               </q-item>
               <q-item clickable v-close-popup to="/legal">
                 <q-item-section avatar>

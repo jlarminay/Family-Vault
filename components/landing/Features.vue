@@ -20,6 +20,7 @@ const features = ref([
       'The full process of organizing, scanning, editing, and uploading photos and videos is quite the task. This project is a labor of love and a way to preserve the past for future generations.',
     image: '/landing/all_formats.webp',
     blob: '/landing/blob_3.svg',
+    link: '/document',
   },
 ]);
 </script>
@@ -39,8 +40,8 @@ const features = ref([
         >
           <img
             :src="feature.blob"
-            class="tw_absolute tw_scale-[1.7] tw_opacity-20 tw_stroke-primary"
-            :svg-color="i % 2 === 0 ? 'primary' : 'secondary'"
+            class="tw_absolute tw_opacity-20 tw_stroke-primary"
+            :svg-color="i % 2 === 0 ? 'secondary' : 'primary'"
           />
           <img :src="feature.image" class="tw_relative" />
         </div>
@@ -50,6 +51,15 @@ const features = ref([
           <p class="tw_text-lg">
             {{ feature.description }}
           </p>
+          <q-btn
+            v-if="feature.link"
+            no-caps
+            unelevated
+            label="Learn More"
+            color="primary"
+            class="tw_mt-4"
+            :to="feature.link"
+          />
         </div>
       </div>
     </div>
@@ -59,8 +69,18 @@ const features = ref([
 <style scoped lang="postcss">
 img[svg-color='primary'] {
   filter: invert(27%) sepia(84%) saturate(6733%) hue-rotate(242deg) brightness(88%) contrast(102%);
+  animation: blob 120s infinite linear;
 }
 img[svg-color='secondary'] {
   filter: invert(45%) sepia(79%) saturate(3889%) hue-rotate(329deg) brightness(96%) contrast(102%);
+  animation: blob 120s infinite linear reverse;
+}
+@keyframes blob {
+  0% {
+    transform: rotate(0deg) scale(1.7);
+  }
+  100% {
+    transform: rotate(360deg) scale(1.7);
+  }
 }
 </style>

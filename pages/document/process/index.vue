@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // redirect to the first child page
 const router = useRouter();
-router.push('/process/introduction');
+router.push('/document/process/introduction');
 </script>
 
 <template>

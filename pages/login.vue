@@ -28,8 +28,12 @@ onMounted(() => {
         class="tw_relative tw_bg-white tw_p-8 sm:tw_p-12 tw_rounded-lg tw_w-[450px] tw_max-w-[90%] tw_text-center"
       >
         <q-btn round flat class="tw_absolute tw_top-4 tw_left-4" icon="o_arrow_back" to="/" />
-        <p class="tw_mb-8 tw_px-8 tw_pb-2 tw_text-3xl tw_border-b tw_border-b-dark tw_inline-block">
+        <p class="tw_mb-4 tw_px-8 tw_pb-2 tw_text-3xl tw_border-b tw_border-b-dark tw_inline-block">
           Login
+        </p>
+        <p class="tw_mb-4">
+          This app is invite only, you can request access from
+          <a class="link" href="mailto:j.larminay@gmail.com">j.larminay@gmail.com</a>
         </p>
         <div class="tw_flex tw_flex-col tw_gap-2">
           <LoginButtonTesting v-if="isOnTestingServer()" />
@@ -56,12 +60,11 @@ onMounted(() => {
           <p class="tw_mt-4">
             By using the app, you agree to the
             <br />
-            <NuxtLink class="link" to="/legal/terms-and-conditions">Terms and Conditions</NuxtLink>
-            and <NuxtLink class="link" to="/legal/privacy-policy">Privacy Policy</NuxtLink>.
-          </p>
-          <p class="tw_text-sm tw_mt-2">
-            Request access from
-            <a class="link" href="mailto:j.larminay@gmail.com">j.larminay@gmail.com</a>
+            <NuxtLink class="link" to="/document/legal/terms-and-conditions"
+              >Terms and Conditions</NuxtLink
+            >
+            and
+            <NuxtLink class="link" to="/document/legal/privacy-policy">Privacy Policy</NuxtLink>.
           </p>
         </div>
       </div>
