@@ -27,7 +27,7 @@ const features = ref([
 
 <template>
   <section class="tw_text-gray-600 tw_body-font">
-    <div class="tw_container tw_px-5 tw_py-24 tw_mx-auto">
+    <div class="tw_container tw_px-5 tw_py-24 tw_mx-auto tw_overflow-hidden">
       <!-- Web App -->
       <div
         v-for="(feature, i) in features"
