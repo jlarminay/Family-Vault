@@ -107,7 +107,7 @@ function scrollToTop() {
                 <q-item-section avatar>
                   <q-icon name="o_construction" />
                 </q-item-section>
-                <q-item-section>Document</q-item-section>
+                <q-item-section>Documents</q-item-section>
               </q-item>
               <q-item clickable v-close-popup to="/legal">
                 <q-item-section avatar>

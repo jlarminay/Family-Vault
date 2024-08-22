@@ -49,7 +49,7 @@ function scrollToTop() {
           v-if="$q.screen.width > 770"
           flat
           no-caps
-          label="Document"
+          label="Documents"
           color="primary"
           to="/document"
         />
@@ -73,7 +73,7 @@ function scrollToTop() {
           <q-menu class="tw_min-w-[160px]" :offset="[0, 4]">
             <q-list>
               <q-item clickable v-ripple to="/document">
-                <q-item-section>Document</q-item-section>
+                <q-item-section>Documents</q-item-section>
               </q-item>
               <q-item clickable v-ripple to="/document/legal">
                 <q-item-section>Legal</q-item-section>
