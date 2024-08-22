@@ -5,10 +5,11 @@
     <title>Privacy Policy | Legal | Larminay Vault</title>
   </Head>
 
-  <NuxtLayout name="legal">
-    <template #title>Privacy Policy</template>
+  <NuxtLayout name="document">
     <template #default>
       <div class="markdown">
+        <h1 class="h1 tw_mb-12">Privacy Policy</h1>
+
         <div id="introduction">
           <h2>Introduction</h2>
           <p>

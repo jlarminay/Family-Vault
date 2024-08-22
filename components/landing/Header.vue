@@ -30,7 +30,7 @@ function scrollToTop() {
     :class="{ 'tw_bg-opacity-0': !headerBg, 'tw_bg-opacity-100': headerBg }"
   >
     <div
-      class="tw_container tw_mx-auto tw_flex tw_flex-wrap tw_py-1 sm:tw_py-2 tw_px-1 sm:tw_px-6 tw_flex-col md:tw_flex-row tw_items-center"
+      class="tw_container tw_mx-auto tw_flex tw_py-1 sm:tw_py-2 tw_px-1 sm:tw_px-6 tw_flex-row tw_justify-between tw_items-center"
     >
       <q-btn
         to="/"
@@ -43,20 +43,66 @@ function scrollToTop() {
         <img src="/logo/logo.svg" class="tw_w-7 tw_mr-2" />
         Larminay Vault
       </q-btn>
-      <nav
-        class="md:tw_ml-auto tw_flex tw_flex-wrap tw_items-center tw_text-base tw_justify-center tw_gap-2"
-      >
-        <q-btn flat no-caps label="Process" color="primary" to="/process" />
-        <q-btn flat no-caps label="Legal" color="primary" to="/legal" />
+
+      <nav class="tw_flex tw_flex-wrap tw_items-center tw_text-base tw_justify-center tw_gap-2">
         <q-btn
+          v-if="$q.screen.width > 770"
+          flat
+          no-caps
+          label="Documents"
+          color="primary"
+          to="/document"
+        />
+        <q-btn
+          v-if="$q.screen.width > 770"
           flat
           no-caps
           label="Github"
           color="primary"
           href="https://github.com/jlarminay/Larminay-Vault"
         />
-        <q-btn v-if="!authData" unelevated no-caps label="Login" color="primary" to="/login" />
-        <q-btn v-else unelevated no-caps label="App Dashboard" color="primary" to="/dashboard" />
+
+        <q-btn
+          v-if="$q.screen.width <= 770"
+          flat
+          no-caps
+          round
+          icon="o_menu"
+          class="tw_text-gray-800"
+        >
+          <q-menu class="tw_min-w-[160px]" :offset="[0, 4]">
+            <q-list>
+              <q-item clickable v-ripple to="/document">
+                <q-item-section>Documents</q-item-section>
+              </q-item>
+              <q-item clickable v-ripple to="/document/legal">
+                <q-item-section>Legal</q-item-section>
+              </q-item>
+              <q-item clickable v-ripple href="https://github.com/jlarminay/Larminay-Vault">
+                <q-item-section>Github</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
+
+        <q-btn
+          v-if="!authData"
+          unelevated
+          no-caps
+          label="Login"
+          color="primary"
+          to="/login"
+          class="tw_mr-4"
+        />
+        <q-btn
+          v-else
+          unelevated
+          no-caps
+          :label="$q.screen.width > 500 ? 'App Dashboard' : 'Dashboard'"
+          color="primary"
+          to="/dashboard"
+          class="tw_mr-4"
+        />
       </nav>
     </div>
   </header>

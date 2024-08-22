@@ -5,10 +5,11 @@
     <title>Copyright | Legal | Larminay Vault</title>
   </Head>
 
-  <NuxtLayout name="legal">
-    <template #title>Copyright</template>
+  <NuxtLayout name="document">
     <template #default>
       <div class="markdown">
+        <h1 class="h1 tw_mb-12">Copyright</h1>
+
         <p>Copyright © 2024 Josh Larminay</p>
 
         <p>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // redirect to the first child page
 const router = useRouter();
-router.push('/legal/terms-and-conditions');
+router.push('/document/legal/terms-and-conditions');
 </script>
 
 <template>

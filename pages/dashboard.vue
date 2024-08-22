@@ -166,9 +166,9 @@ async function refreshLikes() {
         <div
           class="tw_border-2 tw_rounded tw_border-blue-200 tw_bg-blue-50 tw_px-2 tw_py-1 tw_mb-4 tw_text-base tw_text-center"
         >
-          The system is under maintenance. Some features may not work as expected.
+          The system is a work in progress. There may be bugs or missing features.
           <br />
-          We apologize for the inconvenience.
+          We appreciate your patience and understanding.
         </div>
 
         <div class="tw_flex tw_justify-between sm:tw_justify-start tw_items-center sm:tw_gap-6">

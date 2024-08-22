@@ -7,10 +7,11 @@
     </Head>
   </Head>
 
-  <NuxtLayout name="legal">
-    <template #title>Terms and Conditions</template>
+  <NuxtLayout name="document">
     <template #default>
       <div class="markdown">
+        <h1 class="h1 tw_mb-12">Terms and Conditions</h1>
+
         <div id="acceptance-of-terms">
           <h2>1. Acceptance of Terms</h2>
           <p>
