@@ -26,7 +26,7 @@
       <img
         src="/landing/github.svg"
         alt="Github"
-        class="tw_w-[200px] sm:tw_w-[300px] tw_scale-[1] tw_opacity-40 sm:tw_opacity-60 tw_mr-[40%] tw_rotate-[12deg]"
+        class="bounce tw_w-[200px] sm:tw_w-[300px] tw_scale-[1] tw_opacity-40 sm:tw_opacity-60 tw_mr-[40%]"
       />
       <div
         class="circular tw_absolute tw_w-[200px] sm:tw_w-[300px] tw_h-[300px] tw_scale-[4] tw_opacity-10 sm:tw_opacity-20 tw_z-[-1] tw_mr-[40%]"
@@ -39,5 +39,19 @@
 .circular {
   background: rgb(131, 61, 235);
   background: radial-gradient(circle, rgba(131, 61, 235, 1) 0%, rgba(131, 61, 235, 0) 50%);
+}
+.bounce {
+  animation: bounce 10s infinite ease-in-out;
+}
+@keyframes bounce {
+  0% {
+    transform: translateY(-10px);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(-10px);
+  }
 }
 </style>
