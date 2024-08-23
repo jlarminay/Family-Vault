@@ -18,15 +18,15 @@ onMounted(async () => {
     <div class="tw_container tw_px-5 tw_py-24 tw_mx-auto">
       <div class="tw_flex tw_flex-wrap -tw_m-4 tw_text-center">
         <div class="tw_p-4 sm:tw_w-1/3 tw_w-full">
-          <LandingStatsCounter label="Images" :count="stats.images" />
+          <LandingStatsCounter label="Images" :count="stats.images || 0" />
         </div>
         <div class="tw_p-4 sm:tw_w-1/3 tw_w-full">
-          <LandingStatsCounter label="Videos" :count="stats.videos" />
+          <LandingStatsCounter label="Videos" :count="stats.videos || 0" />
         </div>
         <div class="tw_p-4 sm:tw_w-1/3 tw_w-full">
           <LandingStatsCounter
             :label="`${stats.videosLength > 3600 ? 'Hours' : 'Minutes'} of Video`"
-            :count="stats.videosLength > 3600 ? stats.videosLength / 3600 : stats.videosLength / 60"
+            :count="(stats.videosLength > 3600 ? stats.videosLength / 3600 : stats.videosLength / 60) || 0"
           />
         </div>
         <!-- <div class="tw_p-4 sm:tw_w-1/3 tw_w-full">
