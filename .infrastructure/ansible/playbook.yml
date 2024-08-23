@@ -62,6 +62,7 @@
           - yasm
           - zlib1g-dev
           - webp
+          - poppler-utils
         state: present
         update_cache: yes
 

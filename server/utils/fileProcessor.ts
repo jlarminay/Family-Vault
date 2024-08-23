@@ -2,7 +2,6 @@ import shell from 'shelljs';
 import fs from 'fs';
 import { resolve } from 'path';
 import sizeOf from 'image-size';
-import { pdfToPng } from 'pdf-to-png-converter';
 
 export default {
   video: {
@@ -199,16 +198,9 @@ export default {
         newPath = resolve(localPath);
       }
 
-      // get thumbnail
-      await pdfToPng(newPath, {
-        outputFolder: targetDir,
-        outputFileMask: `${name}.thumbnail.jpg`,
-        pagesToProcess: [1],
-      });
-
       // create thumbnail
       shell.exec(
-        `ffmpeg -i "${targetDir}/${name}.thumbnail.jpg_page_1.png" -vf "scale=200:200:force_original_aspect_ratio=increase" "${targetDir}/${name}.thumbnail.jpg"`,
+        `pdftoppm -jpeg -f 1 -l 1 -scale-to 200 "${targetDir}/${name}" "${targetDir}/${name}.thumbnail.jpg"`,
         {
           silent: true,
         },
