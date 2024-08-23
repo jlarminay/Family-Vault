@@ -156,6 +156,52 @@ export async function checkFileChanges(
       fileProcessor.image.delete(newImageThumbnail.name);
       count++;
     }
+    // if document
+    else if (file.contentType.startsWith('application/pdf')) {
+      // get metadata
+      const documentName = file.key.split('/').pop() || '';
+      const documentMetadata = await fileProcessor.pdf.getMetadata({
+        name: documentName,
+        path: file.fullPath,
+      });
+
+      // thumbnail
+      const newDocumentThumbnail = await fileProcessor.pdf.getThumbnail({
+        name: documentName,
+        path: file.fullPath,
+      });
+      await s3Instance.upload({
+        targetPath: file.key.replace(documentName, newDocumentThumbnail.name),
+        localPath: newDocumentThumbnail.path,
+      });
+
+      if (!updateThumbnailOnly) {
+        // insert file into db
+        await prisma.item.create({
+          data: {
+            // item data
+            description: '',
+            people: '',
+            dateEstimate: true,
+            takenAt: dayjs().toISOString().split('T')[0],
+            type: 'document',
+            // file data
+            name: documentName,
+            path: file.fullPath,
+            size: file.size.toString(),
+            metadata: documentMetadata,
+            // privacy
+            published: 'public',
+            // owner
+            owner: { connect: { email: 'j.larminay@gmail.com' } },
+          },
+        });
+      }
+
+      // cleanup
+      fileProcessor.pdf.delete(documentName);
+      count++;
+    }
 
     // add delay of 0.5s
     await new Promise((resolve) => setTimeout(resolve, 500));
