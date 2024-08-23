@@ -191,7 +191,7 @@ export async function checkFileChanges(
             size: file.size.toString(),
             metadata: documentMetadata,
             // privacy
-            published: 'public',
+            published: 'private',
             // owner
             owner: { connect: { email: 'j.larminay@gmail.com' } },
           },
