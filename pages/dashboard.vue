@@ -19,7 +19,7 @@ const page = ref(1);
 const filters = ref({
   search: '',
   sortBy: 'date-added-desc',
-  type: ['video', 'image'],
+  type: ['video', 'image', 'document'],
   filterBy: 'all',
 });
 
@@ -225,6 +225,14 @@ async function refreshLikes() {
                       v-model="filters.type"
                       val="image"
                       label="Images"
+                      v-close-popup
+                      class="tw_whitespace-nowrap"
+                      @click="newSearch"
+                    />
+                    <q-checkbox
+                      v-model="filters.type"
+                      val="document"
+                      label="Documents"
                       v-close-popup
                       class="tw_whitespace-nowrap"
                       @click="newSearch"

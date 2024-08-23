@@ -15,7 +15,7 @@ export const searchSchema = z.object({
       'duration-asc',
     ]),
   ),
-  type: z.array(z.string(z.enum(['image', 'video']))),
+  type: z.array(z.string(z.enum(['image', 'video', 'document']))),
   page: z.number(),
 });
 

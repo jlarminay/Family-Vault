@@ -41,6 +41,7 @@
     "lightgallery": "^2.7.2",
     "multer": "^1.4.5-lts.1",
     "node-fetch": "^3.3.2",
+    "pdf-to-png-converter": "^3.2.0",
     "pinia": "^2.1.7",
     "pm2": "^5.4.1",
     "quasar": "^2.14.7",

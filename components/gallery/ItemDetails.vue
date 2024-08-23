@@ -101,7 +101,7 @@ watch(
 
       <div class="tw_flex tw_flex-col tw_gap-6">
         <!-- Resolution -->
-        <div class="tw_flex tw_gap-4 tw_items-start">
+        <div v-if="details.metadata?.resolution" class="tw_flex tw_gap-4 tw_items-start">
           <q-icon size="24px" name="o_aspect_ratio" class="tw_mt-1.5" />
           <div class="tw_flex tw_flex-col">
             <p class="tw_text-gray-500 tw_leading-none tw_text-sm">Resolution</p>
