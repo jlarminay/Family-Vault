@@ -206,11 +206,11 @@ export default {
         },
       );
 
-      // // change name of new file from pdf to jpg
-      // fs.renameSync(
-      //   `${targetDir}/${name}.thumbnail.jpg_page_1.png`,
-      //   `${targetDir}/${name}.thumbnail.jpg`,
-      // );
+      // change name of new file from pdf to jpg
+      fs.renameSync(
+        `${targetDir}/${name}.thumbnail.jpg-01.jpg`,
+        `${targetDir}/${name}.thumbnail.jpg`,
+      );
 
       // return path
       return {
@@ -222,8 +222,8 @@ export default {
       const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
       const targetPath1 = resolve(`${targetDir}/${fileName}`);
       const targetPath2 = resolve(`${targetDir}/${fileName}.thumbnail.jpg`);
-      const targetPath3 = resolve(`${targetDir}/${fileName}_page_1.png`);
-      const targetPath4 = resolve(`${targetDir}/${fileName}.thumbnail.jpg_page_1.png`);
+      const targetPath3 = resolve(`${targetDir}/${fileName}-01.jpg`);
+      const targetPath4 = resolve(`${targetDir}/${fileName}.thumbnail.jpg-01.jpg`);
 
       // check if file exists
       if (fs.existsSync(targetPath1)) fs.rmSync(targetPath1);
