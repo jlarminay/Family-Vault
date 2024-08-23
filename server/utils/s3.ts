@@ -65,6 +65,7 @@ export default class S3 {
         ContentType: contentType,
       });
       const results = await this.client.send(command);
+      // console.log('results', results);
 
       return true;
     } catch (err) {

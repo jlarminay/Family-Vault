@@ -57,6 +57,9 @@
     .lg-video-cont {
       @apply !tw_max-w-full !tw_h-auto;
     }
+    .lg-has-iframe {
+      @apply !tw_max-w-full !tw_h-full;
+    }
   }
   .lg-has-html5 img {
     @apply !tw_object-contain;

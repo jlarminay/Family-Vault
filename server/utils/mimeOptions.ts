@@ -13,8 +13,10 @@ const mimeTypeMap: Record<string, string> = {
   '.webm': 'video/webm',
   '.ogg': 'video/ogg',
 
-  // Documents
+  // PDF
   '.pdf': 'application/pdf',
+
+  // Documents
   '.txt': 'text/plain',
   '.doc': 'application/msword',
   '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',

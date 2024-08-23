@@ -2,6 +2,7 @@ import shell from 'shelljs';
 import fs from 'fs';
 import { resolve } from 'path';
 import sizeOf from 'image-size';
+import { pdfToPng } from 'pdf-to-png-converter';
 
 export default {
   video: {
@@ -148,6 +149,95 @@ export default {
       // check if file exists
       if (fs.existsSync(targetPath1)) fs.rmSync(targetPath1);
       if (fs.existsSync(targetPath2)) fs.rmSync(targetPath2);
+
+      return;
+    },
+  },
+  pdf: {
+    getMetadata: async (opts: {
+      name: string;
+      path: string;
+    }): Promise<{
+      size: number;
+    }> => {
+      const { name, path } = opts;
+      const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+      let newPath = path;
+
+      // check if file is local or remote
+      if (path.startsWith('http')) {
+        // download file
+        const remotePath = path;
+        const localPath = `${targetDir}/${name}`;
+
+        shell.exec(`curl -o "${localPath}" "${remotePath}"`, { silent: true });
+        newPath = resolve(localPath);
+      }
+
+      // get metadata
+      const size = fs.statSync(newPath).size;
+
+      return {
+        size,
+      };
+    },
+    getThumbnail: async (opts: {
+      name: string;
+      path: string;
+    }): Promise<{ name: string; path: string }> => {
+      const { name, path } = opts;
+      const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+      let newPath = path;
+
+      // check if file is local or remote
+      if (path.startsWith('http')) {
+        // download file
+        const remotePath = path;
+        const localPath = `${targetDir}/${name}`;
+
+        shell.exec(`curl -o "${localPath}" "${remotePath}"`, { silent: true });
+        newPath = resolve(localPath);
+      }
+
+      // get thumbnail
+      await pdfToPng(newPath, {
+        outputFolder: targetDir,
+        outputFileMask: `${name}.thumbnail.jpg`,
+        pagesToProcess: [1],
+      });
+
+      // create thumbnail
+      shell.exec(
+        `ffmpeg -i "${targetDir}/${name}.thumbnail.jpg_page_1.png" -vf "scale=200:200:force_original_aspect_ratio=increase" "${targetDir}/${name}.thumbnail.jpg"`,
+        {
+          silent: true,
+        },
+      );
+
+      // // change name of new file from pdf to jpg
+      // fs.renameSync(
+      //   `${targetDir}/${name}.thumbnail.jpg_page_1.png`,
+      //   `${targetDir}/${name}.thumbnail.jpg`,
+      // );
+
+      // return path
+      return {
+        name: `${name}.thumbnail.jpg`,
+        path: `${targetDir}/${name}.thumbnail.jpg`,
+      };
+    },
+    delete: async (fileName: string): Promise<void> => {
+      const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+      const targetPath1 = resolve(`${targetDir}/${fileName}`);
+      const targetPath2 = resolve(`${targetDir}/${fileName}.thumbnail.jpg`);
+      const targetPath3 = resolve(`${targetDir}/${fileName}_page_1.png`);
+      const targetPath4 = resolve(`${targetDir}/${fileName}.thumbnail.jpg_page_1.png`);
+
+      // check if file exists
+      if (fs.existsSync(targetPath1)) fs.rmSync(targetPath1);
+      if (fs.existsSync(targetPath2)) fs.rmSync(targetPath2);
+      if (fs.existsSync(targetPath3)) fs.rmSync(targetPath3);
+      if (fs.existsSync(targetPath4)) fs.rmSync(targetPath4);
 
       return;
     },

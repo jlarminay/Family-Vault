@@ -151,6 +151,50 @@ export default async () => {
       // cleanup
       count++;
     }
+    // if pdf
+    else if (file.contentType.startsWith('application/pdf')) {
+      // get metadata
+      const documentName = file.key.split('/').pop() || '';
+      const documentMetadata = await fileProcessor.pdf.getMetadata({
+        name: documentName,
+        path: file.fullPath,
+      });
+
+      if (generateThumbnail) {
+        const newDocumentThumbnail = await fileProcessor.pdf.getThumbnail({
+          name: documentName,
+          path: file.fullPath,
+        });
+        await s3Instance.upload({
+          targetPath: file.key.replace(documentName, newDocumentThumbnail.name),
+          localPath: newDocumentThumbnail.path,
+        });
+        fileProcessor.pdf.delete(newDocumentThumbnail.name);
+      }
+
+      // insert file into db
+      await prisma.item.create({
+        data: {
+          ...newData,
+          type: 'document',
+          // file data
+          name: documentName,
+          path: file.fullPath,
+          size: file.size.toString(),
+          metadata: documentMetadata,
+          // privacy
+          published: 'public',
+          // owner
+          owner: { connect: { email: 'j.larminay@gmail.com' } },
+        },
+      });
+
+      // cleanup
+      fileProcessor.pdf.delete(documentName);
+
+      // cleanup
+      count++;
+    }
   }
 
   console.log('Insert file: ', count);

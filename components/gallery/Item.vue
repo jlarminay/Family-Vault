@@ -24,19 +24,20 @@ defineProps({
       'tw_p-1 sm:tw_p-2': !expandedView,
       'tw_p-2': expandedView,
     }"
-    :data-lg-size="item.metadata.resolution.replace('x', '-')"
+    :data-lg-size="item.metadata?.resolution?.replace('x', '-')"
     :data-src="item.type === 'video' ? null : item.path"
     :data-video="
       item.type === 'video'
         ? `{&quot;source&quot;: [{&quot;src&quot;:&quot;${item.path}&quot;, &quot;type&quot;:&quot;video/mp4&quot;}], &quot;attributes&quot;: {&quot;preload&quot;: true, &quot;controls&quot;: true}}`
         : null
     "
+    :data-iframe="item.type === 'document' ? true : null"
     :poster="item.type === 'video' ? `${item.path}.thumbnail.jpg` : null"
     :data-poster="item.type === 'video' ? `${item.path}.thumbnail.jpg` : null"
     :ariaDescribedby="item.description"
     :alt="item.name"
   >
-    <div class="tw_relative tw_rounded">
+    <div class="tw_relative tw_rounded tw_overflow-hidden">
       <GalleryItemImage :thumbnailPath="`${item.path}.thumbnail.jpg`" :metadata="item.metadata" />
       <span
         v-if="item.status !== 'processing' && item.type === 'video'"
