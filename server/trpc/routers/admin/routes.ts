@@ -157,6 +157,8 @@ export const adminRouter = router({
           const { key } = file;
           await s3Instance.updateFilePermissions(key);
         }
+
+        return allFiles.length;
       } catch (error) {
         return error;
       }
