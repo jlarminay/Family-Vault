@@ -50,6 +50,8 @@ export const useAdminStore = defineStore('admin', {
             return await $trpc.admin.getAllFiles.query();
           case 'updateThumbnail':
             return await $trpc.admin.refreshAllThumbnails.query();
+          case 'updatePermissions':
+            return await $trpc.admin.updatePermissions.query();
         }
       },
     },

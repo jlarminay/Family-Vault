@@ -142,6 +142,25 @@ export const adminRouter = router({
         return error;
       }
     }),
+    updatePermissions: adminProcedure.query(async ({ ctx }) => {
+      try {
+        const s3Instance = S3.getInstance({
+          region: useRuntimeConfig().s3.region || '',
+          endpoint: useRuntimeConfig().s3.endpoint || '',
+          accessKeyId: useRuntimeConfig().s3.accessKey || '',
+          secretAccessKey: useRuntimeConfig().s3.secretKey || '',
+        });
+        const allFiles = await s3Instance.getAllFiles();
+
+        // update permissions
+        for (const file of allFiles) {
+          const { key } = file;
+          await s3Instance.updateFilePermissions(key);
+        }
+      } catch (error) {
+        return error;
+      }
+    }),
   },
 });
 
