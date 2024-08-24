@@ -42,6 +42,15 @@ async function performS3Check(type: string) {
           :disabled="loading"
           @click="performS3Check('updateThumbnail')"
         />
+        <q-btn
+          label="Update All Permissions"
+          unelevated
+          no-caps
+          color="primary"
+          :loading="loading"
+          :disabled="loading"
+          @click="performS3Check('updatePermissions')"
+        />
         <!-- <q-btn
           label="Get All Files"
           unelevated
