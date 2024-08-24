@@ -150,7 +150,7 @@ export const adminRouter = router({
           accessKeyId: useRuntimeConfig().s3.accessKey || '',
           secretAccessKey: useRuntimeConfig().s3.secretKey || '',
         });
-        const allFiles = await s3Instance.getAllFiles();
+        const allFiles = await s3Instance.getAllFiles(true);
 
         // update permissions
         for (const file of allFiles) {

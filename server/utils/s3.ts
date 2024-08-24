@@ -74,7 +74,7 @@ export default class S3 {
     }
   }
 
-  async getAllFiles(): Promise<
+  async getAllFiles(all: boolean = false): Promise<
     | {
         key: string;
         fullPath: string;
@@ -105,8 +105,13 @@ export default class S3 {
         response.Contents?.filter((item) => {
           // filter out directories
           if (item.Key?.endsWith('/')) return false;
+
+          // if bypassed, return all files
+          if (all) return true;
+
           // filter out thumbnails
           if (item.Key?.endsWith('.thumbnail.jpg')) return false;
+
           // return all other files
           return true;
         }).map((item) => {
