@@ -85,7 +85,6 @@ export default async () => {
           targetPath: file.key.replace(videoName, newVideoThumbnail.name),
           localPath: newVideoThumbnail.path,
         });
-        fileProcessor.image.delete(newVideoThumbnail.name);
       }
 
       // insert files into db
@@ -105,6 +104,8 @@ export default async () => {
         },
       });
 
+      // cleanup
+      fileProcessor.delete(videoName);
       count++;
     }
     // if image
@@ -125,7 +126,6 @@ export default async () => {
           targetPath: file.key.replace(imageName, newImageThumbnail.name),
           localPath: newImageThumbnail.path,
         });
-        fileProcessor.image.delete(newImageThumbnail.name);
       }
 
       // insert file into db
@@ -146,9 +146,7 @@ export default async () => {
       });
 
       // cleanup
-      fileProcessor.image.delete(imageName);
-
-      // cleanup
+      fileProcessor.delete(imageName);
       count++;
     }
     // if pdf
@@ -169,7 +167,6 @@ export default async () => {
           targetPath: file.key.replace(documentName, newDocumentThumbnail.name),
           localPath: newDocumentThumbnail.path,
         });
-        fileProcessor.pdf.delete(newDocumentThumbnail.name);
       }
 
       // insert file into db
@@ -190,9 +187,7 @@ export default async () => {
       });
 
       // cleanup
-      fileProcessor.pdf.delete(documentName);
-
-      // cleanup
+      fileProcessor.delete(documentName);
       count++;
     }
   }
