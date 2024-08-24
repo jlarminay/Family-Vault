@@ -107,7 +107,7 @@ export async function checkFileChanges(
       }
 
       // cleanup
-      fileProcessor.image.delete(newVideoThumbnail.name);
+      fileProcessor.delete(videoName);
       count++;
     }
     // if image
@@ -153,7 +153,7 @@ export async function checkFileChanges(
       }
 
       // cleanup
-      fileProcessor.image.delete(newImageThumbnail.name);
+      fileProcessor.delete(imageName);
       count++;
     }
     // if document
@@ -199,7 +199,7 @@ export async function checkFileChanges(
       }
 
       // cleanup
-      fileProcessor.pdf.delete(documentName);
+      fileProcessor.delete(documentName);
       count++;
     }
 

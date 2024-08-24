@@ -140,17 +140,6 @@ export default {
 
       return '#ff6666';
     },
-    delete: async (fileName: string): Promise<void> => {
-      const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
-      const targetPath1 = resolve(`${targetDir}/${fileName}`);
-      const targetPath2 = resolve(`${targetDir}/${fileName}`);
-
-      // check if file exists
-      if (fs.existsSync(targetPath1)) fs.rmSync(targetPath1);
-      if (fs.existsSync(targetPath2)) fs.rmSync(targetPath2);
-
-      return;
-    },
   },
   pdf: {
     getMetadata: async (opts: {
@@ -200,17 +189,14 @@ export default {
 
       // create thumbnail
       shell.exec(
-        `pdftoppm -jpeg -f 1 -l 1 -scale-to 200 "${targetDir}/${name}" "${targetDir}/${name}.thumbnail.jpg"`,
+        `pdftoppm -jpeg -f 1 -l 1 -scale-to 400 "${targetDir}/${name}" "${targetDir}/${name}"`,
         {
           silent: true,
         },
       );
 
       // change name of new file from pdf to jpg
-      fs.renameSync(
-        `${targetDir}/${name}.thumbnail.jpg-01.jpg`,
-        `${targetDir}/${name}.thumbnail.jpg`,
-      );
+      fs.renameSync(`${targetDir}/${name}-01.jpg`, `${targetDir}/${name}.thumbnail.jpg`);
 
       // return path
       return {
@@ -218,20 +204,20 @@ export default {
         path: `${targetDir}/${name}.thumbnail.jpg`,
       };
     },
-    delete: async (fileName: string): Promise<void> => {
-      const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
-      const targetPath1 = resolve(`${targetDir}/${fileName}`);
-      const targetPath2 = resolve(`${targetDir}/${fileName}.thumbnail.jpg`);
-      const targetPath3 = resolve(`${targetDir}/${fileName}-01.jpg`);
-      const targetPath4 = resolve(`${targetDir}/${fileName}.thumbnail.jpg-01.jpg`);
+  },
 
-      // check if file exists
-      if (fs.existsSync(targetPath1)) fs.rmSync(targetPath1);
-      if (fs.existsSync(targetPath2)) fs.rmSync(targetPath2);
-      if (fs.existsSync(targetPath3)) fs.rmSync(targetPath3);
-      if (fs.existsSync(targetPath4)) fs.rmSync(targetPath4);
+  // general file operations
+  delete: async (fileName: string): Promise<void> => {
+    const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+    const allFiles = fs.readdirSync(targetDir);
 
-      return;
-    },
+    // delete all files that contain the fileName
+    allFiles.forEach((file) => {
+      if (file.includes(fileName)) {
+        fs.rmSync(resolve(`${targetDir}/${file}`));
+      }
+    });
+
+    return;
   },
 };

@@ -105,8 +105,7 @@ async function main() {
         });
 
         // cleanup
-        fileProcessor.image.delete(newVideoThumbnail.name);
-
+        fileProcessor.delete(videoName);
         count++;
       }
       // if image
@@ -150,8 +149,7 @@ async function main() {
         });
 
         // cleanup
-        fileProcessor.image.delete(imageName);
-        fileProcessor.image.delete(newImageThumbnail.name);
+        fileProcessor.delete(imageName);
 
         // cleanup
         count++;
