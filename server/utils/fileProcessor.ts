@@ -196,7 +196,7 @@ export default {
       );
 
       // change name of new file from pdf to jpg
-      fs.renameSync(`${targetDir}/${name}-01.jpg`, `${targetDir}/${name}.thumbnail.jpg`);
+      fs.renameSync(`${targetDir}/${name}-1.jpg`, `${targetDir}/${name}.thumbnail.jpg`);
 
       // return path
       return {
