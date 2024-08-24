@@ -155,7 +155,9 @@ export const adminRouter = router({
         // update permissions
         for (const file of allFiles) {
           const { key } = file;
+          console.log('updating permissions for', key);
           await s3Instance.updateFilePermissions(key);
+          await new Promise((resolve) => setTimeout(resolve, 500));
         }
 
         return allFiles.length;
