@@ -13,6 +13,10 @@ export default async () => {
       key: 'metabaseApiKey',
       value: '1234567890',
     },
+    {
+      key: 'familyTreeUrl',
+      value: 'https://example',
+    },
   ];
 
   // create seeds
