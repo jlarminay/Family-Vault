@@ -1,4 +1,3 @@
-import { sign } from 'node:crypto';
 import { resolve } from 'node:path';
 
 export default defineNuxtConfig({
@@ -12,6 +11,7 @@ export default defineNuxtConfig({
     'dayjs-nuxt',
     '@sidebase/nuxt-auth',
   ],
+  plugins: ['~/plugins/global-imports.ts'],
   css: [
     '@/assets/css/tailwind.css',
     '@/assets/css/quasar.css',
@@ -41,6 +41,9 @@ export default defineNuxtConfig({
       // google
       googleClientId: process.env.AUTH_GOOGLE_CLIENT_ID,
       googleClientSecret: process.env.AUTH_GOOGLE_CLIENT_SECRET,
+      // spotify
+      spotifyClientId: process.env.AUTH_SPOTIFY_CLIENT_ID,
+      spotifyClientSecret: process.env.AUTH_SPOTIFY_CLIENT_SECRET,
     },
     s3: {
       bucket: process.env.S3_BUCKET,

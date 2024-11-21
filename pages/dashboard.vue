@@ -163,14 +163,6 @@ async function refreshLikes() {
   <NuxtLayout name="app">
     <template #default>
       <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1400px] tw_mx-auto">
-        <div
-          class="tw_border-2 tw_rounded tw_border-blue-200 tw_bg-blue-50 tw_px-2 tw_py-1 tw_mb-4 tw_text-base tw_text-center"
-        >
-          The system is a work in progress. There may be bugs or missing features.
-          <br />
-          We appreciate your patience and understanding.
-        </div>
-
         <div class="tw_flex tw_justify-between sm:tw_justify-start tw_items-center sm:tw_gap-6">
           <h1 class="h1">Dashboard</h1>
           <div class="tw_mr-3">

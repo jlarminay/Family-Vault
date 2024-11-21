@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
+
+const showLegalModal = ref(false);
+const initialLegalState = ref('');
 </script>
 
 <template>
@@ -10,6 +13,29 @@ import dayjs from 'dayjs';
     <p class="tw_text-base tw_text-gray-500">
       © 2023-{{ dayjs().format('YYYY') }} Josh Larminay. All Rights Reserved.
     </p>
+    <p>
+      <span
+        class="link"
+        @click="
+          initialLegalState = 'Privacy Policy';
+          showLegalModal = true;
+        "
+      >
+        Privacy Policy
+      </span>
+      |
+      <span
+        class="link"
+        @click="
+          initialLegalState = 'Terms and Conditions';
+          showLegalModal = true;
+        "
+      >
+        Terms and Conditions
+      </span>
+    </p>
+
+    <LegalModal v-model="showLegalModal" :initialState="initialLegalState" />
   </footer>
 </template>
 

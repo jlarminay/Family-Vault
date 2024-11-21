@@ -4,6 +4,9 @@ definePageMeta({
   middleware: 'unauthorized-only',
 });
 
+const showLegalModal = ref(false);
+const initialLegalState = ref('');
+
 onMounted(() => {
   if (window.location.search.includes('state=error')) {
     toaster({
@@ -40,6 +43,7 @@ onMounted(() => {
           <q-btn
             v-for="provider in [
               { name: 'Google', bgColor: 'tw_bg-[#4285F4]' },
+              { name: 'Spotify', bgColor: 'tw_bg-[#179443]' },
               { name: 'GitHub', bgColor: 'tw_bg-[#24292e]' },
               { name: 'Discord', bgColor: 'tw_bg-[#7289da]' },
             ]"
@@ -60,15 +64,31 @@ onMounted(() => {
           <p class="tw_mt-4">
             By using the app, you agree to the
             <br />
-            <NuxtLink class="link" to="/document/legal/terms-and-conditions"
-              >Terms and Conditions</NuxtLink
+            <span
+              class="link"
+              @click="
+                initialLegalState = 'Privacy Policy';
+                showLegalModal = true;
+              "
             >
+              Privacy Policy
+            </span>
             and
-            <NuxtLink class="link" to="/document/legal/privacy-policy">Privacy Policy</NuxtLink>.
+            <span
+              class="link"
+              @click="
+                initialLegalState = 'Terms and Conditions';
+                showLegalModal = true;
+              "
+            >
+              Terms and Conditions </span
+            >.
           </p>
         </div>
       </div>
     </main>
+
+    <LegalModal v-model="showLegalModal" :initialState="initialLegalState" />
   </div>
 </template>
 

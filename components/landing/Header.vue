@@ -45,7 +45,7 @@ function scrollToTop() {
       </q-btn>
 
       <nav class="tw_flex tw_flex-wrap tw_items-center tw_text-base tw_justify-center tw_gap-2">
-        <q-btn
+        <!-- <q-btn
           v-if="$q.screen.width > 770"
           flat
           no-caps
@@ -60,9 +60,9 @@ function scrollToTop() {
           label="Github"
           color="primary"
           href="https://github.com/jlarminay/Larminay-Vault"
-        />
+        /> -->
 
-        <q-btn
+        <!-- <q-btn
           v-if="$q.screen.width <= 770"
           flat
           no-caps
@@ -83,7 +83,7 @@ function scrollToTop() {
               </q-item>
             </q-list>
           </q-menu>
-        </q-btn>
+        </q-btn> -->
 
         <q-btn
           v-if="!authData"

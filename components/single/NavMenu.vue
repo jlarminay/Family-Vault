@@ -4,6 +4,7 @@ const route = useRoute();
 
 const search = ref<string>('');
 const showSearchInput = ref(false);
+const showLegalModal = ref(false);
 
 watch(
   () => route.query.search,
@@ -97,6 +98,12 @@ function scrollToTop() {
           <!-- Dropdown Menu -->
           <q-menu class="tw_min-w-[160px]" :offset="[0, 4]">
             <q-list>
+              <q-item clickable v-close-popup to="/">
+                <q-item-section avatar>
+                  <q-icon name="o_house" />
+                </q-item-section>
+                <q-item-section>Home</q-item-section>
+              </q-item>
               <q-separator />
               <q-item clickable v-close-popup to="/account">
                 <q-item-section avatar>
@@ -112,38 +119,24 @@ function scrollToTop() {
               </q-item>
 
               <q-separator />
-              <q-item
-                clickable
-                v-close-popup
-                target="_blank"
-                href="https://docs.google.com/spreadsheets/d/1TB0_ssx_UOSBc9LfsJ9-4adoUFbv_W5lTji6wWOQu3Q/edit?usp=sharing"
-              >
-                <q-item-section avatar>
-                  <q-icon name="o_checklist" />
-                </q-item-section>
-                <q-item-section>Progress</q-item-section>
-              </q-item>
               <q-item clickable v-close-popup to="/stats">
                 <q-item-section avatar>
                   <q-icon name="o_query_stats" />
                 </q-item-section>
                 <q-item-section>Stats</q-item-section>
               </q-item>
-
-              <q-separator />
-              <q-item clickable v-close-popup to="/">
+              <q-item
+                clickable
+                v-close-popup
+                target="_blank"
+                href="https://quixotic-smile-9bb.notion.site/Larminay-Vault-824520c770384583969e8ccb188bc6b5"
+              >
                 <q-item-section avatar>
-                  <q-icon name="o_house" />
-                </q-item-section>
-                <q-item-section>Return Home</q-item-section>
-              </q-item>
-              <q-item clickable v-close-popup to="/document">
-                <q-item-section avatar>
-                  <q-icon name="o_construction" />
+                  <q-icon name="o_description" />
                 </q-item-section>
                 <q-item-section>Documents</q-item-section>
               </q-item>
-              <q-item clickable v-close-popup to="/document/legal">
+              <q-item clickable v-close-popup @click="showLegalModal = true">
                 <q-item-section avatar>
                   <q-icon name="o_policy" />
                 </q-item-section>
@@ -203,7 +196,7 @@ function scrollToTop() {
     </div>
   </nav>
 
-  <UploadModal />
+  <LegalModal v-model="showLegalModal" />
 </template>
 
 <style scoped lang="postcss">
