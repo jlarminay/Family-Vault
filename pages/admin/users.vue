@@ -83,6 +83,7 @@ async function saveUser() {
                   :class="{
                     'tw_text-[#24292e]': props.row.provider === 'github',
                     'tw_text-[#7289da]': props.row.provider === 'discord',
+                    'tw_text-[#179443]': props.row.provider === 'spotify',
                     'tw_text-[#4285F4]': props.row.provider === 'google',
                   }"
                 />
@@ -201,6 +202,7 @@ async function saveUser() {
             :options="[
               { label: 'Github', value: 'github' },
               { label: 'Discord', value: 'discord' },
+              { label: 'Spotify', value: 'spotify' },
               { label: 'Google', value: 'google' },
             ]"
             required

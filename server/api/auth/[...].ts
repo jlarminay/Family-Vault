@@ -6,6 +6,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GithubProvider from 'next-auth/providers/github';
 import DiscordProvider from 'next-auth/providers/discord';
 import GoogleProvider from 'next-auth/providers/google';
+import SpotifyProvider from 'next-auth/providers/spotify';
 import isOnTestingServer from '~/utils/isOnTestingServer';
 
 // all provider info can be found here
@@ -82,6 +83,13 @@ export default NuxtAuthHandler({
           response_type: 'code',
         },
       },
+    }),
+
+    // @ts-expect-error
+    SpotifyProvider.default({
+      // http://localhost:3000/api/auth/callback/spotify
+      clientId: useRuntimeConfig().authCredentials.spotifyClientId,
+      clientSecret: useRuntimeConfig().authCredentials.spotifyClientSecret,
     }),
   ],
 

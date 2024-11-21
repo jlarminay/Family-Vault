@@ -20,7 +20,7 @@ const features = ref([
       'The full process of organizing, scanning, editing, and uploading photos and videos is quite the task. This project is a labor of love and a way to preserve the past for future generations.',
     image: '/landing/all_formats.webp',
     blob: '/landing/blob_3.svg',
-    link: '/document',
+    link: 'https://www.notion.so/Larminay-Vault-824520c770384583969e8ccb188bc6b5?pvs=4#14561b90453e80d3bc74f75890d3a7db',
   },
 ]);
 </script>
@@ -58,7 +58,8 @@ const features = ref([
             label="Learn More"
             color="primary"
             class="tw_mt-4"
-            :to="feature.link"
+            :href="feature.link"
+            target="_blank"
           />
         </div>
       </div>
