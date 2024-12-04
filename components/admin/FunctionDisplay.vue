@@ -5,6 +5,7 @@ const loading = ref(false);
 const props = defineProps<{
   buttonLabel: string;
   buttonAction: string;
+  estimate?: string;
 }>();
 
 async function performS3Check() {
@@ -12,6 +13,24 @@ async function performS3Check() {
   const response = await adminStore.s3Action(props.buttonAction);
   console.log(response);
   loading.value = false;
+}
+
+function secondsToTime(secondsString: string | undefined) {
+  if (!secondsString) return 'n/a';
+
+  const seconds = parseInt(secondsString);
+
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secondsLeft = Math.floor(seconds % 60);
+
+  let finalString = [];
+  if (hours > 0) finalString.push(`${hours}h`);
+  if (hours > 0 || minutes > 0) finalString.push(`${minutes}m`);
+  if (hours > 0 || minutes > 0 || secondsLeft > 0) finalString.push(`${secondsLeft}s`);
+  if (finalString.length === 0) return '0s';
+
+  return finalString.join(' ');
 }
 </script>
 
@@ -27,7 +46,7 @@ async function performS3Check() {
       <span class="tw_block tw_grow" />
 
       <div class="tw_flex tw_items-center tw_justify-between tw_mt-6">
-        <p class="tw_italic tw_text-dark tw_opacity-70">est. 9m</p>
+        <p class="tw_italic tw_text-dark tw_opacity-70">est. {{ secondsToTime(estimate) }}</p>
         <q-btn
           :label="buttonLabel"
           unelevated
