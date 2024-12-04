@@ -3,15 +3,8 @@ definePageMeta({
   middleware: 'admin-authorized-only',
 });
 
-const adminStore = useAdminStore();
-const loading = ref(false);
-
-async function performS3Check(type: string) {
-  loading.value = true;
-  const response = await adminStore.s3Action(type);
-  console.log(response);
-  loading.value = false;
-}
+const settingStore = useSettingStore();
+const allSettings = ref(await settingStore.getAll());
 </script>
 
 <template>
@@ -23,43 +16,53 @@ async function performS3Check(type: string) {
     <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1000px] tw_mx-auto">
       <AdminSectionHeader />
 
-      <div class="tw_flex tw_gap-2 tw_flex-wrap">
-        <q-btn
-          label="Force Recheck S3 Storage"
-          unelevated
-          no-caps
-          color="primary"
-          :loading="loading"
-          :disabled="loading"
-          @click="performS3Check('forceRecheckS3Bucket')"
-        />
-        <q-btn
-          label="Recreate Thumbnails"
-          unelevated
-          no-caps
-          color="primary"
-          :loading="loading"
-          :disabled="loading"
-          @click="performS3Check('updateThumbnail')"
-        />
-        <q-btn
-          label="Update All Permissions"
-          unelevated
-          no-caps
-          color="primary"
-          :loading="loading"
-          :disabled="loading"
-          @click="performS3Check('updatePermissions')"
-        />
-        <!-- <q-btn
-          label="Get All Files"
-          unelevated
-          no-caps
-          color="primary"
-          :loading="loading"
-          :disabled="loading"
-          @click="getAllFiles"
-        /> -->
+      <div class="tw_flex tw_flex-wrap tw_gap-y-2">
+        <AdminFunctionDisplay
+          buttonLabel="Force Recheck"
+          buttonAction="forceRecheckS3Bucket"
+          :estimate="allSettings?.timerForceRecheckS3Bucket"
+        >
+          <template #title> Force Recheck S3 Storage </template>
+          <template #description>
+            <p class="tw_mb-2">Sync S3 files with the database. Use after direct uploads to S3.</p>
+          </template>
+        </AdminFunctionDisplay>
+
+        <AdminFunctionDisplay
+          buttonLabel="Fix Thumbnails"
+          buttonAction="getMissingThumbnails"
+          :estimate="allSettings?.timerGetMissingThumbnails"
+        >
+          <template #title>Fix Missing Thumbnails</template>
+          <template #description>
+            <p class="tw_mb-2">
+              Generate thumbnails for missing items without affecting existing ones.
+            </p>
+          </template>
+        </AdminFunctionDisplay>
+
+        <AdminFunctionDisplay
+          buttonLabel="Update Permissions"
+          buttonAction="updatePermissions"
+          :estimate="allSettings?.timerUpdatePermissions"
+        >
+          <template #title>Update All Permissions</template>
+          <template #description>
+            <p class="tw_mb-2">Set all S3 files for public access.</p>
+          </template>
+        </AdminFunctionDisplay>
+
+        <AdminFunctionDisplay
+          buttonLabel="Recreate Thumbnails"
+          buttonAction="recreateThumbnail"
+          :estimate="allSettings?.timerRecreateAllThumbnails"
+        >
+          <template #title>Recreate Thumbnails</template>
+          <template #description>
+            <p class="tw_mb-2">Regenerate all S3 thumbnails, replacing existing ones.</p>
+            <p class="tw_mb-2">All existing thumbnails will be replaced.</p>
+          </template>
+        </AdminFunctionDisplay>
       </div>
     </main>
   </NuxtLayout>

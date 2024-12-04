@@ -137,6 +137,22 @@ export default class S3 {
     return allFiles;
   }
 
+  async checkFileExists(key: string): Promise<boolean> {
+    if (!this.client) return false;
+    try {
+      const command = new HeadObjectCommand({
+        Bucket: process.env.S3_BUCKET,
+        Key: key,
+      });
+
+      await this.client.send(command);
+
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
   async updateFilePermissions(key: string): Promise<boolean> {
     if (!this.client) return false;
     try {

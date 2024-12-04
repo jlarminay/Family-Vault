@@ -48,10 +48,14 @@ export const useAdminStore = defineStore('admin', {
             return await $trpc.admin.forceRecheckS3Bucket.query();
           case 'getAllFiles':
             return await $trpc.admin.getAllFiles.query();
-          case 'updateThumbnail':
-            return await $trpc.admin.refreshAllThumbnails.query();
+          case 'getMissingThumbnails':
+            return await $trpc.admin.getMissingThumbnails.query();
+          case 'recreateThumbnail':
+            return await $trpc.admin.recreateAllThumbnails.query();
           case 'updatePermissions':
             return await $trpc.admin.updatePermissions.query();
+          default:
+            return 'Invalid action type';
         }
       },
     },

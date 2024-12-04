@@ -1,8 +1,7 @@
 import { adminProcedure, router } from '@/server/trpc/trpc';
 import { z } from 'zod';
 import { getServerSession } from '#auth';
-import { checkFileChanges } from '@/server/utils/checkFileChanges';
-import S3 from '@/server/utils/s3';
+import adminFunctions from './functions';
 
 export const adminRouter = router({
   // item (R)
@@ -113,58 +112,8 @@ export const adminRouter = router({
     }),
   },
 
-  // force recheck s3 bucket
-  ...{
-    getAllFiles: adminProcedure.query(async ({ ctx }) => {
-      try {
-        const s3Instance = S3.getInstance({
-          region: useRuntimeConfig().s3.region || '',
-          endpoint: useRuntimeConfig().s3.endpoint || '',
-          accessKeyId: useRuntimeConfig().s3.accessKey || '',
-          secretAccessKey: useRuntimeConfig().s3.secretKey || '',
-        });
-        return await s3Instance.getAllFiles();
-      } catch (error) {
-        return error;
-      }
-    }),
-    forceRecheckS3Bucket: adminProcedure.query(async ({ ctx }) => {
-      try {
-        return await checkFileChanges();
-      } catch (error) {
-        return error;
-      }
-    }),
-    refreshAllThumbnails: adminProcedure.query(async ({ ctx }) => {
-      try {
-        return await checkFileChanges({ updateThumbnailOnly: true });
-      } catch (error) {
-        return error;
-      }
-    }),
-    updatePermissions: adminProcedure.query(async ({ ctx }) => {
-      try {
-        const s3Instance = S3.getInstance({
-          region: useRuntimeConfig().s3.region || '',
-          endpoint: useRuntimeConfig().s3.endpoint || '',
-          accessKeyId: useRuntimeConfig().s3.accessKey || '',
-          secretAccessKey: useRuntimeConfig().s3.secretKey || '',
-        });
-        const allFiles = await s3Instance.getAllFiles(true);
-
-        // update permissions
-        for (const file of allFiles) {
-          const { key } = file;
-          console.log('updating permissions for', key);
-          await s3Instance.updateFilePermissions(key);
-        }
-
-        return allFiles.length;
-      } catch (error) {
-        return error;
-      }
-    }),
-  },
+  // custom admin functions
+  ...adminFunctions,
 });
 
 // export type definition of API
