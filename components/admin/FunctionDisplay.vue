@@ -1,18 +1,29 @@
 <script setup lang="ts">
-const adminStore = useAdminStore();
-const loading = ref(false);
-
 const props = defineProps<{
   buttonLabel: string;
   buttonAction: string;
   estimate?: string;
 }>();
 
+const adminStore = useAdminStore();
+const loading = ref(false);
+const currentSeconds = ref(0);
+
 async function performS3Check() {
   loading.value = true;
+  currentSeconds.value = 0;
+
+  // Start the timer
+  const interval = setInterval(() => {
+    currentSeconds.value += 1;
+  }, 1000);
+
   const response = await adminStore.s3Action(props.buttonAction);
   console.log(response);
   loading.value = false;
+
+  // Stop the timer
+  clearInterval(interval);
 }
 
 function secondsToTime(secondsString: string | undefined) {
@@ -52,10 +63,12 @@ function secondsToTime(secondsString: string | undefined) {
           unelevated
           no-caps
           color="primary"
-          :loading="loading"
           :disabled="loading"
+          :loading="loading"
           @click="performS3Check()"
-        />
+        >
+          <template #loading>{{ secondsToTime(currentSeconds.toString()) }}</template>
+        </q-btn>
       </div>
     </div>
   </div>
