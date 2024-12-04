@@ -16,7 +16,6 @@ const allSettings = ref(await settingStore.getAll());
     <main class="tw_p-1 sm:tw_px-6 sm:tw_py-4 tw_max-w-[1000px] tw_mx-auto">
       <AdminSectionHeader />
 
-      <pre>{{ allSettings }}</pre>
       <div class="tw_flex tw_flex-wrap tw_gap-y-2">
         <AdminFunctionDisplay
           buttonLabel="Force Recheck"
@@ -25,10 +24,7 @@ const allSettings = ref(await settingStore.getAll());
         >
           <template #title> Force Recheck S3 Storage </template>
           <template #description>
-            <p class="tw_mb-2">
-              This will get all files in s3 and check each one against the database.
-            </p>
-            <p class="tw_mb-2">Use this when uploading new files directly to s3.</p>
+            <p class="tw_mb-2">Sync S3 files with the database. Use after direct uploads to S3.</p>
           </template>
         </AdminFunctionDisplay>
 
@@ -39,8 +35,9 @@ const allSettings = ref(await settingStore.getAll());
         >
           <template #title>Fix Missing Thumbnails</template>
           <template #description>
-            <p class="tw_mb-2">This will create thumbnails for all missing items.</p>
-            <p class="tw_mb-2">This will not delete any exiting items.</p>
+            <p class="tw_mb-2">
+              Generate thumbnails for missing items without affecting existing ones.
+            </p>
           </template>
         </AdminFunctionDisplay>
 
@@ -51,7 +48,7 @@ const allSettings = ref(await settingStore.getAll());
         >
           <template #title>Update All Permissions</template>
           <template #description>
-            <p class="tw_mb-2">This will update all s3 files for public viewing.</p>
+            <p class="tw_mb-2">Set all S3 files for public access.</p>
           </template>
         </AdminFunctionDisplay>
 
@@ -62,7 +59,7 @@ const allSettings = ref(await settingStore.getAll());
         >
           <template #title>Recreate Thumbnails</template>
           <template #description>
-            <p class="tw_mb-2">This will forcefully recreate all thumbnails for all files in s3.</p>
+            <p class="tw_mb-2">Regenerate all S3 thumbnails, replacing existing ones.</p>
             <p class="tw_mb-2">All existing thumbnails will be replaced.</p>
           </template>
         </AdminFunctionDisplay>
