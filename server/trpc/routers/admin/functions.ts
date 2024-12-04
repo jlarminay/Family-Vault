@@ -1,7 +1,6 @@
 import { adminProcedure } from '@/server/trpc/trpc';
-import { checkFileChanges } from '@/server/utils/checkFileChanges';
+import { checkFileChanges, getAllFiles, updatePermissions } from '@/server/utils/checkFileChanges';
 import { PrismaClient } from '@prisma/client';
-import S3 from '@/server/utils/s3';
 
 async function setEndAverage(prisma: PrismaClient, startTime: Date, key: string) {
   // get end time
@@ -27,17 +26,10 @@ export default {
     try {
       const start = new Date();
 
-      // do function
-      const s3Instance = S3.getInstance({
-        region: useRuntimeConfig().s3.region || '',
-        endpoint: useRuntimeConfig().s3.endpoint || '',
-        accessKeyId: useRuntimeConfig().s3.accessKey || '',
-        secretAccessKey: useRuntimeConfig().s3.secretKey || '',
-      });
-      const results = await s3Instance.getAllFiles();
+      const allFiles = await getAllFiles();
 
       await setEndAverage(ctx.prisma, start, 'timerGetAllFiles');
-      return results;
+      return allFiles;
     } catch (error) {
       return error;
     }
@@ -47,9 +39,24 @@ export default {
     try {
       const start = new Date();
 
-      const results = await checkFileChanges();
+      const allFiles = await getAllFiles();
+      const results = await checkFileChanges(allFiles);
 
       await setEndAverage(ctx.prisma, start, 'timerForceRecheckS3Bucket');
+      return results;
+    } catch (error) {
+      return error;
+    }
+  }),
+
+  getMissingThumbnails: adminProcedure.query(async ({ ctx }) => {
+    try {
+      const start = new Date();
+
+      const allFiles = await getAllFiles();
+      const results = await checkFileChanges(allFiles, { missingThumbnail: true });
+
+      await setEndAverage(ctx.prisma, start, 'timerGetMissingThumbnails');
       return results;
     } catch (error) {
       return error;
@@ -60,7 +67,8 @@ export default {
     try {
       const start = new Date();
 
-      const results = await checkFileChanges({ updateThumbnailOnly: true });
+      const allFiles = await getAllFiles();
+      const results = await checkFileChanges(allFiles, { newThumbnails: true });
 
       await setEndAverage(ctx.prisma, start, 'timerRecreateAllThumbnails');
       return results;
@@ -73,24 +81,12 @@ export default {
     try {
       const start = new Date();
 
-      const s3Instance = S3.getInstance({
-        region: useRuntimeConfig().s3.region || '',
-        endpoint: useRuntimeConfig().s3.endpoint || '',
-        accessKeyId: useRuntimeConfig().s3.accessKey || '',
-        secretAccessKey: useRuntimeConfig().s3.secretKey || '',
-      });
-      const allFiles = await s3Instance.getAllFiles(true);
-
-      // update permissions
-      for (const file of allFiles) {
-        const { key } = file;
-        console.log('updating permissions for', key);
-        await s3Instance.updateFilePermissions(key);
-      }
+      const allFiles = await getAllFiles(true);
+      const results = await updatePermissions(allFiles);
 
       await setEndAverage(ctx.prisma, start, 'timerUpdatePermissions');
 
-      return allFiles.length;
+      return results;
     } catch (error) {
       return error;
     }

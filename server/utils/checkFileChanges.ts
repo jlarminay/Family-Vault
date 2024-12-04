@@ -13,28 +13,42 @@ const s3Instance = S3.getInstance({
   secretAccessKey: useRuntimeConfig().s3.secretKey || '',
 });
 
-export async function checkFileChanges(
-  opts: { updateThumbnailOnly: boolean } = { updateThumbnailOnly: false },
-): Promise<boolean> {
-  const { updateThumbnailOnly } = opts;
+export async function getAllFiles(all: boolean = false) {
+  const allFiles = await s3Instance.getAllFiles(all);
+  return allFiles;
+}
 
-  if (updateThumbnailOnly) {
-    console.log('Running thumbnail update only');
+export async function updatePermissions(allFiles: any[]) {
+  for (const file of allFiles) {
+    const { key } = file;
+    console.log('updating permissions for', key);
+    await s3Instance.updateFilePermissions(key);
+  }
+  return allFiles.length;
+}
+
+export async function checkFileChanges(
+  allFiles: any[],
+  opts?: { newThumbnails?: boolean; missingThumbnail?: boolean },
+): Promise<boolean> {
+  const { newThumbnails = false, missingThumbnail = false } = opts || {};
+
+  // print out what we are doing
+  if (newThumbnails) {
+    console.log('Starting: Recreating thumbnails');
+  } else if (missingThumbnail) {
+    console.log('Starting: Missing thumbnails');
   } else {
-    console.log('Running full file check');
+    console.log('Starting: Full file check');
   }
 
+  // clear tmp folder
   const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
   if (fs.existsSync(targetDir)) fs.rmSync(targetDir, { recursive: true });
   if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir);
 
-  // get all files from s3
-  const allFiles = await s3Instance.getAllFiles();
-
-  console.log(`Found ${allFiles.length} files`);
-
-  // check file count
-  if (!updateThumbnailOnly) {
+  // check file count if doing full check
+  if (!newThumbnails && !missingThumbnail) {
     const itemCount = await prisma.item.count();
     if (allFiles.length === itemCount) {
       console.log('No new files to process');
@@ -48,11 +62,19 @@ export async function checkFileChanges(
     const file = allFiles[i];
 
     // check if already processed
-    if (!updateThumbnailOnly) {
+    // only check if doing full check
+    if (!newThumbnails && !missingThumbnail) {
       const existingFile = await prisma.item.findFirst({
         where: { path: file.fullPath },
       });
       if (existingFile) continue;
+    }
+
+    // check if thumbnail already exists
+    if (missingThumbnail) {
+      const thumbnailExists = await s3Instance.checkFileExists(`${file.key}.thumbnail.jpg`);
+      // thumbnail exists, skip
+      if (thumbnailExists) continue;
     }
 
     console.log(`Processing file ${file.key}`);
@@ -83,7 +105,8 @@ export async function checkFileChanges(
         localPath: newVideoThumbnail.path,
       });
 
-      if (!updateThumbnailOnly) {
+      // insert file into db if not only updating thumbnails
+      if (!newThumbnails && !missingThumbnail) {
         // insert item into db
         await prisma.item.create({
           data: {
@@ -129,7 +152,8 @@ export async function checkFileChanges(
         localPath: newImageThumbnail.path,
       });
 
-      if (!updateThumbnailOnly) {
+      // insert file into db if not only updating thumbnails
+      if (!newThumbnails && !missingThumbnail) {
         // insert item into db
         await prisma.item.create({
           data: {
@@ -175,7 +199,8 @@ export async function checkFileChanges(
         localPath: newDocumentThumbnail.path,
       });
 
-      if (!updateThumbnailOnly) {
+      // insert file into db if not only updating thumbnails
+      if (!newThumbnails && !missingThumbnail) {
         // insert file into db
         await prisma.item.create({
           data: {

@@ -48,6 +48,8 @@ export const useAdminStore = defineStore('admin', {
             return await $trpc.admin.forceRecheckS3Bucket.query();
           case 'getAllFiles':
             return await $trpc.admin.getAllFiles.query();
+          case 'getMissingThumbnails':
+            return await $trpc.admin.getMissingThumbnails.query();
           case 'recreateThumbnail':
             return await $trpc.admin.recreateAllThumbnails.query();
           case 'updatePermissions':
