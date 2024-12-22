@@ -105,17 +105,7 @@ function scrollToTop() {
                   </q-item-section>
                   <q-item-section>Home</q-item-section>
                 </q-item>
-                <q-item
-                  v-if="$pwa?.showInstallPrompt"
-                  clickable
-                  v-close-popup
-                  @click="$pwa?.install"
-                >
-                  <q-item-section avatar>
-                    <q-icon name="o_download" />
-                  </q-item-section>
-                  <q-item-section>Install App</q-item-section>
-                </q-item>
+                <SingleInstallButton />
                 <q-separator />
               </div>
               <q-item clickable v-close-popup to="/account">
