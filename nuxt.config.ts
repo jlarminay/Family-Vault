@@ -115,8 +115,9 @@ export default defineNuxtConfig({
     manifest: {
       name: 'Larminay Vault', // Same as pwa.name: app's name used when installing the PWA
       short_name: 'Larminay Vault', // Same as pwa.short_name: used for app's short display
-      description: 'A vault for storing your important items', // Description of your app
-      start_url: '/', // Defines where the app starts when opened (root URL)
+      description: 'Preserving the good, the bad, and the ugly since 1967.', // Description of your app
+      start_url: '/login', // Defines where the app starts when opened (root URL)
+      id: '/', // App's ID
       display: 'standalone', // Standalone PWA display mode (without browser UI)
       background_color: '#ffffff', // Background color of the app when loading
       theme_color: '#833deb', // Same as pwa.themeColor: affects the browser’s UI (e.g., address bar)
