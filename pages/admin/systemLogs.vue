@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
-import parser from 'ua-parser-js';
+import { UAParser } from 'ua-parser-js';
 
 definePageMeta({
   middleware: 'admin-authorized-only',
@@ -28,7 +28,7 @@ const cleanedLogs = computed(
     };
   }[] => {
     return allLogs.value.map((log: any) => {
-      const parsedUA = parser(log.userAgent);
+      const parsedUA = UAParser(log.userAgent);
       return {
         ...log,
         userAgent: {

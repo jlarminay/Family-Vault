@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     'nuxt-quasar-ui',
     'dayjs-nuxt',
     '@sidebase/nuxt-auth',
+    '@vite-pwa/nuxt',
   ],
   plugins: ['~/plugins/global-imports.ts'],
   css: [
@@ -70,6 +71,68 @@ export default defineNuxtConfig({
     origin: process.env.AUTH_ORIGIN,
     provider: {
       type: 'authjs',
+    },
+  },
+
+  pwa: {
+    name: 'Larminay Vault', // Same as in the manifest below: used to set the app's name for PWA behavior
+    short_name: 'Larminay Vault', // Same as in the manifest below: short name for app installation
+    themeColor: '#833deb', // Same as in the manifest below: theme color for the app's UI elements
+
+    // Register service worker behavior
+    registerType: 'autoUpdate', // Automatically update the service worker in the background
+    workbox: {
+      skipWaiting: true, // Activate the new service worker immediately
+      clientsClaim: true, // Take control of the page immediately
+    },
+
+    // Icons for the PWA, which are also listed in the manifest
+    icons: [
+      {
+        src: 'pwa-64x64.png',
+        sizes: '64x64',
+        type: 'image/png',
+      },
+      {
+        src: 'pwa-192x192.png',
+        sizes: '192x192',
+        type: 'image/png',
+      },
+      {
+        src: 'pwa-512x512.png',
+        sizes: '512x512',
+        type: 'image/png',
+      },
+      {
+        src: 'maskable-icon-512x512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'maskable',
+      },
+    ],
+
+    // The following manifest section contains the same data for proper PWA setup
+    manifest: {
+      name: 'Larminay Vault', // Same as pwa.name: app's name used when installing the PWA
+      short_name: 'Larminay Vault', // Same as pwa.short_name: used for app's short display
+      description: 'Preserving the good, the bad, and the ugly since 1967.', // Description of your app
+      start_url: '/login', // Defines where the app starts when opened (root URL)
+      id: '/', // App's ID
+      display: 'standalone', // Standalone PWA display mode (without browser UI)
+      background_color: '#ffffff', // Background color of the app when loading
+      theme_color: '#833deb', // Same as pwa.themeColor: affects the browser’s UI (e.g., address bar)
+      icons: [
+        {
+          src: '/pwa-192x192.png', // Path to the icon file (192x192)
+          sizes: '192x192', // Icon size
+          type: 'image/png', // Image type
+        },
+        {
+          src: '/pwa-512x512.png', // Path to the icon file (512x512)
+          sizes: '512x512', // Icon size
+          type: 'image/png', // Image type
+        },
+      ],
     },
   },
 

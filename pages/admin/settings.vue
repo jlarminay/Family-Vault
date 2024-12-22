@@ -18,6 +18,7 @@ const allSettings = ref(await settingStore.getAll());
 
       <div>
         <pre>{{ allSettings }}</pre>
+        <pre>{{ $pwa }}</pre>
       </div>
     </main>
   </NuxtLayout>

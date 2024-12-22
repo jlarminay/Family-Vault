@@ -15,6 +15,7 @@
     "db:deploy": "prisma migrate deploy",
     "db:seed": "prisma migrate reset -f",
     "db:migrate": "prisma migrate dev --name",
+    "generate-pwa-assets": "pwa-assets-generator",
     "test": "playwright test"
   },
   "prisma": {
@@ -62,6 +63,8 @@
     "@types/node": "^22.10.2",
     "@types/shelljs": "^0.8.15",
     "@types/validator": "^13.12.2",
+    "@vite-pwa/assets-generator": "^0.2.6",
+    "@vite-pwa/nuxt": "^0.10.6",
     "concurrently": "^9.1.0",
     "dayjs-nuxt": "^2.1.11",
     "next-auth": "4.21.1",
