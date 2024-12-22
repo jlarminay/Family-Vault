@@ -50,7 +50,7 @@ function recenter() {
       </div>
     </main>
 
-    <div class="tw_mt-4 tw_overflow-hidden tw_bg-[#ededed] tw_rounded-md tw_relative tw_m-4">
+    <div class="tw_mt-4 tw_overflow-hidden tw_border tw_rounded-md tw_relative tw_m-4">
       <div class="tw_p-2 tw_flex tw_gap-2 tw_absolute tw_z-10 tw_bottom-0 tw_right-0">
         <q-btn
           icon="o_crop_free"
