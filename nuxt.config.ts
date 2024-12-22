@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     'nuxt-quasar-ui',
     'dayjs-nuxt',
     '@sidebase/nuxt-auth',
+    '@vite-pwa/nuxt',
   ],
   plugins: ['~/plugins/global-imports.ts'],
   css: [
@@ -71,6 +72,40 @@ export default defineNuxtConfig({
     provider: {
       type: 'authjs',
     },
+  },
+
+  pwa: {
+    name: 'Larminay Vault',
+    short_name: 'Larminay Vault',
+    themeColor: '#833deb',
+    registerType: 'autoUpdate', // Automatically update service worker in the background
+    workbox: {
+      skipWaiting: true, // Activate the new service worker immediately
+      clientsClaim: true, // Take control of the page immediately
+    },
+    icons: [
+      {
+        src: 'pwa-64x64.png',
+        sizes: '64x64',
+        type: 'image/png',
+      },
+      {
+        src: 'pwa-192x192.png',
+        sizes: '192x192',
+        type: 'image/png',
+      },
+      {
+        src: 'pwa-512x512.png',
+        sizes: '512x512',
+        type: 'image/png',
+      },
+      {
+        src: 'maskable-icon-512x512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'maskable',
+      },
+    ],
   },
 
   quasar: {
