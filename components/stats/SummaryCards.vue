@@ -29,7 +29,7 @@ const props = defineProps<{
           value: formatDuration(stats.videos.totalLength, 'string'),
           icon: 'o_timer',
         },
-        { label: 'Total Images', value: stats.images.count, icon: 'o_imagesmode' },
+        { label: 'Total Images', value: stats.images.count, icon: 'o_image' },
       ]"
       :key="i"
       class="tw_m-2 first:tw_ml-0 last:tw_mr-0 tw_w-1/4"

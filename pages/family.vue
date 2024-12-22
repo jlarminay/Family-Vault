@@ -60,7 +60,7 @@ function recenter() {
       </div>
 
       <div id="svg">
-        <img src="/assets/family-tree.svg" alt="Family Tree" />
+        <img src="/assets/family-tree-with-images.svg" alt="Family Tree" />
       </div>
     </div>
   </NuxtLayout>
