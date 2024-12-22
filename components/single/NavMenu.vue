@@ -40,7 +40,7 @@ function scrollToTop() {
           @click="scrollToTop"
         >
           <img
-            src="/logo/logo.svg"
+            src="/logo.svg"
             class="tw_w-7 tw_mr-2 group-hover:tw_rotate-[720deg] tw_transition-transform tw_duration-1000 tw_ease-in-out"
           />
           Larminay Vault

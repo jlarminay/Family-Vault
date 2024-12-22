@@ -40,7 +40,7 @@ function scrollToTop() {
         class="tw_text-black tw_font-montserrat tw_font-bold"
         @click="scrollToTop"
       >
-        <img src="/logo/logo.svg" class="tw_w-7 tw_mr-2" />
+        <img src="/logo.svg" class="tw_w-7 tw_mr-2" />
         Larminay Vault
       </q-btn>
 
