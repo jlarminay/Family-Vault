@@ -255,7 +255,7 @@ export const itemRouter = router({
     if (input.newLocation) {
       // get location data
       const cleanedData = input.newLocation.latLong.split(',').map((item) => item.trim());
-      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${cleanedData[0]}&lon=${cleanedData[1]}`;
+      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${cleanedData[0]}&lon=${cleanedData[1]}&accept-language=en`;
       const locationResponse = await fetch(url).then((res) => res.json());
 
       // insert into db

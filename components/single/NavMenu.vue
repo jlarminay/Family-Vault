@@ -117,13 +117,18 @@ function scrollToTop() {
                 </q-item-section>
                 <q-item-section>Admin</q-item-section>
               </q-item>
-
               <q-separator />
               <q-item clickable v-close-popup to="/stats">
                 <q-item-section avatar>
                   <q-icon name="o_query_stats" />
                 </q-item-section>
                 <q-item-section>Stats</q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup to="/family">
+                <q-item-section avatar>
+                  <q-icon name="o_park" />
+                </q-item-section>
+                <q-item-section>Family Tree</q-item-section>
               </q-item>
               <q-item
                 clickable
