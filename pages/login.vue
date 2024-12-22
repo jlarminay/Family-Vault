@@ -30,7 +30,14 @@ onMounted(() => {
       <div
         class="tw_relative tw_bg-white tw_p-8 sm:tw_p-12 tw_rounded-lg tw_w-[450px] tw_max-w-[90%] tw_text-center"
       >
-        <q-btn round flat class="tw_absolute tw_top-4 tw_left-4" icon="o_arrow_back" to="/" />
+        <q-btn
+          v-if="!$pwa?.isPWAInstalled"
+          round
+          flat
+          class="tw_absolute tw_top-4 tw_left-4"
+          icon="o_arrow_back"
+          to="/"
+        />
         <p class="tw_mb-4 tw_px-8 tw_pb-2 tw_text-3xl tw_border-b tw_border-b-dark tw_inline-block">
           Login
         </p>

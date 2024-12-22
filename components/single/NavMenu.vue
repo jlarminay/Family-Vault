@@ -98,13 +98,26 @@ function scrollToTop() {
           <!-- Dropdown Menu -->
           <q-menu class="tw_min-w-[160px]" :offset="[0, 4]">
             <q-list>
-              <q-item clickable v-close-popup to="/">
-                <q-item-section avatar>
-                  <q-icon name="o_house" />
-                </q-item-section>
-                <q-item-section>Home</q-item-section>
-              </q-item>
-              <q-separator />
+              <div v-if="!$pwa?.isPWAInstalled">
+                <q-item clickable v-close-popup to="/">
+                  <q-item-section avatar>
+                    <q-icon name="o_house" />
+                  </q-item-section>
+                  <q-item-section>Home</q-item-section>
+                </q-item>
+                <q-item
+                  v-if="$pwa?.showInstallPrompt"
+                  clickable
+                  v-close-popup
+                  @click="$pwa?.install"
+                >
+                  <q-item-section avatar>
+                    <q-icon name="o_download" />
+                  </q-item-section>
+                  <q-item-section>Install App</q-item-section>
+                </q-item>
+                <q-separator />
+              </div>
               <q-item clickable v-close-popup to="/account">
                 <q-item-section avatar>
                   <q-icon name="o_face" />
