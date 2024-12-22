@@ -22,7 +22,7 @@ const allSettings = ref(await settingStore.getAll());
           buttonAction="forceRecheckS3Bucket"
           :estimate="allSettings?.timerForceRecheckS3Bucket"
         >
-          <template #title> Force Recheck S3 Storage </template>
+          <template #title>Force Recheck S3 Storage</template>
           <template #description>
             <p class="tw_mb-2">Sync S3 files with the database. Use after direct uploads to S3.</p>
           </template>
@@ -42,7 +42,7 @@ const allSettings = ref(await settingStore.getAll());
         </AdminFunctionDisplay>
 
         <AdminFunctionDisplay
-          buttonLabel="Update Permissions"
+          buttonLabel="Update"
           buttonAction="updatePermissions"
           :estimate="allSettings?.timerUpdatePermissions"
         >
@@ -53,7 +53,7 @@ const allSettings = ref(await settingStore.getAll());
         </AdminFunctionDisplay>
 
         <AdminFunctionDisplay
-          buttonLabel="Recreate Thumbnails"
+          buttonLabel="Recreate"
           buttonAction="recreateThumbnail"
           :estimate="allSettings?.timerRecreateAllThumbnails"
         >

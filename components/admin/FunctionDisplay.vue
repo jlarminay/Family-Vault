@@ -46,7 +46,7 @@ function secondsToTime(secondsString: string | undefined) {
 </script>
 
 <template>
-  <div class="tw_w-1/3">
+  <div class="tw_w-full sm:tw_w-1/2 md:tw_w-1/3">
     <div class="tw_m-1 tw_h-full tw_border tw_rounded tw_p-4 tw_flex tw_flex-col">
       <h3 class="h3 tw_mb-4">
         <slot name="title" />
