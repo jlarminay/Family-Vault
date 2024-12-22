@@ -20,7 +20,7 @@ export default {
         },
         body: JSON.stringify({
           username: 'Larminay Vault | Report Bot',
-          // avatar_url: `${env.public.baseUrl}/_nuxt/logo/logo.png`,
+          // avatar_url: `${env.public.baseUrl}/_nuxt/logo.png`,
           content: content,
         }),
       });

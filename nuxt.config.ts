@@ -56,6 +56,7 @@ export default defineNuxtConfig({
       discordUrl: process.env.WEBHOOK_DISCORD_URL,
     },
     public: {
+      version: require('./package.json').version,
       environment: process.env.ENVIRONMENT,
       baseUrl: process.env.AUTH_ORIGIN,
       s3Endpoint: process.env.S3_ENDPOINT,
