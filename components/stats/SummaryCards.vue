@@ -22,14 +22,14 @@ const props = defineProps<{
   <div class="tw_flex">
     <div
       v-for="(val, i) in [
-        { label: 'Total File Size', value: formatSize(stats.totalFileSize), icon: 'sym_o_save' },
-        { label: 'Total Videos', value: stats.videos.count, icon: 'sym_o_movie' },
+        { label: 'Total File Size', value: formatSize(stats.totalFileSize), icon: 'o_save' },
+        { label: 'Total Videos', value: stats.videos.count, icon: 'o_movie' },
         {
           label: 'Total Videos Length',
           value: formatDuration(stats.videos.totalLength, 'string'),
-          icon: 'sym_o_timer',
+          icon: 'o_timer',
         },
-        { label: 'Total Images', value: stats.images.count, icon: 'sym_o_imagesmode' },
+        { label: 'Total Images', value: stats.images.count, icon: 'o_image' },
       ]"
       :key="i"
       class="tw_m-2 first:tw_ml-0 last:tw_mr-0 tw_w-1/4"
