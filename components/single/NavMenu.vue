@@ -117,7 +117,6 @@ function scrollToTop() {
                 </q-item-section>
                 <q-item-section>Admin</q-item-section>
               </q-item>
-
               <q-separator />
               <q-item clickable v-close-popup to="/stats">
                 <q-item-section avatar>

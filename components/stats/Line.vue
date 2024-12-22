@@ -35,12 +35,12 @@ const dataVideos = computed(() => {
 </script>
 
 <template>
-  <div>
+  <div class="tw_pb-16">
     <h3 class="h2 tw_text-center tw_mb-4">Videos and Images Per Year</h3>
     <Bar
       :options="{
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
         resizeDelay: 200,
         interaction: {
           intersect: false,
