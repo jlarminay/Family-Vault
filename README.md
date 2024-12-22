@@ -20,7 +20,7 @@ I wanted a small, invite-only video host that I could have full control over, wi
 
 - `docker ~26.1.1`
 - `docker-compose ~2.27.0`
-- `node ^20.14.0`
+- `node ^20.18.1`
 - `ffmpeg ^7.0`
 - `ffprobe ^7.0`
 

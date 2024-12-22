@@ -13,7 +13,7 @@ RUN apt update && apt install -y terraform
 
 # Install node
 RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
-RUN bash -i -c 'nvm install 20.14.0'
+RUN bash -i -c 'nvm install 20.18.1'
 
 # Install ansible
 RUN pip3 install ansible
