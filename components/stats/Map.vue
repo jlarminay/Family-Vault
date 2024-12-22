@@ -30,7 +30,7 @@ onMounted(() => {
   L.tileLayer(tileSets.value[0], {
     attribution:
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    maxZoom: 16,
+    maxZoom: 13,
   }).addTo(map.value);
 
   // add the Heatmap layer
@@ -44,9 +44,9 @@ onMounted(() => {
     },
   ).addTo(map.value);
 
-  // add map markers
-  updateMapMarkers();
-  map.value.on('zoomend', updateMapMarkers);
+  // // add map markers
+  // updateMapMarkers();
+  // map.value.on('zoomend', updateMapMarkers);
 });
 
 function updateMapMarkers() {
@@ -86,4 +86,3 @@ function updateMapMarkers() {
 </template>
 
 <style scoped lang="postcss"></style>
-~/assets/leaflet-heat~/assets/leaflet-heat

@@ -77,23 +77,26 @@ watch(
         </div>
 
         <!-- Location -->
-        <div class="tw_flex tw_gap-4 tw_items-start">
-          <q-icon size="24px" name="o_location_on" class="tw_mt-1.5" />
-          <div class="tw_flex tw_flex-col">
-            <p class="tw_text-gray-500 tw_leading-none tw_text-sm">Location</p>
-            <div v-if="details.location">
-              <div v-if="details.location.name" class="tw_text-base">
-                <p>{{ details.location.name || '-' }}</p>
-                <p class="tw_text-xs tw_text-gray-400">
+        <div>
+          <div class="tw_flex tw_gap-4 tw_items-start">
+            <q-icon size="24px" name="o_location_on" class="tw_mt-1.5" />
+            <div class="tw_flex tw_flex-col">
+              <p class="tw_text-gray-500 tw_leading-none tw_text-sm">Location</p>
+              <div v-if="details.location">
+                <div v-if="details.location.name" class="tw_text-base">
+                  <p>{{ details.location.name || '-' }}</p>
+                  <p class="tw_text-xs tw_text-gray-400">
+                    {{ details.location.city || '-' }}, {{ details.location.country || '-' }}
+                  </p>
+                </div>
+                <p v-else class="tw_text-base">
                   {{ details.location.city || '-' }}, {{ details.location.country || '-' }}
                 </p>
               </div>
-              <p v-else class="tw_text-base">
-                {{ details.location.city || '-' }}, {{ details.location.country || '-' }}
-              </p>
+              <p v-else>-</p>
             </div>
-            <p v-else>-</p>
           </div>
+          <GallerySummaryMap v-if="details.location" :location="details.location" class="tw_mt-2" />
         </div>
       </div>
 
