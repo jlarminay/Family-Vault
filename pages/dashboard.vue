@@ -295,6 +295,8 @@ async function refreshLikes() {
           :disable="loading || allItems.length >= allItemsCount"
         />
       </main>
+
+      <ScrollToTop />
     </template>
   </NuxtLayout>
 </template>
