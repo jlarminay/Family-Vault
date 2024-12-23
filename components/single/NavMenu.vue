@@ -43,7 +43,7 @@ function scrollToTop() {
             src="/logo.svg"
             class="tw_w-7 tw_mr-2 group-hover:tw_rotate-[720deg] tw_transition-transform tw_duration-1000 tw_ease-in-out"
           />
-          Larminay Vault
+          <span v-if="$q.screen.width >= 360">Larminay Vault</span>
         </q-btn>
       </div>
 
