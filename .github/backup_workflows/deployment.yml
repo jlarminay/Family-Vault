@@ -66,7 +66,6 @@ jobs:
           DOMAIN: ${{ vars.DOMAIN }}
           VOLUME_NAME: ${{ steps.terraform.outputs.VOLUME_NAME }}
           DROPLET_IP: ${{ steps.terraform.outputs.DROPLET_IP }}
-          WORKING_TMP_FOLDER: ${{ vars.WORKING_TMP_FOLDER }}
           # Database
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}

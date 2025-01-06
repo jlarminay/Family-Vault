@@ -19,7 +19,7 @@ const s3Instance = S3.getInstance({
 
 export default async () => {
   // define seeds
-  const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+  const targetDir = './.tmp';
   if (fs.existsSync(targetDir)) fs.rmSync(targetDir, { recursive: true });
   if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir);
 

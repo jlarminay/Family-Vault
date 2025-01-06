@@ -42,7 +42,7 @@ export default {
       timePercentage: number;
     }): Promise<{ name: string; path: string }> => {
       const { videoName, videoPath, duration, timePercentage } = opts;
-      const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+      const targetDir = './.tmp';
 
       // get time at percentage of video duration
       const targetTime = Math.floor((duration * timePercentage) / 100);
@@ -68,7 +68,7 @@ export default {
       size: number;
     }> => {
       const { name, path } = opts;
-      const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+      const targetDir = './.tmp';
       let newPath = path;
 
       // check if file is local or remote
@@ -96,7 +96,7 @@ export default {
       path: string;
     }): Promise<{ name: string; path: string }> => {
       const { name, path } = opts;
-      const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+      const targetDir = './.tmp';
       let newPath = path;
 
       // check if file is local or remote
@@ -125,7 +125,7 @@ export default {
     },
     getMajorColor: async (opts: { name: string; path: string }): Promise<string> => {
       const { name, path } = opts;
-      const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+      const targetDir = './.tmp';
       let newPath = path;
 
       // check if file is local or remote
@@ -149,7 +149,7 @@ export default {
       size: number;
     }> => {
       const { name, path } = opts;
-      const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+      const targetDir = './.tmp';
       let newPath = path;
 
       // check if file is local or remote
@@ -174,7 +174,7 @@ export default {
       path: string;
     }): Promise<{ name: string; path: string }> => {
       const { name, path } = opts;
-      const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+      const targetDir = './.tmp';
       let newPath = path;
 
       // check if file is local or remote
@@ -213,7 +213,7 @@ export default {
 
   // general file operations
   delete: async (fileName: string): Promise<void> => {
-    const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+    const targetDir = './.tmp';
     const allFiles = fs.readdirSync(targetDir);
 
     // delete all files that contain the fileName

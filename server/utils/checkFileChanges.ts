@@ -43,7 +43,7 @@ export async function checkFileChanges(
   }
 
   // clear tmp folder
-  const targetDir = process.env.WORKING_TMP_FOLDER || './.tmp';
+  const targetDir = './.tmp';
   if (fs.existsSync(targetDir)) fs.rmSync(targetDir, { recursive: true });
   if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir);
 

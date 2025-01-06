@@ -21,7 +21,7 @@ export const reportRouter = router({
 
       // send webhook
       const item = await ctx.prisma.item.findUnique({ where: { id: itemId } });
-      webhooks.discord({ item, user: session, report });
+      // webhooks.discord({ item, user: session, report });
 
       // write to logger
       const headers = Object.fromEntries(ctx.event.headers.entries());
